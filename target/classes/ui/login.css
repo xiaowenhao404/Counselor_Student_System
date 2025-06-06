@@ -1,0 +1,173 @@
+.root-container {
+    -fx-background-color: #f0f2f5;
+    /* A light background */
+}
+
+.header-container {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    /* Gradient background */
+    -fx-padding: 40px 0;
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-min-width: 100%;
+}
+
+.header-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+}
+
+.header-subtitle {
+    -fx-font-size: 18px;
+    -fx-fill: #e0e0e0;
+    /* Lighter white */
+}
+
+.login-container {
+    -fx-background-color: white;
+    -fx-padding: 40px;
+    -fx-spacing: 20px;
+    -fx-alignment: center;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0, 5);
+    /* Soft shadow */
+    -fx-min-width: 400px;
+    -fx-max-width: 450px;
+    /* Limit max width */
+    -fx-translate-y: -30px;
+    /* Slightly overlap header */
+}
+
+.input-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.input-box {
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-spacing: 10px;
+    -fx-alignment: center_left;
+    -fx-background-color: #f9f9f9;
+    /* Light background for input box */
+}
+
+.input-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-font-size: 14px;
+}
+
+.input-field:focused {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.role-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 10px 0 0 0;
+}
+
+.role-button {
+    -fx-background-color: white;
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 15px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0.3, 0, 2);
+    /* Subtle shadow */
+    -fx-min-width: 100px;
+    -fx-alignment: center;
+}
+
+.role-button:hover {
+    -fx-border-color: #667eea;
+    /* Highlight on hover */
+}
+
+.role-button:pressed {
+    -fx-background-color: #f0f0f0;
+}
+
+/* Style for selected role button - requires logic in controller */
+.role-button.selected {
+    -fx-border-color: #667eea;
+    -fx-border-width: 2px;
+    -fx-background-color: #eef2ff;
+    /* Light blue background */
+}
+
+.role-button .graphic VBox {
+    -fx-alignment: center;
+    -fx-spacing: 5;
+    /* Adjust padding if needed for vertical alignment */
+    /* -fx-padding: 0 0 -2px 0; */
+}
+
+.role-text {
+    -fx-font-size: 14px;
+    -fx-fill: #555555;
+}
+
+.role-button.selected .role-text {
+    -fx-fill: #667eea;
+    /* Match border color */
+}
+
+.login-button {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    /* Gradient background */
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 15px 0;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.4, 0, 4);
+    /* More prominent shadow */
+}
+
+.login-button:hover {
+    -fx-background-color: linear-gradient(to right, #764ba2, #667eea);
+    /* Reverse gradient on hover */
+}
+
+.login-button:pressed {
+    -fx-translate-y: 1px;
+    /* Add a slight press effect */
+}
+
+.combo-box,
+.text-field,
+.password-field {
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+}
+
+.combo-box:hover,
+.text-field:hover,
+.password-field:hover {
+    -fx-border-color: #4CAF50;
+}
+
+.combo-box:focused,
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2px;
+}
+
+.cursor-hand {
+    -fx-cursor: hand;
+}
