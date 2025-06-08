@@ -1,12 +1,15 @@
 package ui;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 public class LoginController {
     @FXML
@@ -101,9 +104,14 @@ public class LoginController {
 
         // 验证管理员账号 (硬编码)
         if (selectedRole.equals("管理员")) {
-            if (username.equals("admin") && password.equals("123456")) {
+            if (username.equals("admin") && password.equals("123321")) {
                 showSuccess("管理员登录成功");
-                // TODO: 跳转到管理员主界面
+                // 跳转到管理员主界面
+                try {
+                    openAdminMainWindow();
+                } catch (Exception e) {
+                    showError("打开管理员界面失败：" + e.getMessage());
+                }
                 return;
             } else {
                 handleLoginFailure();
@@ -142,5 +150,27 @@ public class LoginController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    
+    private void openAdminMainWindow() throws Exception {
+        // 加载管理员主界面
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/admin_main.fxml"));
+        Parent root = loader.load();
+        
+        // 创建新窗口
+        Stage adminStage = new Stage();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/ui/admin_main.css").toExternalForm());
+        
+        adminStage.setTitle("管理员主界面 - 辅导员学生交流信息管理系统");
+        adminStage.setScene(scene);
+        adminStage.setWidth(1200);
+        adminStage.setHeight(800);
+        adminStage.setResizable(true);
+        adminStage.show();
+        
+        // 关闭登录窗口
+        Stage loginStage = (Stage) loginButton.getScene().getWindow();
+        loginStage.close();
     }
 }

@@ -1,0 +1,234 @@
+/* 辅导员表单样式 - 复用学生表单样式 */
+
+/* 表单容器 */
+.form-container {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0.3, 0, 3);
+    -fx-max-width: 800px;
+    -fx-pref-width: 800px;
+}
+
+/* 表单标题 */
+.form-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: linear-gradient(to right, #667eea, #764ba2);
+    -fx-text-alignment: center;
+}
+
+/* 表单网格 */
+.form-grid {
+    -fx-alignment: center;
+}
+
+/* 表单标签 */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-alignment: center_right;
+}
+
+/* 表单输入控件 */
+.form-input {
+    -fx-font-size: 14px;
+    -fx-padding: 12px 14px;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1px;
+    -fx-background-color: white;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
+}
+
+/* ComboBox 特殊样式，解决文字遮挡问题 */
+.combo-box.form-input {
+    -fx-padding: 0;
+}
+
+.combo-box.form-input .list-cell {
+    -fx-padding: 12px 14px;
+    -fx-alignment: center-left;
+}
+
+.combo-box.form-input .arrow-button {
+    -fx-padding: 0 8px 0 0;
+}
+
+/* 密码容器 */
+.password-container {
+    -fx-alignment: center_left;
+    -fx-spacing: 8px;
+    -fx-padding: 0;
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
+}
+
+/* 密码输入框特殊样式 */
+.password-input {
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1px;
+    -fx-background-color: white;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 12px 14px;
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #a0a0a0;
+}
+
+.password-input:focused {
+    -fx-border-color: #667eea;
+}
+
+.password-input:hover {
+    -fx-border-color: #667eea;
+}
+
+/* 密码可见性切换按钮 */
+.cursor-hand {
+    -fx-cursor: hand;
+}
+
+.password-toggle-icon {
+    -fx-cursor: hand;
+    -fx-opacity: 0.6;
+}
+
+.password-toggle-icon:hover {
+    -fx-opacity: 1.0;
+}
+
+/* 日期选择器特殊样式，确保与其他输入框一致 */
+.date-picker.form-input {
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
+    -fx-pref-width: 160px;
+    -fx-min-width: 160px;
+    -fx-padding: 0;
+}
+
+.date-picker.form-input .text-field {
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
+    -fx-padding: 12px 8px 12px 14px;
+    -fx-pref-width: 130px;
+    -fx-min-width: 130px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+}
+
+.date-picker.form-input .arrow-button {
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
+    -fx-pref-width: 30px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8px 6px;
+}
+
+.date-picker.form-input .arrow-button .arrow {
+    -fx-background-color: #666666;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+    -fx-scale-shape: false;
+    -fx-pref-height: 6px;
+    -fx-pref-width: 8px;
+    -fx-min-height: 6px;
+    -fx-min-width: 8px;
+    -fx-max-height: 6px;
+    -fx-max-width: 8px;
+}
+
+.form-input:hover {
+    -fx-border-color: #667eea;
+}
+
+.form-input:focused {
+    -fx-border-color: #667eea;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 8, 0.3, 0, 0);
+}
+
+/* 错误状态 */
+.form-input.error {
+    -fx-border-color: #ff4757;
+    -fx-border-width: 2px;
+}
+
+.form-input.error:focused {
+    -fx-border-color: #ff4757;
+    -fx-effect: dropshadow(gaussian, rgba(255, 71, 87, 0.3), 8, 0.3, 0, 0);
+}
+
+/* 按钮容器 */
+.button-container {
+    -fx-alignment: center;
+}
+
+/* 主要按钮（保存） */
+.primary-button {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 20px;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 2);
+    -fx-min-width: 100px;
+    -fx-pref-width: 100px;
+    -fx-pref-height: 44px;
+    -fx-min-height: 44px;
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(to right, #5a6fd8, #6a42a0);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0.4, 0, 3);
+}
+
+.primary-button:pressed {
+    -fx-background-color: linear-gradient(to right, #4e5bc1, #5d3a96);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 6, 0.3, 0, 1);
+}
+
+/* 次要按钮（取消） */
+.secondary-button {
+    -fx-background-color: white;
+    -fx-text-fill: #666666;
+    -fx-font-size: 14px;
+    -fx-padding: 12px 20px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 3, 0.3, 0, 1);
+    -fx-min-width: 100px;
+    -fx-pref-width: 100px;
+    -fx-pref-height: 44px;
+    -fx-min-height: 44px;
+}
+
+.secondary-button:hover {
+    -fx-border-color: #667eea;
+    -fx-text-fill: #667eea;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.15), 6, 0.3, 0, 2);
+}
+
+.secondary-button:pressed {
+    -fx-background-color: #f8f9ff;
+    -fx-border-color: #5a6fd8;
+    -fx-text-fill: #5a6fd8;
+} 

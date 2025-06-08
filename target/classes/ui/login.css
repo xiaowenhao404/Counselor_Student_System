@@ -1,12 +1,19 @@
 .root-container {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: white; /* 将背景色改为白色以消除底部边框 */
     /* A light background */
+    -fx-font-family: "Poppins", sans-serif; /* 设置全局字体 */
+}
+
+/* 定义 Poppins 字体 */
+@font-face {
+    font-family: "Poppins";
+    src: url("/fonts/Poppins/poppins/Poppins-Regular.ttf"); /* 根据您提供的路径调整 */
 }
 
 .header-container {
     -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
     /* Gradient background */
-    -fx-padding: 40px 0;
+    -fx-padding: 20px 0;
     -fx-alignment: center;
     -fx-spacing: 10px;
     -fx-min-width: 100%;
@@ -26,17 +33,15 @@
 
 .login-container {
     -fx-background-color: white;
-    -fx-padding: 40px;
+    -fx-padding: 40px 40px 100px 40px; /* 设置明确的 padding，增加底部空间 */
     -fx-spacing: 20px;
-    -fx-alignment: center;
     -fx-background-radius: 10px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0, 5);
     /* Soft shadow */
     -fx-min-width: 400px;
     -fx-max-width: 450px;
     /* Limit max width */
-    -fx-translate-y: -30px;
-    /* Slightly overlap header */
+    /* prefHeight 属性在 FXML 中设置 */
 }
 
 .input-label {
@@ -61,12 +66,10 @@
     -fx-border-color: transparent;
     -fx-prompt-text-fill: #a0a0a0;
     -fx-font-size: 14px;
+    -fx-padding: 8px;
 }
 
-.input-field:focused {
-    -fx-border-color: transparent;
-    -fx-background-color: transparent;
-}
+/* 移除所有焦点样式 */
 
 .role-label {
     -fx-font-size: 16px;
@@ -100,7 +103,7 @@
 /* Style for selected role button - requires logic in controller */
 .role-button.selected {
     -fx-border-color: #667eea;
-    -fx-border-width: 2px;
+    -fx-border-width: 1px; /* 调整为 1px，保持与默认边框宽度一致，防止布局变化 */
     -fx-background-color: #eef2ff;
     /* Light blue background */
 }
@@ -141,8 +144,6 @@
 }
 
 .login-button:pressed {
-    -fx-translate-y: 1px;
-    /* Add a slight press effect */
 }
 
 .combo-box,
@@ -153,6 +154,7 @@
     -fx-background-radius: 5px;
     -fx-border-color: #cccccc;
     -fx-border-radius: 5px;
+    -fx-border-width: 1px; /* 确保默认边框宽度为 1px */
 }
 
 .combo-box:hover,
@@ -161,11 +163,12 @@
     -fx-border-color: #4CAF50;
 }
 
-.combo-box:focused,
 .text-field:focused,
-.password-field:focused {
-    -fx-border-color: #4CAF50;
-    -fx-border-width: 2px;
+.password-field:focused,
+.combo-box:focused {
+    -fx-border-color: #667eea; /* 改变颜色 */
+    -fx-border-width: 1px; /* 保持不变 */
+    -fx-padding: 8px; /* 保持不变 */
 }
 
 .cursor-hand {

@@ -39,7 +39,7 @@
             <HBox styleClass="input-box">
                 <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="/images/icon_lock_login.png"/>
+                        <Image url="/images/login_password.png"/>
                     </image>
                 </ImageView>
                 <!-- Container for PasswordField and TextField -->
