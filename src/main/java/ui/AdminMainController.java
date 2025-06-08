@@ -3,6 +3,8 @@ package ui;
 import entity.Student;
 import entity.Counselor;
 import entity.Consultation;
+import entity.Class;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,11 +34,13 @@ public class AdminMainController implements Initializable {
     // 底部标签按钮
     @FXML private Button studentManagementTab;
     @FXML private Button counselorManagementTab;
+    @FXML private Button classManagementTab;
     @FXML private Button consultationManagementTab;
     
     // 主内容面板
     @FXML private VBox studentManagementPanel;
     @FXML private VBox counselorManagementPanel;
+    @FXML private VBox classManagementPanel;
     @FXML private VBox consultationManagementPanel;
     
     // 学生管理相关控件
@@ -51,6 +55,12 @@ public class AdminMainController implements Initializable {
     @FXML private Button deleteCounselorButton;
     @FXML private TableView<Counselor> counselorTable;
     
+    // 班级管理相关控件
+    @FXML private Button addClassButton;
+    @FXML private Button editClassCounselorButton;
+    @FXML private Button deleteClassButton;
+    @FXML private TableView<Class> classTable;
+    
     // 咨询管理相关控件
     @FXML private Button deleteConsultationButton;
     @FXML private Button toggleHighlightButton;
@@ -64,6 +74,9 @@ public class AdminMainController implements Initializable {
     // 辅导员数据列表
     private ObservableList<Counselor> counselorData = FXCollections.observableArrayList();
     
+    // 班级数据列表
+    private ObservableList<Class> classData = FXCollections.observableArrayList();
+    
     // 咨询数据列表
     private ObservableList<Consultation> consultationData = FXCollections.observableArrayList();
     
@@ -72,6 +85,7 @@ public class AdminMainController implements Initializable {
         // 初始化表格列
         initializeStudentTable();
         initializeCounselorTable();
+        initializeClassTable();
         initializeConsultationTable();
         
         // 设置初始状态
@@ -91,6 +105,7 @@ public class AdminMainController implements Initializable {
         // 移除所有标签的选中样式
         studentManagementTab.getStyleClass().remove("selected");
         counselorManagementTab.getStyleClass().remove("selected");
+        classManagementTab.getStyleClass().remove("selected");
         consultationManagementTab.getStyleClass().remove("selected");
         
         // 添加选中样式到点击的标签
@@ -103,6 +118,9 @@ public class AdminMainController implements Initializable {
         } else if (clickedTab == counselorManagementTab) {
             showPanel("counselor");
             currentTab = "counselor";
+        } else if (clickedTab == classManagementTab) {
+            showPanel("class");
+            currentTab = "class";
         } else if (clickedTab == consultationManagementTab) {
             showPanel("consultation");
             currentTab = "consultation";
@@ -115,6 +133,7 @@ public class AdminMainController implements Initializable {
         // 隐藏所有面板
         studentManagementPanel.setVisible(false);
         counselorManagementPanel.setVisible(false);
+        classManagementPanel.setVisible(false);
         consultationManagementPanel.setVisible(false);
         
         // 显示指定面板
@@ -124,6 +143,9 @@ public class AdminMainController implements Initializable {
                 break;
             case "counselor":
                 counselorManagementPanel.setVisible(true);
+                break;
+            case "class":
+                classManagementPanel.setVisible(true);
                 break;
             case "consultation":
                 consultationManagementPanel.setVisible(true);
@@ -135,6 +157,7 @@ public class AdminMainController implements Initializable {
         // 根据表格选择状态更新按钮可用性
         boolean studentSelected = studentTable.getSelectionModel().getSelectedItem() != null;
         boolean counselorSelected = counselorTable.getSelectionModel().getSelectedItem() != null;
+        boolean classSelected = classTable.getSelectionModel().getSelectedItem() != null;
         boolean consultationSelected = consultationTable.getSelectionModel().getSelectedItem() != null;
         
         if ("student".equals(currentTab)) {
@@ -143,6 +166,9 @@ public class AdminMainController implements Initializable {
         } else if ("counselor".equals(currentTab)) {
             editCounselorButton.setDisable(!counselorSelected);
             deleteCounselorButton.setDisable(!counselorSelected);
+        } else if ("class".equals(currentTab)) {
+            editClassCounselorButton.setDisable(!classSelected);
+            deleteClassButton.setDisable(!classSelected);
         } else if ("consultation".equals(currentTab)) {
             deleteConsultationButton.setDisable(!consultationSelected);
             toggleHighlightButton.setDisable(!consultationSelected);
@@ -225,6 +251,55 @@ public class AdminMainController implements Initializable {
         studentData.add(new Student("2021003", "王五", "男", 
             LocalDate.of(2003, 12, 10), "13800138003", 
             "计算机科学与技术", "2021", "02", "李老师"));
+    }
+    
+    private void initializeClassTable() {
+        // 创建班级表格列
+        TableColumn<Class, String> majorNameCol = new TableColumn<>("专业名称");
+        majorNameCol.setCellValueFactory(new PropertyValueFactory<>("majorName"));
+        majorNameCol.setMinWidth(150);
+        
+        TableColumn<Class, String> gradeCol = new TableColumn<>("年级");
+        gradeCol.setCellValueFactory(new PropertyValueFactory<>("gradeNumber"));
+        gradeCol.setMinWidth(80);
+        
+        TableColumn<Class, String> classNumCol = new TableColumn<>("班级");
+        classNumCol.setCellValueFactory(new PropertyValueFactory<>("classNumber"));
+        classNumCol.setMinWidth(80);
+        
+        TableColumn<Class, String> counselorCol = new TableColumn<>("辅导员");
+        counselorCol.setCellValueFactory(cellData -> {
+            String counselorName = cellData.getValue().getCounselorName();
+            return new SimpleStringProperty(counselorName != null && !counselorName.isEmpty() ? counselorName : "未分配");
+        });
+        counselorCol.setMinWidth(100);
+        
+        TableColumn<Class, Number> studentCountCol = new TableColumn<>("学生人数");
+        studentCountCol.setCellValueFactory(new PropertyValueFactory<>("studentCount"));
+        studentCountCol.setMinWidth(100);
+        
+        // 添加列到表格
+        classTable.getColumns().addAll(majorNameCol, gradeCol, classNumCol, counselorCol, studentCountCol);
+        
+        // 设置数据
+        classTable.setItems(classData);
+        
+        // 添加测试数据
+        addTestClassData();
+        
+        // 添加选择监听器
+        classTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            updateButtonStates();
+        });
+    }
+    
+    private void addTestClassData() {
+        // 添加一些测试数据
+        classData.add(new Class("CS001", "计算机科学与技术", "2021", "01", "T001", "李老师", 35));
+        classData.add(new Class("CS001", "计算机科学与技术", "2021", "02", "T001", "李老师", 32));
+        classData.add(new Class("SE001", "软件工程", "2021", "01", "T002", "王老师", 28));
+        classData.add(new Class("SE001", "软件工程", "2022", "01", null, null, 0));
+        classData.add(new Class("CS001", "计算机科学与技术", "2022", "01", "T003", "张老师", 30));
     }
     
     @SuppressWarnings("unchecked")
@@ -653,6 +728,57 @@ public class AdminMainController implements Initializable {
         }
     }
     
+    // 班级管理事件处理
+    @FXML
+    private void handleAddClass() {
+        try {
+            openClassForm(null);
+        } catch (IOException e) {
+            showError("打开添加班级窗口失败：" + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void handleEditClassCounselor() {
+        Class selectedClass = classTable.getSelectionModel().getSelectedItem();
+        if (selectedClass != null) {
+            try {
+                openClassCounselorForm(selectedClass);
+            } catch (IOException e) {
+                showError("打开修改辅导员窗口失败：" + e.getMessage());
+            }
+        } else {
+            showInfo("提示", "请先选择要修改辅导员的班级");
+        }
+    }
+    
+    @FXML
+    private void handleDeleteClass() {
+        Class selectedClass = classTable.getSelectionModel().getSelectedItem();
+        if (selectedClass != null) {
+            if (selectedClass.getStudentCount() > 0) {
+                showError("无法删除班级 \"" + selectedClass.getFullClassName() + "\"，该班级还有 " + 
+                         selectedClass.getStudentCount() + " 名学生。请先转移学生后再删除班级。");
+                return;
+            }
+            
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("确认删除");
+            alert.setHeaderText("删除班级");
+            alert.setContentText("确定要删除班级 \"" + selectedClass.getFullClassName() + "\" 吗？");
+            
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    // 从表格中删除班级
+                    classData.remove(selectedClass);
+                    showInfo("删除成功", "班级 \"" + selectedClass.getFullClassName() + "\" 已被删除");
+                }
+            });
+        } else {
+            showInfo("提示", "请先选择要删除的班级");
+        }
+    }
+    
     @FXML
     private void handleToggleHighlight() {
         Consultation selectedConsultation = consultationTable.getSelectionModel().getSelectedItem();
@@ -697,5 +823,129 @@ public class AdminMainController implements Initializable {
                 showInfo("操作结果", "删除操作将在数据库连接实现后完成");
             }
         });
+    }
+    
+    // 班级管理辅助方法
+    private void openClassForm(Class classObj) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/class_form.fxml"));
+        Parent root = loader.load();
+        
+        ClassFormController controller = loader.getController();
+        
+        // 设置回调
+        controller.setCallback(new ClassFormController.ClassFormCallback() {
+            @Override
+            public void onClassSaved(entity.Class savedClass, boolean isEdit) {
+                if (isEdit) {
+                    // 编辑模式：更新表格数据
+                    int index = classData.indexOf(classObj);
+                    if (index >= 0) {
+                        classData.set(index, savedClass);
+                    }
+                } else {
+                    // 新增模式：检查是否已存在相同的班级
+                    boolean exists = classData.stream().anyMatch(c -> 
+                        c.getMajorId().equals(savedClass.getMajorId()) &&
+                        c.getGradeNumber().equals(savedClass.getGradeNumber()) &&
+                        c.getClassNumber().equals(savedClass.getClassNumber())
+                    );
+                    
+                    if (exists) {
+                        showError("班级已存在：" + savedClass.getFullClassName());
+                        return;
+                    }
+                    
+                    // 添加到表格数据
+                    classData.add(savedClass);
+                }
+                
+                // 刷新表格显示
+                classTable.refresh();
+                
+                // 显示成功信息
+                String message = isEdit ? 
+                    "班级 \"" + savedClass.getFullClassName() + "\" 修改成功" :
+                    "班级 \"" + savedClass.getFullClassName() + "\" 添加成功";
+                showInfo(isEdit ? "修改成功" : "添加成功", message);
+                
+                // 刷新按钮状态
+                updateButtonStates();
+            }
+            
+            @Override
+            public void onFormCancelled() {
+                // 表单被取消，不需要特殊处理
+            }
+        });
+        
+        // 如果是编辑模式，设置班级信息
+        if (classObj != null) {
+            controller.setEditMode(classObj);
+        }
+        
+        // 创建并显示对话框
+        Stage dialogStage = new Stage();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/ui/class_form.css").toExternalForm());
+        
+        dialogStage.setTitle(classObj == null ? "添加班级" : "编辑班级");
+        dialogStage.setScene(scene);
+        dialogStage.setResizable(false);
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(addClassButton.getScene().getWindow());
+        
+        dialogStage.showAndWait();
+    }
+    
+    private void openClassCounselorForm(Class classObj) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/class_counselor_form.fxml"));
+        Parent root = loader.load();
+        
+        ClassCounselorFormController controller = loader.getController();
+        
+        // 设置班级信息
+        controller.setClassInfo(classObj);
+        
+        // 设置回调
+        controller.setCallback(new ClassCounselorFormController.ClassCounselorFormCallback() {
+            @Override
+            public void onCounselorChanged(Class updatedClass, String newCounselorId, String newCounselorName) {
+                // 更新表格数据
+                int index = classData.indexOf(classObj);
+                if (index >= 0) {
+                    classData.set(index, updatedClass);
+                }
+                
+                // 刷新表格显示
+                classTable.refresh();
+                
+                // 显示成功信息
+                String message = newCounselorName != null ? 
+                    "班级 \"" + updatedClass.getFullClassName() + "\" 的辅导员已更改为 \"" + newCounselorName + "\"" :
+                    "班级 \"" + updatedClass.getFullClassName() + "\" 的辅导员分配已取消";
+                showInfo("修改成功", message);
+                
+                // 刷新按钮状态
+                updateButtonStates();
+            }
+            
+            @Override
+            public void onFormCancelled() {
+                // 表单被取消，不需要特殊处理
+            }
+        });
+        
+        // 创建并显示对话框
+        Stage dialogStage = new Stage();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/ui/class_counselor_form.css").toExternalForm());
+        
+        dialogStage.setTitle("修改班级辅导员");
+        dialogStage.setScene(scene);
+        dialogStage.setResizable(false);
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(editClassCounselorButton.getScene().getWindow());
+        
+        dialogStage.showAndWait();
     }
 } 

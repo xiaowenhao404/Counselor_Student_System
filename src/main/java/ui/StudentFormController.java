@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -30,6 +31,8 @@ public class StudentFormController implements Initializable {
     @FXML private TextField gradeField;
     @FXML private ComboBox<String> classComboBox;
     @FXML private ComboBox<String> counselorComboBox;
+    @FXML private VBox counselorDisplayContainer;
+    @FXML private TextField counselorDisplayField;
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
 
@@ -171,7 +174,11 @@ public class StudentFormController implements Initializable {
             // 更新班级选项后设置班级值
             updateClassOptions();
             classComboBox.setValue(student.getClassNumber());
-            counselorComboBox.setValue(student.getCounselorName());
+            
+            // 编辑模式下：隐藏辅导员下拉框，显示只读辅导员信息
+            counselorComboBox.setVisible(false);
+            counselorDisplayField.setText(student.getCounselorName());
+            counselorDisplayContainer.setVisible(true);
             
             // 编辑模式下学号不可修改
             studentIdField.setDisable(true);
@@ -198,7 +205,15 @@ public class StudentFormController implements Initializable {
             student.setMajorName(majorComboBox.getValue());
             student.setGradeNumber(gradeField.getText().trim());
             student.setClassNumber(classComboBox.getValue());
-            student.setCounselorName(counselorComboBox.getValue());
+            
+            // 辅导员信息处理：编辑模式下不允许修改，新增模式下从下拉框获取
+            if (isEditMode) {
+                // 编辑模式：保持原有辅导员不变
+                // student.getCounselorName() 已经是当前的辅导员，无需设置
+            } else {
+                // 新增模式：从下拉框获取选中的辅导员
+                student.setCounselorName(counselorComboBox.getValue());
+            }
             
             // 通知父窗口
             if (callback != null) {

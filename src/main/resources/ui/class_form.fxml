@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox styleClass="form-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ClassFormController">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <!-- 标题区域 -->
+    <HBox styleClass="form-header" alignment="CENTER_LEFT" spacing="10">
+        <padding>
+            <Insets bottom="20"/>
+        </padding>
+        <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="/images/login_teacher.png"/>
+            </image>
+        </ImageView>
+        <Text fx:id="formTitle" text="添加班级" styleClass="form-title"/>
+    </HBox>
+
+    <!-- 表单内容区域 -->
+    <VBox styleClass="form-content" spacing="15">
+        <GridPane styleClass="form-grid" hgap="15" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints minWidth="100" prefWidth="100"/>
+                <ColumnConstraints minWidth="200" prefWidth="250" hgrow="ALWAYS"/>
+                <ColumnConstraints minWidth="100" prefWidth="100"/>
+                <ColumnConstraints minWidth="200" prefWidth="250" hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER" valignment="CENTER" minHeight="46" prefHeight="46" maxHeight="46"/>
+                <RowConstraints vgrow="NEVER" valignment="CENTER" minHeight="46" prefHeight="46" maxHeight="46"/>
+            </rowConstraints>
+
+            <!-- 第一行：专业选择、年级 -->
+            <Label text="专业选择 *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <ComboBox fx:id="majorComboBox" promptText="请选择专业" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="年级 *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+            <TextField fx:id="gradeField" promptText="请输入年级（如：2024）" styleClass="form-input" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+            <!-- 第二行：班级编号、辅导员 -->
+            <Label text="班级编号 *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="classNumberField" promptText="请输入班级编号（如：01）" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            
+            <Label text="辅导员" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <ComboBox fx:id="counselorComboBox" promptText="请选择辅导员（可选）" styleClass="form-input" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+
+        </GridPane>
+    </VBox>
+
+    <!-- 提示信息 -->
+    <HBox alignment="CENTER_LEFT" spacing="5">
+        <padding>
+            <Insets top="15" bottom="15"/>
+        </padding>
+        <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="/images/options.png"/>
+            </image>
+        </ImageView>
+        <Text text="带 * 的字段为必填项" styleClass="form-hint"/>
+    </HBox>
+
+    <!-- 按钮区域 -->
+    <HBox styleClass="form-buttons" alignment="CENTER" spacing="15">
+        <padding>
+            <Insets top="10"/>
+        </padding>
+        
+        <Button fx:id="saveButton" text="保存班级" styleClass="primary-button" onAction="#handleSave"/>
+        
+        <Button fx:id="cancelButton" text="取消" styleClass="secondary-button" onAction="#handleCancel"/>
+    </HBox>
+</VBox> 

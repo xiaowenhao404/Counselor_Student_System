@@ -133,6 +133,55 @@
                 </TableView>
             </VBox>
 
+            <!-- Class Management Panel -->
+            <VBox fx:id="classManagementPanel" styleClass="management-panel" visible="false">
+                <padding>
+                    <Insets top="20" bottom="20" left="20" right="20"/>
+                </padding>
+                
+                <!-- Toolbar -->
+                <HBox styleClass="toolbar" alignment="CENTER_LEFT" spacing="15">
+                    <padding>
+                        <Insets bottom="20"/>
+                    </padding>
+                    
+                    <Button fx:id="addClassButton" text="添加班级" styleClass="toolbar-button" onAction="#handleAddClass">
+                        <graphic>
+                            <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="/images/settings.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    
+                    <Button fx:id="editClassCounselorButton" text="修改辅导员" styleClass="toolbar-button" onAction="#handleEditClassCounselor">
+                        <graphic>
+                            <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="/images/login_teacher.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    
+                    <Button fx:id="deleteClassButton" text="删除班级" styleClass="toolbar-button" onAction="#handleDeleteClass">
+                        <graphic>
+                            <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="/images/block.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+                
+                <!-- Class Table -->
+                <TableView fx:id="classTable" styleClass="data-table" VBox.vgrow="ALWAYS">
+                    <!-- Table columns will be added programmatically -->
+                </TableView>
+            </VBox>
+
             <!-- Consultation Management Panel -->
             <VBox fx:id="consultationManagementPanel" styleClass="management-panel" visible="false">
                 <padding>
@@ -195,6 +244,18 @@
                         <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="/images/login_teacher.png"/>
+                            </image>
+                        </ImageView>
+                    </VBox>
+                </graphic>
+            </Button>
+            
+            <Button fx:id="classManagementTab" text="班级信息管理" styleClass="nav-tab" onAction="#handleTabSwitch">
+                <graphic>
+                    <VBox alignment="CENTER" spacing="5">
+                        <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="/images/settings.png"/>
                             </image>
                         </ImageView>
                     </VBox>

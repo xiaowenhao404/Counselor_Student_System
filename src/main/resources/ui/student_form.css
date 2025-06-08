@@ -36,6 +36,9 @@
     -fx-font-weight: bold;
     -fx-text-fill: #333333;
     -fx-alignment: center_left;
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
 }
 
 /* 表单输入控件 */
@@ -296,4 +299,43 @@
 
 .scroll-pane .content {
     -fx-background-color: transparent;
+}
+
+/* 只读字段容器外框样式 - 与form-input保持一致的高度和对齐 */
+.readonly-container {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 12px 14px;
+    -fx-pref-height: 46px;
+    -fx-min-height: 46px;
+    -fx-max-height: 46px;
+    -fx-alignment: center-left;
+    -fx-spacing: 0;
+}
+
+/* 只读字段内部文本样式 - 透明背景 */
+.readonly-field {
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: #666666;
+    -fx-cursor: default;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.readonly-field:hover {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.readonly-field:focused {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
 } 

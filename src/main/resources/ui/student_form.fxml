@@ -33,6 +33,13 @@
             <ColumnConstraints minWidth="100" prefWidth="100"/>
             <ColumnConstraints minWidth="200" prefWidth="250" hgrow="ALWAYS"/>
         </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+            <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+            <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+            <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+            <RowConstraints vgrow="NEVER" valignment="CENTER"/>
+        </rowConstraints>
 
         <!-- 第一行：学号、姓名 -->
         <Label text="学生学号 *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
@@ -80,7 +87,14 @@
         <ComboBox fx:id="classComboBox" promptText="请选择班级" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
         
         <Label text="辅导员" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-        <ComboBox fx:id="counselorComboBox" promptText="请选择辅导员" styleClass="form-input" GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+        <StackPane GridPane.columnIndex="3" GridPane.rowIndex="4" alignment="CENTER_LEFT">
+            <!-- 新增模式的辅导员选择下拉框 -->
+            <ComboBox fx:id="counselorComboBox" promptText="请选择辅导员" styleClass="form-input" maxWidth="Infinity"/>
+            <!-- 编辑模式的辅导员只读显示容器 -->
+            <VBox fx:id="counselorDisplayContainer" styleClass="readonly-container" visible="false" maxWidth="Infinity">
+                <TextField fx:id="counselorDisplayField" promptText="辅导员" styleClass="readonly-field" editable="false" maxWidth="Infinity"/>
+            </VBox>
+        </StackPane>
     </GridPane>
 
     <!-- 提示信息 -->
