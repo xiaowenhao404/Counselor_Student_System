@@ -1,3 +1,9 @@
-C:\Users\36774\Desktop\DB_Design\TESTSYSTEM\src\main\java\ui\LoginController.java
-C:\Users\36774\Desktop\DB_Design\TESTSYSTEM\src\main\java\ui\Main.java
-C:\Users\36774\Desktop\DB_Design\TESTSYSTEM\src\main\java\db\DatabaseConnection.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\ui\LoginController.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\entity\Student.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\ui\CounselorFormController.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\entity\Consultation.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\ui\AdminMainController.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\entity\Counselor.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\ui\Main.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\ui\StudentFormController.java
+D:\LECTURE\2-2数据库\DB_Design\src\main\java\db\DatabaseConnection.java

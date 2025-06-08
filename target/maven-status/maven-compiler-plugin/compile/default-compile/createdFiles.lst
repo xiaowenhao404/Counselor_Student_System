@@ -1,3 +1,14 @@
+ui\AdminMainController$1.class
 db\DatabaseConnection.class
-ui\LoginController.class
 ui\Main.class
+entity\Consultation.class
+ui\CounselorFormController$CounselorFormCallback.class
+ui\AdminMainController.class
+ui\StudentFormController.class
+ui\LoginController.class
+entity\Student.class
+ui\AdminMainController$2.class
+ui\StudentFormController$StudentFormCallback.class
+ui\AdminMainController$3.class
+ui\CounselorFormController.class
+entity\Counselor.class
