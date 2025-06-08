@@ -1,0 +1,193 @@
+/* 根容器样式 */
+.root-container {
+    -fx-background-color: #f8f9fa;
+    -fx-font-family: "Poppins", sans-serif;
+}
+
+/* 定义 Poppins 字体 */
+@font-face {
+    font-family: "Poppins";
+    src: url("/fonts/Poppins/poppins/Poppins-Regular.ttf");
+}
+
+/* 顶部导航栏 */
+.top-nav-bar {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2);
+}
+
+.nav-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+}
+
+.logout-button {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 20px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+.logout-button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 主内容区域 */
+.content-area {
+    -fx-background-color: #f8f9fa;
+}
+
+.management-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.3, 0, 2);
+}
+
+/* 工具栏 */
+.toolbar {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+}
+
+.toolbar-button {
+    -fx-background-color: white;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 15px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 3, 0.3, 0, 1);
+}
+
+.toolbar-button:hover {
+    -fx-border-color: #667eea;
+    -fx-text-fill: #667eea;
+}
+
+.toolbar-button:pressed {
+    -fx-background-color: #f0f0f0;
+}
+
+/* 移除删除按钮的特殊样式，使用统一样式 */
+
+/* 数据表格 */
+.data-table {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.data-table .column-header-background {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e0e0e0;
+}
+
+.data-table .column-header {
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 12px 8px;
+}
+
+.data-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.data-table .table-row-cell:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.data-table .table-row-cell:selected {
+    -fx-background-color: #eef2ff;
+    -fx-border-color: #667eea;
+    -fx-border-width: 1px 0 1px 0;
+}
+
+.data-table .table-cell {
+    -fx-text-fill: #333333;
+    -fx-font-size: 13px;
+    -fx-padding: 10px 8px;
+}
+
+/* 底部导航栏 */
+.bottom-nav-bar {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px 0 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0.3, 0, -2);
+}
+
+.nav-tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #666666;
+    -fx-font-size: 14px;
+    -fx-padding: 15px 25px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-min-width: 180px;
+    -fx-max-width: 180px;
+}
+
+.nav-tab:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #667eea;
+}
+
+.nav-tab.selected {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #667eea;
+    -fx-border-color: #667eea;
+    -fx-border-width: 0 0 3px 0;
+}
+
+.nav-tab .graphic VBox {
+    -fx-alignment: center;
+    -fx-spacing: 3;
+}
+
+/* 滚动条样式 */
+.scroll-bar {
+    -fx-background-color: #f0f0f0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #c0c0c0;
+    -fx-background-radius: 4px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #a0a0a0;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #f0f0f0;
+}
+
+/* 通用按钮样式调整 */
+.button {
+    -fx-font-family: "Poppins", sans-serif;
+}
+
+/* 表格选择样式优化 */
+.data-table:focused .table-row-cell:selected {
+    -fx-background-color: #eef2ff;
+    -fx-border-color: #667eea;
+    -fx-border-width: 1px 0 1px 0;
+} 
