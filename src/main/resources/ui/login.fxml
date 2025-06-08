@@ -7,23 +7,18 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="TOP_CENTER" styleClass="root-container"
-      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ui.LoginController">
+<VBox alignment="TOP_CENTER" styleClass="root-container" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.LoginController">
 
     <!-- Header -->
-    <StackPane styleClass="header-container">
-        <VBox alignment="CENTER" spacing="5">
+    <StackPane styleClass="header-container" prefHeight="120.0">
+        <VBox alignment="CENTER" spacing="15">
             <Text styleClass="header-title" text="教务管理系统"/>
             <Text styleClass="header-subtitle" text="欢迎登录"/>
         </VBox>
     </StackPane>
 
     <!-- Login Form Container -->
-    <VBox alignment="CENTER" spacing="20.0" styleClass="login-container">
-        <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
-        </padding>
+    <VBox alignment="TOP_CENTER" spacing="20.0" styleClass="login-container" prefHeight="530.0">
 
         <!-- Username Input -->
         <VBox alignment="CENTER_LEFT" spacing="5">
@@ -44,7 +39,7 @@
             <HBox styleClass="input-box">
                 <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="/images/login_password.png"/>
+                        <Image url="/images/icon_lock_login.png"/>
                     </image>
                 </ImageView>
                 <!-- Container for PasswordField and TextField -->
@@ -69,7 +64,7 @@
                 <Button fx:id="studentRoleButton" styleClass="role-button" onAction="#handleRoleSelect">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
-                            <ImageView fitHeight="40" fitWidth="40" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
                                 <image>
                                     <Image url="/images/login_student.png"/>
                                 </image>
@@ -81,7 +76,7 @@
                 <Button fx:id="teacherRoleButton" styleClass="role-button" onAction="#handleRoleSelect">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
-                            <ImageView fitHeight="40" fitWidth="40" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
                                 <image>
                                     <Image url="/images/login_teacher.png"/>
                                 </image>
@@ -93,7 +88,7 @@
                 <Button fx:id="adminRoleButton" styleClass="role-button" onAction="#handleRoleSelect">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
-                            <ImageView fitHeight="40" fitWidth="40" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
                                 <image>
                                     <Image url="/images/login_admin.png"/>
                                 </image>
@@ -107,7 +102,7 @@
 
         <!-- Login Button -->
         <Button fx:id="loginButton" text="登录系统" onAction="#handleLogin" 
-                styleClass="login-button" prefWidth="300"/>
+                styleClass="login-button" maxWidth="Infinity"/>
 
     </VBox>
 </VBox> 

@@ -31,10 +31,13 @@ public class Main extends Application {
         // 加载CSS样式
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/ui/login.css").toExternalForm());
+        scene.setFill(javafx.scene.paint.Color.WHITE);
 
         // 设置窗口标题和大小
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
+        primaryStage.setWidth(450);
+        primaryStage.setHeight(650);
         primaryStage.setResizable(false);
         primaryStage.show();
     }
