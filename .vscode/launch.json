@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "ui.Main",
+            "projectName": "Counselor_Student_System",
+            "vmArgs": "--module-path ${workspaceFolder}/target/dependency --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}
