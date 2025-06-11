@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox styleClass="form-container" stylesheets="@consultation_detail.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ConsultationDetailController">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <!-- 标题区域 -->
+    <HBox styleClass="form-header" alignment="CENTER_LEFT" spacing="10">
+        <padding>
+            <Insets bottom="20"/>
+        </padding>
+        <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="/images/consultation (1).png"/>
+            </image>
+        </ImageView>
+        <Text fx:id="formTitle" text="咨询详情管理" styleClass="form-title"/>
+    </HBox>
+
+    <!-- 咨询信息区域（只读） -->
+    <VBox styleClass="info-section" spacing="10">
+        <padding>
+            <Insets bottom="15"/>
+        </padding>
+        
+        <Text text="咨询基本信息" styleClass="section-title"/>
+        
+        <GridPane styleClass="info-grid" hgap="15" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints minWidth="100" prefWidth="100"/>
+                <ColumnConstraints minWidth="200" prefWidth="250" hgrow="ALWAYS"/>
+                <ColumnConstraints minWidth="100" prefWidth="100"/>
+                <ColumnConstraints minWidth="200" prefWidth="250" hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER" valignment="CENTER" minHeight="46" prefHeight="46" maxHeight="46"/>
+                <RowConstraints vgrow="NEVER" valignment="CENTER" minHeight="46" prefHeight="46" maxHeight="46"/>
+                <RowConstraints vgrow="NEVER" valignment="CENTER" minHeight="46" prefHeight="46" maxHeight="46"/>
+            </rowConstraints>
+
+            <!-- 第一行：Q编号、学生学号 -->
+            <Label text="Q编号" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <VBox styleClass="info-readonly-container" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <TextField fx:id="qNumberField" styleClass="info-readonly-field" editable="false"/>
+            </VBox>
+            
+            <Label text="学生学号" styleClass="info-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+            <VBox styleClass="info-readonly-container" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                <TextField fx:id="studentIdField" styleClass="info-readonly-field" editable="false"/>
+            </VBox>
+
+            <!-- 第二行：学生姓名、提问时间 -->
+            <Label text="学生姓名" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <VBox styleClass="info-readonly-container" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <TextField fx:id="studentNameField" styleClass="info-readonly-field" editable="false"/>
+            </VBox>
+            
+            <Label text="提问时间" styleClass="info-label" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <VBox styleClass="info-readonly-container" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                <TextField fx:id="questionTimeField" styleClass="info-readonly-field" editable="false"/>
+            </VBox>
+
+            <!-- 第三行：回复次数、追问次数 -->
+            <Label text="回复次数" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <VBox styleClass="info-readonly-container" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <TextField fx:id="replyCountField" styleClass="info-readonly-field" editable="false"/>
+            </VBox>
+            
+            <Label text="追问次数" styleClass="info-label" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            <VBox styleClass="info-readonly-container" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                <TextField fx:id="followupCountField" styleClass="info-readonly-field" editable="false"/>
+            </VBox>
+        </GridPane>
+    </VBox>
+
+    <!-- 分隔线 -->
+    <Separator styleClass="section-separator"/>
+
+    <!-- 管理操作区域 -->
+    <VBox styleClass="edit-section" spacing="15">
+        <padding>
+            <Insets top="15" bottom="15"/>
+        </padding>
+        
+        <Text text="咨询管理" styleClass="section-title"/>
+        
+        <GridPane styleClass="form-grid" hgap="15" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints minWidth="100" prefWidth="100"/>
+                <ColumnConstraints minWidth="200" prefWidth="250" hgrow="ALWAYS"/>
+                <ColumnConstraints minWidth="100" prefWidth="100"/>
+                <ColumnConstraints minWidth="200" prefWidth="250" hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER" valignment="CENTER" minHeight="46" prefHeight="46" maxHeight="46"/>
+            </rowConstraints>
+
+            <!-- 类别、状态 -->
+            <Label text="咨询类别 *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <ComboBox fx:id="categoryComboBox" promptText="请选择咨询类别" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="处理状态 *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+            <ComboBox fx:id="statusComboBox" promptText="请选择处理状态" styleClass="form-input" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+        </GridPane>
+        
+        <!-- 加精状态 -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <CheckBox fx:id="highlightCheckBox" text="加精推荐" styleClass="highlight-checkbox"/>
+            <Text text="勾选此项将把该咨询标记为优质咨询，向其他学生推荐" styleClass="form-hint"/>
+        </HBox>
+    </VBox>
+
+    <!-- 提示信息 -->
+    <HBox alignment="CENTER_LEFT" spacing="5">
+        <padding>
+            <Insets top="15" bottom="15"/>
+        </padding>
+        <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="/images/options.png"/>
+            </image>
+        </ImageView>
+        <Text text="带 * 的字段为必填项" styleClass="form-hint"/>
+    </HBox>
+
+    <!-- 按钮区域 -->
+    <HBox styleClass="form-buttons" alignment="CENTER" spacing="15">
+        <padding>
+            <Insets top="10"/>
+        </padding>
+        
+        <Button fx:id="saveButton" text="保存修改" styleClass="primary-button" onAction="#handleSave"/>
+        
+        <Button fx:id="deleteButton" text="删除咨询" styleClass="danger-button" onAction="#handleDelete"/>
+        
+        <Button fx:id="cancelButton" text="取消" styleClass="secondary-button" onAction="#handleCancel"/>
+    </HBox>
+</VBox> 

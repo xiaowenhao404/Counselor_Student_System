@@ -1,7 +1,6 @@
 package dao;
 
 import db.DatabaseConnection;
-import entity.Major;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,21 +9,21 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MajorDaoImpl implements MajorDao {
+public class DepartmentDaoImpl implements DepartmentDao {
 
     @Override
-    public Map<String, String> getAllMajors() throws SQLException {
-        Map<String, String> majors = new LinkedHashMap<>();
-        String sql = "SELECT 专业编号, 专业名称 FROM 专业 ORDER BY 专业编号";
+    public Map<String, String> getAllDepartments() throws SQLException {
+        Map<String, String> departments = new LinkedHashMap<>();
+        String sql = "SELECT 院系编号, 院系名称 FROM 院系 ORDER BY 院系编号";
         
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             
             while (rs.next()) {
-                majors.put(rs.getString("专业名称"), rs.getString("专业编号"));
+                departments.put(rs.getString("院系名称"), rs.getString("院系编号"));
             }
         }
-        return majors;
+        return departments;
     }
-}
+} 

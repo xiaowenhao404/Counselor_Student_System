@@ -6,7 +6,15 @@ import java.util.List;
 
 public interface ConsultationDao {
     List<Consultation> getAllConsultations() throws SQLException;
-    // 例如：Consultation getConsultationByQNumber(String qNumber);
-    // 其他方法，例如getConsultationById, addConsultation, updateConsultation,
-    // deleteConsultation等
+    
+    Consultation getConsultationByQNumber(String qNumber) throws SQLException;
+    
+    // 增删改方法
+    boolean addConsultation(Consultation consultation) throws SQLException;
+    
+    boolean updateConsultation(Consultation consultation) throws SQLException;
+    
+    boolean deleteConsultation(String qNumber) throws SQLException;
+    
+    boolean toggleHighlight(String qNumber) throws SQLException;
 }

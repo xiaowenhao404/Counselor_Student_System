@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<VBox styleClass="form-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ClassFormController">
+<VBox styleClass="form-container" stylesheets="@class_form.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ClassFormController">
     <padding>
         <Insets top="20" bottom="20" left="20" right="20"/>
     </padding>

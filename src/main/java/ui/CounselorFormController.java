@@ -12,7 +12,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class CounselorFormController implements Initializable {
@@ -44,6 +46,8 @@ public class CounselorFormController implements Initializable {
     private Counselor currentCounselor;
     private CounselorFormCallback callback;
     private boolean passwordVisible = false;
+    
+
 
     // 回调接口，用于通知父窗口操作结果
     public interface CounselorFormCallback {

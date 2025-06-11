@@ -61,34 +61,14 @@ public class CounselorDaoImpl implements CounselorDao {
     @Override
     public Map<String, String> getAllCounselors() throws SQLException {
         Map<String, String> counselors = new LinkedHashMap<>();
-        String sql = "SELECT 辅导员工号, 姓名 FROM 辅导员";
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            connection = DatabaseConnection.getConnection();
-            ps = connection.prepareStatement(sql);
-            rs = ps.executeQuery();
-
+        String sql = "SELECT 辅导员工号, 姓名 FROM 辅导员 ORDER BY 辅导员工号";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
             while (rs.next()) {
                 counselors.put(rs.getString("姓名"), rs.getString("辅导员工号"));
-            }
-        } finally {
-            DatabaseConnection.closeConnection(connection);
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
         }
         return counselors;
@@ -180,5 +160,57 @@ public class CounselorDaoImpl implements CounselorDao {
             }
         }
         return counselor;
+    }
+
+    @Override
+    public boolean addCounselor(Counselor counselor) throws SQLException {
+        String sql = "INSERT INTO 辅导员 (辅导员工号, 姓名, 性别, 出生日期, 手机号码, 密码) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, counselor.getCounselorId());
+            ps.setString(2, counselor.getName());
+            ps.setString(3, counselor.getGender());
+            ps.setDate(4, counselor.getDateOfBirth() != null ? java.sql.Date.valueOf(counselor.getDateOfBirth()) : null);
+            ps.setString(5, counselor.getPhoneNumber());
+            ps.setString(6, counselor.getPassword());
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean updateCounselor(Counselor counselor) throws SQLException {
+        String sql = "UPDATE 辅导员 SET 姓名 = ?, 性别 = ?, 出生日期 = ?, 手机号码 = ?, 密码 = ? WHERE 辅导员工号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, counselor.getName());
+            ps.setString(2, counselor.getGender());
+            ps.setDate(3, counselor.getDateOfBirth() != null ? java.sql.Date.valueOf(counselor.getDateOfBirth()) : null);
+            ps.setString(4, counselor.getPhoneNumber());
+            ps.setString(5, counselor.getPassword());
+            ps.setString(6, counselor.getCounselorId());
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean deleteCounselor(String counselorId) throws SQLException {
+        String sql = "DELETE FROM 辅导员 WHERE 辅导员工号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, counselorId);
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
     }
 }

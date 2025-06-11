@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<VBox styleClass="form-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.StudentFormController">
+<VBox styleClass="form-container" stylesheets="@student_form.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.StudentFormController">
     <padding>
         <Insets top="20" bottom="20" left="20" right="20"/>
     </padding>
@@ -116,7 +116,7 @@
             <Insets top="10"/>
         </padding>
         
-        <Button fx:id="saveButton" text="保存" styleClass="primary-button" onAction="#handleSave"/>
+        <Button fx:id="saveButton" text="保存学生" styleClass="primary-button" onAction="#handleSave"/>
         
         <Button fx:id="cancelButton" text="取消" styleClass="secondary-button" onAction="#handleCancel"/>
     </HBox>

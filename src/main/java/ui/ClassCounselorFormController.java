@@ -28,8 +28,7 @@ public class ClassCounselorFormController implements Initializable {
     private TextField gradeField;
     @FXML
     private TextField classNumberField;
-    @FXML
-    private TextField studentCountField; // 暂时保留，但数据不再直接从Class实体获取
+    // 学生人数字段已从界面中移除
 
     // 辅导员修改字段
     @FXML
@@ -108,9 +107,8 @@ public class ClassCounselorFormController implements Initializable {
 
             // 填充班级信息（只读）
             majorNameField.setText(majorIdToNameMap.getOrDefault(classObj.getMajorId(), "未知专业")); // 从ID获取名称
-            // gradeField.setText(classObj.getGradeId() + "级"); // 移除，因为Class实体中已无gradeId
+            gradeField.setText(classObj.getGradeNumber()); // 显示年级编号
             classNumberField.setText(classObj.getClassName()); // 使用className作为班级显示名称
-            studentCountField.setText("暂无数据"); // 班级实体中没有学生数量，暂时设置为默认值
 
             // 填充当前辅导员信息
             String currentCounselorName = "未分配";

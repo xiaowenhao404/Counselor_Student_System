@@ -92,6 +92,10 @@ public class StudentFormController implements Initializable {
         setupFieldValidation();
         setupDependentFields();
         setupPasswordFields();
+        
+        // 默认隐藏辅导员选择下拉框，显示只读辅导员信息
+        counselorComboBox.setVisible(false);
+        counselorDisplayContainer.setVisible(true);
     }
 
     private void initializeComboBoxes() {
@@ -155,6 +159,9 @@ public class StudentFormController implements Initializable {
         // 当专业或年级改变时，更新班级选项
         majorComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateClassOptions());
         gradeField.textProperty().addListener((obs, oldVal, newVal) -> updateClassOptions());
+        
+        // 当班级改变时，自动更新辅导员信息
+        classComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateCounselorInfo());
     }
 
     private void setupPasswordFields() {
@@ -220,6 +227,46 @@ public class StudentFormController implements Initializable {
         classComboBox.setValue(null);
     }
 
+    private void updateCounselorInfo() {
+        String selectedClassName = classComboBox.getValue();
+        if (selectedClassName != null && !selectedClassName.isEmpty()) {
+            try {
+                // 根据班级名称获取对应的辅导员信息
+                String selectedMajorId = majorNameToIdMap.get(majorComboBox.getValue());
+                if (selectedMajorId != null) {
+                    List<Class> classes = classDao.getClassesByMajorId(selectedMajorId);
+                    for (Class clazz : classes) {
+                        if (clazz.getClassName().equals(selectedClassName)) {
+                            String counselorId = clazz.getCounselorId();
+                            if (counselorId != null && !counselorId.isEmpty()) {
+                                // 从数据库直接查询辅导员信息
+                                try {
+                                    Counselor counselor = counselorDao.getCounselorById(counselorId);
+                                    if (counselor != null) {
+                                        counselorDisplayField.setText(counselor.getName());
+                                    } else {
+                                        counselorDisplayField.setText("暂无辅导员");
+                                    }
+                                } catch (SQLException ex) {
+                                    counselorDisplayField.setText("获取辅导员失败");
+                                    ex.printStackTrace();
+                                }
+                            } else {
+                                counselorDisplayField.setText("暂无辅导员");
+                            }
+                            break;
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                counselorDisplayField.setText("获取辅导员信息失败");
+                e.printStackTrace();
+            }
+        } else {
+            counselorDisplayField.setText("");
+        }
+    }
+
     public void setEditMode(Student student) {
         if (student != null) {
             isEditMode = true;
@@ -245,6 +292,8 @@ public class StudentFormController implements Initializable {
                 Class studentClass = classDao.getClassById(student.getClassId());
                 if (studentClass != null) {
                     classComboBox.setValue(studentClass.getClassName());
+                    // 在设置班级后，手动触发辅导员信息更新
+                    updateCounselorInfo();
                 } else {
                     classComboBox.setValue(null);
                 }
@@ -256,26 +305,9 @@ public class StudentFormController implements Initializable {
 
             // 编辑模式下：隐藏辅导员下拉框，显示只读辅导员信息
             counselorComboBox.setVisible(false);
-            // 获取辅导员姓名并显示
-            try {
-                // 根据学生的班级ID获取班级信息
-                Class studentClass = classDao.getClassById(student.getClassId());
-                String counselorName = "未分配";
-                if (studentClass != null && studentClass.getCounselorId() != null) {
-                    // 使用辅导员ID到名称的映射获取辅导员姓名
-                    counselorName = counselorIdToNameMap.get(studentClass.getCounselorId());
-                    if (counselorName == null || counselorName.isEmpty()) {
-                        counselorName = "未知辅导员"; // 如果映射中没有，则显示未知
-                    }
-                }
-                counselorDisplayField.setText(counselorName);
-                counselorDisplayContainer.setVisible(true);
-            } catch (SQLException e) {
-                showError("加载辅导员信息失败: " + e.getMessage());
-                e.printStackTrace();
-                counselorDisplayField.setText("加载失败");
-                counselorDisplayContainer.setVisible(true);
-            }
+            counselorDisplayContainer.setVisible(true);
+            
+            // 辅导员信息已经通过updateCounselorInfo()方法设置，无需重复处理
             studentIdField.setDisable(true); // 学号在编辑模式下不可修改
         }
     }
@@ -418,13 +450,8 @@ public class StudentFormController implements Initializable {
             removeErrorStyle(classComboBox);
         }
 
-        // 在新增模式下，辅导员不能为空 (保留此验证，但实际设置辅导员是班级层面的问题)
-        if (!isEditMode && (counselorComboBox.getValue() == null || counselorComboBox.getValue().isEmpty())) {
-            errors.append("• 辅导员不能为空\n");
-            addErrorStyle(counselorComboBox);
-        } else {
-            removeErrorStyle(counselorComboBox);
-        }
+        // 辅导员信息现在通过班级自动确定，不需要验证
+        removeErrorStyle(counselorComboBox);
 
         if (errors.length() > 0) {
             showError(errors.toString());

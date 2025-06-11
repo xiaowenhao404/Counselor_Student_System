@@ -1,7 +1,7 @@
 -- 创建数据库
-CREATE DATABASE IF NOT EXISTS Counselor_Student_System DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE DATABASE IF NOT EXISTS counselor_student_system DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
-USE Counselor_Student_System;
+USE counselor_student_system;
 
 -- 设置外键检查
 SET FOREIGN_KEY_CHECKS = 0;

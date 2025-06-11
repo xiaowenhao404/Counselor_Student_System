@@ -344,6 +344,53 @@ public class AdminMainController implements Initializable {
         classListCol.setCellFactory(col -> new TableCell<Counselor, Void>() {
             private final Button btn = new Button("查看负责班级");
             {
+                // 设置现代化按钮样式
+                btn.setStyle(
+                    "-fx-background-color: linear-gradient(to right, #667eea, #764ba2); " +
+                    "-fx-text-fill: white; " +
+                    "-fx-font-size: 12px; " +
+                    "-fx-font-weight: 600; " +
+                    "-fx-padding: 6px 12px; " +
+                    "-fx-background-radius: 15px; " +
+                    "-fx-border-radius: 15px; " +
+                    "-fx-cursor: hand; " +
+                    "-fx-min-width: 100px; " +
+                    "-fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 4, 0.2, 0, 2);"
+                );
+                
+                // 添加悬停效果
+                btn.setOnMouseEntered(e -> {
+                    btn.setStyle(
+                        "-fx-background-color: linear-gradient(to right, #5a6fd8, #6a4190); " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 12px; " +
+                        "-fx-font-weight: 600; " +
+                        "-fx-padding: 6px 12px; " +
+                        "-fx-background-radius: 15px; " +
+                        "-fx-border-radius: 15px; " +
+                        "-fx-cursor: hand; " +
+                        "-fx-min-width: 100px; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 6, 0.3, 0, 3); " +
+                        "-fx-scale-x: 1.05; -fx-scale-y: 1.05;"
+                    );
+                });
+                
+                btn.setOnMouseExited(e -> {
+                    btn.setStyle(
+                        "-fx-background-color: linear-gradient(to right, #667eea, #764ba2); " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 12px; " +
+                        "-fx-font-weight: 600; " +
+                        "-fx-padding: 6px 12px; " +
+                        "-fx-background-radius: 15px; " +
+                        "-fx-border-radius: 15px; " +
+                        "-fx-cursor: hand; " +
+                        "-fx-min-width: 100px; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 4, 0.2, 0, 2); " +
+                        "-fx-scale-x: 1.0; -fx-scale-y: 1.0;"
+                    );
+                });
+                
                 btn.setOnAction(event -> {
                     Counselor counselor = getTableView().getItems().get(getIndex());
                     showCounselorClassListDialog(counselor);
@@ -487,9 +534,55 @@ public class AdminMainController implements Initializable {
         followupCountCol.setCellValueFactory(new PropertyValueFactory<>("followupCount"));
 
         TableColumn<Consultation, Boolean> highlightCol = new TableColumn<>("是否加精");
-        highlightCol.setCellValueFactory(new PropertyValueFactory<>("highlighted"));
-        highlightCol.setCellFactory(CheckBoxTableCell.forTableColumn(highlightCol));
-        highlightCol.setEditable(true);
+        highlightCol.setCellValueFactory(cellData -> {
+            Consultation consultation = cellData.getValue();
+            return new javafx.beans.property.SimpleBooleanProperty(consultation.isHighlighted());
+        });
+        
+        // 使用自定义的复选框单元格工厂
+        highlightCol.setCellFactory(column -> {
+            CheckBoxTableCell<Consultation, Boolean> checkBoxCell = new CheckBoxTableCell<Consultation, Boolean>() {
+                @Override
+                public void updateItem(Boolean item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (!empty && getTableRow() != null && getTableRow().getItem() != null) {
+                        Consultation consultation = (Consultation) getTableRow().getItem();
+                        CheckBox checkBox = (CheckBox) getGraphic();
+                        if (checkBox != null) {
+                            // 移除之前的监听器以避免重复触发
+                            checkBox.setOnAction(null);
+                            // 设置复选框状态
+                            checkBox.setSelected(consultation.isHighlighted());
+                            // 添加点击事件监听器
+                            checkBox.setOnAction(event -> {
+                                boolean newValue = checkBox.isSelected();
+                                try {
+                                    boolean success = consultationDao.updateHighlight(consultation.getQNumber(), newValue);
+                                    if (success) {
+                                        consultation.setHighlighted(newValue);
+                                        String status = newValue ? "已加精" : "已取消加精";
+                                        showInfo("成功", "咨询" + status + "。");
+                                    } else {
+                                        // 如果更新失败，恢复原值
+                                        consultation.setHighlighted(!newValue);
+                                        checkBox.setSelected(!newValue);
+                                        showError("更新咨询加精状态失败。");
+                                    }
+                                } catch (SQLException e) {
+                                    // 如果发生异常，恢复原值
+                                    consultation.setHighlighted(!newValue);
+                                    checkBox.setSelected(!newValue);
+                                    showError("数据库操作失败: " + e.getMessage());
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                    }
+                }
+            };
+            return checkBoxCell;
+        });
+        highlightCol.setEditable(false); // 不使用编辑模式，使用点击事件
 
         consultationTable.getColumns().setAll(
                 qNumberCol, studentIdCol, studentNameCol, categoryCol, statusCol,
@@ -569,9 +662,18 @@ public class AdminMainController implements Initializable {
                     + selectedStudentView.getStudentId() + ") 吗？");
 
             if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                // TODO: 执行删除操作
-                showInfo("成功", "学生已删除（模拟）");
-                loadStudentData(); // 刷新表格
+                try {
+                    boolean success = studentDao.deleteStudent(selectedStudentView.getStudentId());
+                    if (success) {
+                        loadStudentData();
+                        showInfo("成功", "学生已删除。");
+                    } else {
+                        showError("删除学生失败。");
+                    }
+                } catch (SQLException e) {
+                    showError("删除操作失败: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -584,14 +686,28 @@ public class AdminMainController implements Initializable {
         controller.setCallback(new StudentFormController.StudentFormCallback() {
             @Override
             public void onStudentSaved(Student savedStudent, boolean isEdit) {
-                if (isEdit) {
-                    // 刷新表格数据
-                    loadStudentData();
-                    showInfo("成功", "学生信息已更新。");
-                } else {
-                    // 刷新表格数据
-                    loadStudentData();
-                    showInfo("成功", "新学生已添加。");
+                try {
+                    boolean success;
+                    if (isEdit) {
+                        success = studentDao.updateStudent(savedStudent);
+                        if (success) {
+                            loadStudentData();
+                            showInfo("成功", "学生信息已更新。");
+                        } else {
+                            showError("更新学生信息失败。");
+                        }
+                    } else {
+                        success = studentDao.addStudent(savedStudent);
+                        if (success) {
+                            loadStudentData();
+                            showInfo("成功", "新学生已添加。");
+                        } else {
+                            showError("添加学生失败。");
+                        }
+                    }
+                } catch (SQLException e) {
+                    showError("数据库操作失败: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
@@ -646,9 +762,18 @@ public class AdminMainController implements Initializable {
                     + selectedCounselor.getCounselorId() + ") 吗？");
 
             if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                // TODO: 执行删除操作
-                showInfo("成功", "辅导员已删除（模拟）");
-                loadCounselorData(); // 刷新表格
+                try {
+                    boolean success = counselorDao.deleteCounselor(selectedCounselor.getCounselorId());
+                    if (success) {
+                        loadCounselorData();
+                        showInfo("成功", "辅导员已删除。");
+                    } else {
+                        showError("删除辅导员失败。");
+                    }
+                } catch (SQLException e) {
+                    showError("删除操作失败: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -661,14 +786,28 @@ public class AdminMainController implements Initializable {
         controller.setCallback(new CounselorFormController.CounselorFormCallback() {
             @Override
             public void onCounselorSaved(Counselor savedCounselor, boolean isEdit) {
-                if (isEdit) {
-                    // 刷新表格数据
-                    loadCounselorData();
-                    showInfo("成功", "辅导员信息已更新。");
-                } else {
-                    // 刷新表格数据
-                    loadCounselorData();
-                    showInfo("成功", "新辅导员已添加。");
+                try {
+                    boolean success;
+                    if (isEdit) {
+                        success = counselorDao.updateCounselor(savedCounselor);
+                        if (success) {
+                            loadCounselorData();
+                            showInfo("成功", "辅导员信息已更新。");
+                        } else {
+                            showError("更新辅导员信息失败。");
+                        }
+                    } else {
+                        success = counselorDao.addCounselor(savedCounselor);
+                        if (success) {
+                            loadCounselorData();
+                            showInfo("成功", "新辅导员已添加。");
+                        } else {
+                            showError("添加辅导员失败。");
+                        }
+                    }
+                } catch (SQLException e) {
+                    showError("数据库操作失败: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
@@ -700,9 +839,18 @@ public class AdminMainController implements Initializable {
                     + selectedConsultation.getStudentId() + ") 吗？");
 
             if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                // TODO: 执行删除操作
-                showInfo("成功", "咨询已删除（模拟）");
-                loadConsultationData(); // 刷新表格
+                try {
+                    boolean success = consultationDao.deleteConsultation(selectedConsultation.getQNumber());
+                    if (success) {
+                        loadConsultationData();
+                        showInfo("成功", "咨询已删除。");
+                    } else {
+                        showError("删除咨询失败。");
+                    }
+                } catch (SQLException e) {
+                    showError("删除操作失败: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -759,9 +907,22 @@ public class AdminMainController implements Initializable {
                             + selectedClassView.getClassId() + "班 吗？");
 
             if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-                // TODO: 执行删除操作
-                showInfo("成功", "班级已删除（模拟）");
-                loadClassData(); // 刷新表格
+                try {
+                    boolean success = classDao.deleteClass(
+                        selectedClassView.getMajorId(),
+                        selectedClassView.getGradeNumber(),
+                        selectedClassView.getClassId()
+                    );
+                    if (success) {
+                        loadClassData();
+                        showInfo("成功", "班级已删除。");
+                    } else {
+                        showError("删除班级失败。");
+                    }
+                } catch (SQLException e) {
+                    showError("删除操作失败: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -770,9 +931,24 @@ public class AdminMainController implements Initializable {
     private void handleToggleHighlight() {
         Consultation selectedConsultation = consultationTable.getSelectionModel().getSelectedItem();
         if (selectedConsultation != null) {
-            // TODO: 切换咨询的加精状态
-            showInfo("成功", "咨询加精状态已切换（模拟）");
-            loadConsultationData(); // 刷新表格
+            try {
+                boolean success = consultationDao.toggleHighlight(selectedConsultation.getQNumber());
+                if (success) {
+                    // 更新选中项的加精状态
+                    selectedConsultation.setHighlighted(!selectedConsultation.isHighlighted());
+                    
+                    // 刷新表格显示
+                    consultationTable.refresh();
+                    
+                    String status = selectedConsultation.isHighlighted() ? "已加精" : "已取消加精";
+                    showInfo("成功", "咨询" + status + "。");
+                } else {
+                    showError("切换咨询加精状态失败。");
+                }
+            } catch (SQLException e) {
+                showError("数据库操作失败: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
@@ -808,14 +984,28 @@ public class AdminMainController implements Initializable {
         controller.setCallback(new ClassFormController.ClassFormCallback() {
             @Override
             public void onClassSaved(entity.Class savedClass, boolean isEdit) {
-                if (isEdit) {
-                    // 刷新表格数据
-                    loadClassData();
-                    showInfo("成功", "班级信息已更新。");
-                } else {
-                    // 刷新表格数据
-                    loadClassData();
-                    showInfo("成功", "新班级已添加。");
+                try {
+                    boolean success;
+                    if (isEdit) {
+                        success = classDao.updateClass(savedClass);
+                        if (success) {
+                            loadClassData();
+                            showInfo("成功", "班级信息已更新。");
+                        } else {
+                            showError("更新班级信息失败。");
+                        }
+                    } else {
+                        success = classDao.addClass(savedClass);
+                        if (success) {
+                            loadClassData();
+                            showInfo("成功", "新班级已添加。");
+                        } else {
+                            showError("添加班级失败。");
+                        }
+                    }
+                } catch (SQLException e) {
+                    showError("数据库操作失败: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
@@ -842,9 +1032,23 @@ public class AdminMainController implements Initializable {
         controller.setCallback(new ClassCounselorFormController.ClassCounselorFormCallback() {
             @Override
             public void onCounselorChanged(Class updatedClass, String newCounselorId, String newCounselorName) {
-                // 刷新表格数据
-                loadClassData();
-                showInfo("成功", "班级辅导员已更新。");
+                try {
+                    boolean success = classDao.updateClassCounselor(
+                        updatedClass.getMajorId(), 
+                        updatedClass.getGradeNumber(), 
+                        updatedClass.getClassId(), 
+                        newCounselorId
+                    );
+                    if (success) {
+                        loadClassData();
+                        showInfo("成功", "班级辅导员已更新。");
+                    } else {
+                        showError("更新班级辅导员失败。");
+                    }
+                } catch (SQLException e) {
+                    showError("数据库操作失败: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -864,19 +1068,28 @@ public class AdminMainController implements Initializable {
     }
 
     private void showCounselorClassListDialog(Counselor counselor) {
-        String classList = counselor.getClassList();
-        String message;
-        if (classList == null || classList.trim().isEmpty()) {
-            message = "该辅导员当前未分配任何班级。";
-        } else {
-            // 格式化：去除多余空格，按逗号分行
-            String[] classes = classList.split(", ?");
-            StringBuilder sb = new StringBuilder();
-            for (String cls : classes) {
-                sb.append(cls.trim()).append("\n");
+        try {
+            // 从数据库直接查询该辅导员负责的班级，包含年级信息
+            List<ClassView> counselorClasses = classViewDao.getClassViewsByCounselorId(counselor.getCounselorId());
+            String message;
+            if (counselorClasses == null || counselorClasses.isEmpty()) {
+                message = "该辅导员当前未分配任何班级。";
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (ClassView classView : counselorClasses) {
+                    sb.append(classView.getMajorName())
+                      .append(" ")
+                      .append(classView.getGradeNumber())
+                      .append("级 ")
+                      .append(classView.getClassId())
+                      .append("班\n");
+                }
+                message = sb.toString();
             }
-            message = sb.toString();
+            showInfo("辅导员负责班级", message);
+        } catch (SQLException e) {
+            showError("获取班级信息失败: " + e.getMessage());
+            e.printStackTrace();
         }
-        showInfo("辅导员负责班级", message);
     }
 }

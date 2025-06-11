@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<VBox styleClass="form-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ClassCounselorFormController">
+<VBox styleClass="form-container" stylesheets="@class_counselor_form.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ClassCounselorFormController">
     <padding>
         <Insets top="20" bottom="20" left="20" right="20"/>
     </padding>
@@ -56,15 +56,10 @@
                 <TextField fx:id="gradeField" styleClass="info-readonly-field" editable="false"/>
             </VBox>
 
-            <!-- 第二行：班级号、学生人数 -->
+            <!-- 第二行：班级号 -->
             <Label text="班级号" styleClass="info-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <VBox fx:id="classNumberContainer" styleClass="info-readonly-container" GridPane.columnIndex="1" GridPane.rowIndex="1">
                 <TextField fx:id="classNumberField" styleClass="info-readonly-field" editable="false"/>
-            </VBox>
-            
-            <Label text="学生人数" styleClass="info-label" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-            <VBox fx:id="studentCountContainer" styleClass="info-readonly-container" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                <TextField fx:id="studentCountField" styleClass="info-readonly-field" editable="false"/>
             </VBox>
         </GridPane>
     </VBox>

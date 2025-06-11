@@ -60,4 +60,110 @@ public class ConsultationDaoImpl implements ConsultationDao {
         }
         return consultations;
     }
+
+    @Override
+    public Consultation getConsultationByQNumber(String qNumber) throws SQLException {
+        String sql = "SELECT Q编号, 学生学号, 学生姓名, 类别, 状态, 提问时间, 回复次数, 追问次数, 是否加精 FROM 咨询汇总视图 WHERE Q编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, qNumber);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                Consultation consultation = new Consultation();
+                consultation.setQNumber(rs.getString("Q编号"));
+                consultation.setStudentId(rs.getString("学生学号"));
+                consultation.setStudentName(rs.getString("学生姓名"));
+                consultation.setCategory(rs.getString("类别"));
+                consultation.setStatus(rs.getString("状态"));
+                consultation.setQuestionTime(rs.getTimestamp("提问时间").toLocalDateTime());
+                consultation.setReplyCount(rs.getInt("回复次数"));
+                consultation.setFollowupCount(rs.getInt("追问次数"));
+                consultation.setHighlighted(rs.getBoolean("是否加精"));
+                return consultation;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean addConsultation(Consultation consultation) throws SQLException {
+        String sql = "INSERT INTO 咨询 (Q编号, 学生学号, 类别, 状态, 提问内容, 提问时间, 是否加精) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, consultation.getQNumber());
+            ps.setString(2, consultation.getStudentId());
+            ps.setString(3, consultation.getCategory());
+            ps.setString(4, consultation.getStatus());
+            ps.setString(5, "新增咨询内容"); // 实际应该从consultation对象获取
+            ps.setTimestamp(6, java.sql.Timestamp.valueOf(consultation.getQuestionTime()));
+            ps.setBoolean(7, consultation.isHighlighted());
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean updateConsultation(Consultation consultation) throws SQLException {
+        String sql = "UPDATE 咨询 SET 类别 = ?, 状态 = ?, 是否加精 = ? WHERE Q编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, consultation.getCategory());
+            ps.setString(2, consultation.getStatus());
+            ps.setBoolean(3, consultation.isHighlighted());
+            ps.setString(4, consultation.getQNumber());
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean deleteConsultation(String qNumber) throws SQLException {
+        String sql = "DELETE FROM 咨询 WHERE Q编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, qNumber);
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean toggleHighlight(String qNumber) throws SQLException {
+        String sql = "UPDATE 咨询 SET 是否加精 = NOT 是否加精 WHERE Q编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, qNumber);
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    public boolean updateHighlight(String qNumber, boolean highlighted) throws SQLException {
+        String sql = "UPDATE 咨询 SET 是否加精 = ? WHERE Q编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setBoolean(1, highlighted);
+            ps.setString(2, qNumber);
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
 }

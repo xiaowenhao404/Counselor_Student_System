@@ -1,5 +1,6 @@
 entity\ClassView.class
 ui\AdminMainController$1.class
+dao\DepartmentDao.class
 dao\MajorDaoImpl.class
 service\AuthService.class
 ui\Main.class
@@ -18,6 +19,7 @@ dao\ConsultationDao.class
 ui\AdminMainController$2.class
 ui\StudentFormController$StudentFormCallback.class
 dao\CounselorDao.class
+dao\DepartmentDaoImpl.class
 entity\Admin.class
 entity\StudentView.class
 dao\StudentDao.class
@@ -31,6 +33,7 @@ dao\StudentViewDaoImpl.class
 ui\ClassCounselorFormController.class
 service\AuthService$LoginResult.class
 dao\CounselorDaoImpl.class
+ui\AdminMainController$7.class
 dao\ClassDaoImpl.class
 ui\StudentFormController.class
 dao\ClassDao.class

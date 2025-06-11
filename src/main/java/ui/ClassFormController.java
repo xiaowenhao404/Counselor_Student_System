@@ -31,6 +31,8 @@ public class ClassFormController implements Initializable {
     @FXML
     private ComboBox<String> majorComboBox;
     @FXML
+    private TextField gradeField;
+    @FXML
     private TextField classNumberField;
     @FXML
     private ComboBox<String> counselorComboBox;
@@ -108,6 +110,7 @@ public class ClassFormController implements Initializable {
         // 填充表单数据
         // 设置专业选择
         majorComboBox.setValue(majorIdToNameMap.get(classObj.getMajorId()));
+        gradeField.setText(classObj.getGradeNumber()); // 显示年级
         classNumberField.setText(classObj.getClassName()); // 显示班级名称
 
         // 设置辅导员选择
@@ -117,8 +120,10 @@ public class ClassFormController implements Initializable {
             counselorComboBox.setValue(null);
         }
 
-        // 在编辑模式下，专业和班级编号不可修改（作为主键的一部分）
+        // 在编辑模式下，专业、年级和班级编号不可修改（作为主键的一部分）
         majorComboBox.setDisable(true);
+        gradeField.setEditable(false);
+        gradeField.getStyleClass().add("readonly-field");
         classNumberField.setEditable(false);
         classNumberField.getStyleClass().add("readonly-field");
     }
@@ -143,14 +148,15 @@ public class ClassFormController implements Initializable {
                     classToSave = new Class(); // 使用无参构造函数
                     String selectedMajorName = majorComboBox.getValue();
                     String majorId = majorNameToIdMap.get(selectedMajorName);
+                    String gradeNumber = gradeField.getText().trim();
                     String selectedCounselorName = counselorComboBox.getValue();
                     String counselorId = (selectedCounselorName != null && !selectedCounselorName.isEmpty())
                             ? counselorNameToIdMap.get(selectedCounselorName)
                             : null;
 
                     classToSave.setMajorId(majorId);
-                    classToSave.setClassName(classNumberField.getText().trim()); // 班级名称
-                    classToSave.setClassId(classNumberField.getText().trim()); // 假设班级名称和班级ID相同，如果不同需要调整
+                    classToSave.setGradeNumber(gradeNumber); // 设置年级编号
+                    classToSave.setClassId(classNumberField.getText().trim()); // 设置班级编号
                     classToSave.setCounselorId(counselorId);
                 }
 
@@ -190,6 +196,13 @@ public class ClassFormController implements Initializable {
             majorComboBox.getStyleClass().remove("error-field");
         }
 
+        if (gradeField.getText().trim().isEmpty()) {
+            gradeField.getStyleClass().add("error-field");
+            isValid = false;
+        } else {
+            gradeField.getStyleClass().remove("error-field");
+        }
+
         if (classNumberField.getText().trim().isEmpty()) {
             classNumberField.getStyleClass().add("error-field");
             isValid = false;
@@ -197,11 +210,8 @@ public class ClassFormController implements Initializable {
             classNumberField.getStyleClass().remove("error-field");
         }
 
-        // 新增模式下，辅导员不能为空
-        if (!isEditMode && (counselorComboBox.getValue() == null || counselorComboBox.getValue().isEmpty())) {
-            counselorComboBox.getStyleClass().add("error-field");
-            isValid = false;
-        } else {
+        // 辅导员不是必填字段
+        if (counselorComboBox.getValue() != null && !counselorComboBox.getValue().isEmpty()) {
             counselorComboBox.getStyleClass().remove("error-field");
         }
 
@@ -210,6 +220,7 @@ public class ClassFormController implements Initializable {
 
     private void clearErrorStyles() {
         majorComboBox.getStyleClass().remove("error-field");
+        gradeField.getStyleClass().remove("error-field");
         classNumberField.getStyleClass().remove("error-field");
         counselorComboBox.getStyleClass().remove("error-field");
     }

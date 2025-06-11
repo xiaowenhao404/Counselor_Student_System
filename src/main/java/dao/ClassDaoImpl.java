@@ -180,4 +180,71 @@ public class ClassDaoImpl implements ClassDao {
         }
         return classes;
     }
+
+    @Override
+    public boolean addClass(Class clazz) throws SQLException {
+        String sql = "INSERT INTO 班级 (专业编号, 年级编号, 班级编号, 辅导员工号) VALUES (?, ?, ?, ?)";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, clazz.getMajorId());
+            ps.setString(2, clazz.getGradeNumber());
+            ps.setString(3, clazz.getClassId());
+            ps.setString(4, clazz.getCounselorId());
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean updateClass(Class clazz) throws SQLException {
+        String sql = "UPDATE 班级 SET 辅导员工号 = ? WHERE 专业编号 = ? AND 年级编号 = ? AND 班级编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, clazz.getCounselorId());
+            ps.setString(2, clazz.getMajorId());
+            ps.setString(3, clazz.getGradeNumber());
+            ps.setString(4, clazz.getClassId());
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean deleteClass(String majorId, String gradeNumber, String classId) throws SQLException {
+        String sql = "DELETE FROM 班级 WHERE 专业编号 = ? AND 年级编号 = ? AND 班级编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, majorId);
+            ps.setString(2, gradeNumber);
+            ps.setString(3, classId);
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean updateClassCounselor(String majorId, String gradeNumber, String classId, String counselorId) throws SQLException {
+        String sql = "UPDATE 班级 SET 辅导员工号 = ? WHERE 专业编号 = ? AND 年级编号 = ? AND 班级编号 = ?";
+        
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            
+            ps.setString(1, counselorId);
+            ps.setString(2, majorId);
+            ps.setString(3, gradeNumber);
+            ps.setString(4, classId);
+            
+            int result = ps.executeUpdate();
+            return result > 0;
+        }
+    }
 }

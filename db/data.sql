@@ -1,4 +1,4 @@
-USE Counselor_Student_System;
+USE counselor_student_system;
 
 -- ----------------------------
 -- Records of 院系
