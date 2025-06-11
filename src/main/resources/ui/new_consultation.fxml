@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ui.NewConsultationController"
+      stylesheets="@ui/student_main.css"
+      styleClass="main-container">
+    
+    <!-- 顶部导航栏 -->
+    <HBox styleClass="top-bar">
+        <Label text="辅导员学生交流系统——学生端" styleClass="title-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox styleClass="nav-buttons">
+            <Button text="大厅" styleClass="nav-button"/>
+            <Button text="我的" styleClass="nav-button"/>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField promptText="搜索" styleClass="search-field"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="admin" styleClass="admin-label"/>
+    </HBox>
+    
+    <!-- 主体内容区域 -->
+    <VBox styleClass="content-area" alignment="CENTER">
+        <VBox styleClass="new-consultation-form" spacing="20">
+            <Label text="我要咨询" styleClass="form-title"/>
+            
+            <!-- 问题输入区域 -->
+            <VBox spacing="10">
+                <Label text="问题描述" styleClass="form-label"/>
+                <TextArea fx:id="questionArea" promptText="请输入您的问题..." styleClass="question-area" wrapText="true"/>
+            </VBox>
+            
+            <!-- 类别选择 -->
+            <VBox spacing="10">
+                <Label text="问题类别" styleClass="form-label"/>
+                <HBox spacing="20">
+                    <RadioButton text="学习" styleClass="category-radio" selected="true"/>
+                    <RadioButton text="生活" styleClass="category-radio"/>
+                    <RadioButton text="其他" styleClass="category-radio"/>
+                </HBox>
+            </VBox>
+            
+            <!-- 提交按钮 -->
+            <Button text="提交" styleClass="submit-button" onAction="#handleSubmit"/>
+        </VBox>
+    </VBox>
+</VBox> 

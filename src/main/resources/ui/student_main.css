@@ -1,0 +1,283 @@
+.main-container {
+    -fx-background-color: #f5f5f5;
+}
+
+/* 顶部导航栏样式 */
+.top-bar {
+    -fx-background-color: #1e88e5;
+    -fx-padding: 10 20;
+    -fx-spacing: 20;
+    -fx-alignment: center-left;
+}
+
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+}
+
+.nav-buttons {
+    -fx-spacing: 20;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 5 15;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-button.selected {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-font-weight: bold;
+}
+
+.search-field {
+    -fx-background-color: white;
+    -fx-pref-width: 200px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 5;
+}
+
+.admin-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+/* 主体内容区域样式 */
+.content-area {
+    -fx-padding: 20;
+    -fx-spacing: 20;
+}
+
+/* 左侧导航栏样式 */
+.left-nav {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-spacing: 20;
+    -fx-pref-width: 200;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.nav-buttons-container {
+    -fx-spacing: 10;
+}
+
+.nav-buttons-container .nav-button {
+    -fx-background-color: white;
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 0);
+    -fx-min-width: 160px;
+}
+
+.nav-buttons-container .nav-button:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 0);
+}
+
+.nav-buttons-container .nav-button.selected {
+    -fx-background-color: #1e88e5;
+    -fx-text-fill: white;
+}
+
+.new-consultation-button {
+    -fx-background-color: #1e88e5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 20;
+    -fx-min-width: 160px;
+    -fx-cursor: hand;
+}
+
+.new-consultation-button:hover {
+    -fx-background-color: #1976d2;
+}
+
+/* 咨询列表区域样式 */
+.consultation-list {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-spacing: 20;
+    -fx-pref-width: 800;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.category-bar {
+    -fx-spacing: 20;
+    -fx-alignment: center-left;
+}
+
+.category-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #666;
+    -fx-font-size: 14px;
+    -fx-padding: 5 15;
+    -fx-cursor: hand;
+}
+
+.category-button:hover {
+    -fx-text-fill: #1e88e5;
+}
+
+.category-button.selected {
+    -fx-text-fill: #1e88e5;
+    -fx-font-weight: bold;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.cards-container {
+    -fx-spacing: 15;
+}
+
+.consultation-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 0);
+}
+
+.card-header {
+    -fx-spacing: 10;
+}
+
+.question-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.time-label {
+    -fx-text-fill: #999;
+    -fx-font-size: 12px;
+}
+
+.reply-label {
+    -fx-text-fill: #666;
+    -fx-font-size: 14px;
+}
+
+.card-footer {
+    -fx-spacing: 10;
+}
+
+.status-container {
+    -fx-spacing: 5;
+}
+
+.status-label {
+    -fx-padding: 3 10;
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    -fx-background-radius: 3;
+}
+
+.status-label.solved {
+    -fx-background-color: #4caf50;
+}
+
+.status-label.unsolved {
+    -fx-background-color: #f44336;
+}
+
+.interaction-container {
+    -fx-spacing: 10;
+    -fx-alignment: center-right;
+}
+
+.message-icon, .collect-icon {
+    -fx-cursor: hand;
+}
+
+.card-separator {
+    -fx-padding: 0;
+    -fx-opacity: 0.5;
+}
+
+/* 我要咨询界面样式 */
+.new-consultation-form {
+    -fx-background-color: white;
+    -fx-padding: 30;
+    -fx-spacing: 20;
+    -fx-pref-width: 600;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.form-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+}
+
+.question-area {
+    -fx-pref-height: 200;
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 5;
+    -fx-padding: 10;
+}
+
+.category-radio {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+}
+
+.submit-button {
+    -fx-background-color: #1e88e5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 30;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.submit-button:hover {
+    -fx-background-color: #1976d2;
+}
+
+/* 状态标签样式 */
+.status-label.unanswered {
+    -fx-background-color: #f44336;
+}
+
+.status-label.needs-solution {
+    -fx-background-color: #ff9800;
+}
+
+.status-label.solved {
+    -fx-background-color: #4caf50;
+}
+
+/* 复选框样式 */
+.solve-checkbox {
+    -fx-padding: 0;
+}
+
+.solve-checkbox .box {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.solve-checkbox:selected .box {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+} 

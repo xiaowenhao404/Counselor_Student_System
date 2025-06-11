@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ui.MyConsultationsController"
+      stylesheets="@ui/student_main.css"
+      styleClass="main-container">
+    
+    <!-- 顶部导航栏 -->
+    <HBox styleClass="top-bar">
+        <Label text="辅导员学生交流系统——学生端" styleClass="title-label"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <HBox styleClass="nav-buttons">
+            <Button text="大厅" styleClass="nav-button"/>
+            <Button text="我的" styleClass="nav-button,selected"/>
+        </HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField promptText="搜索" styleClass="search-field"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="admin" styleClass="admin-label"/>
+    </HBox>
+    
+    <!-- 主体内容区域 -->
+    <HBox styleClass="content-area">
+        <!-- 左侧导航栏 -->
+        <VBox styleClass="left-nav">
+            <VBox styleClass="nav-buttons-container">
+                <Button text="未答复" styleClass="nav-button,selected"/>
+                <Button text="仍需解决" styleClass="nav-button"/>
+                <Button text="已解决" styleClass="nav-button"/>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button text="我要咨询" styleClass="new-consultation-button"/>
+        </VBox>
+        
+        <!-- 中间咨询列表区域 -->
+        <VBox styleClass="consultation-list">
+            <!-- 类别分栏 -->
+            <HBox styleClass="category-bar">
+                <Button text="全部" styleClass="category-button,selected"/>
+                <Button text="学习" styleClass="category-button"/>
+                <Button text="生活" styleClass="category-button"/>
+                <Button text="其他" styleClass="category-button"/>
+            </HBox>
+            
+            <!-- 咨询卡片列表 -->
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                <VBox fx:id="cardsContainer" styleClass="cards-container">
+                    <!-- 咨询卡片示例 -->
+                    <VBox styleClass="consultation-card">
+                        <HBox styleClass="card-header">
+                            <Label text="问题1" styleClass="question-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="2024-03-21" styleClass="time-label"/>
+                        </HBox>
+                        <Label text="回复1" styleClass="reply-label"/>
+                        <HBox styleClass="card-footer">
+                            <HBox styleClass="status-container">
+                                <Label text="未答复" styleClass="status-label,unanswered"/>
+                            </HBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <HBox styleClass="interaction-container">
+                                <ImageView fitWidth="16" fitHeight="16" styleClass="message-icon">
+                                    <Image url="@images/message.png"/>
+                                </ImageView>
+                                <CheckBox styleClass="solve-checkbox">
+                                    <graphic>
+                                        <ImageView fitWidth="16" fitHeight="16">
+                                            <Image url="@images/not_select.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </CheckBox>
+                            </HBox>
+                        </HBox>
+                    </VBox>
+                    
+                    <!-- 分割线 -->
+                    <Separator styleClass="card-separator"/>
+                    
+                    <!-- 更多咨询卡片 -->
+                    <VBox styleClass="consultation-card">
+                        <HBox styleClass="card-header">
+                            <Label text="问题2" styleClass="question-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="2024-03-20" styleClass="time-label"/>
+                        </HBox>
+                        <Label text="回复2" styleClass="reply-label"/>
+                        <HBox styleClass="card-footer">
+                            <HBox styleClass="status-container">
+                                <Label text="仍需解决" styleClass="status-label,needs-solution"/>
+                            </HBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <HBox styleClass="interaction-container">
+                                <ImageView fitWidth="16" fitHeight="16" styleClass="message-icon">
+                                    <Image url="@images/message.png"/>
+                                </ImageView>
+                                <CheckBox styleClass="solve-checkbox">
+                                    <graphic>
+                                        <ImageView fitWidth="16" fitHeight="16">
+                                            <Image url="@images/select.png"/>
+                                        </ImageView>
+                                    </graphic>
+                                </CheckBox>
+                            </HBox>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </HBox>
+</VBox> 

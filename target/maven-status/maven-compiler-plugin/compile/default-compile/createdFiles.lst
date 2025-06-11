@@ -2,6 +2,7 @@ entity\ClassView.class
 ui\AdminMainController$1.class
 dao\MajorDaoImpl.class
 service\AuthService.class
+ui\MyConsultationsController$Consultation.class
 ui\Main.class
 dao\StudentDaoImpl.class
 entity\Consultation.class
@@ -13,9 +14,12 @@ dao\ClassViewDao.class
 ui\LoginController$1.class
 dao\ClassViewDaoImpl.class
 ui\AdminMainController.class
+ui\MyConsultationsController.class
+ui\NewConsultationController.class
 ui\ClassFormController$ClassFormCallback.class
 dao\ConsultationDao.class
 ui\AdminMainController$2.class
+ui\StudentMainController.class
 ui\StudentFormController$StudentFormCallback.class
 dao\CounselorDao.class
 entity\Admin.class
