@@ -10,23 +10,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // 获取命令行参数
-        String view = getParameters().getRaw().isEmpty() ? "login" : getParameters().getRaw().get(0);
-
-        Parent root;
-        String title;
-
-        switch (view.toLowerCase()) {
-            case "login":
-                // 加载登录界面FXML
-                root = FXMLLoader.load(getClass().getResource("/ui/login.fxml"));
-                title = "登录界面";
-                break;
-            // 在这里添加其他界面的case
-            default:
-                root = FXMLLoader.load(getClass().getResource("/ui/login.fxml"));
-                title = "登录界面";
-        }
+        // 直接加载咨询大厅界面
+        Parent root = FXMLLoader.load(getClass().getResource("/ui/student_main.fxml"));
+        String title = "辅导员学生交流系统";
 
         // 创建场景（样式表已在FXML中引用）
         Scene scene = new Scene(root);
@@ -35,9 +21,9 @@ public class Main extends Application {
         // 设置窗口标题和大小
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
-        primaryStage.setWidth(450);
-        primaryStage.setHeight(650);
-        primaryStage.setResizable(false);
+        primaryStage.setWidth(1200);
+        primaryStage.setHeight(800);
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 
