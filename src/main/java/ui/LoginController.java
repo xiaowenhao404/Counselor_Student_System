@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import service.AuthService;
 
 public class LoginController {
     @FXML
@@ -44,6 +45,8 @@ public class LoginController {
 
     private boolean passwordVisible = false;
 
+    private AuthService authService;
+
     @FXML
     public void initialize() {
         // 默认选中学生角色并更新图标
@@ -51,6 +54,9 @@ public class LoginController {
 
         // 添加文本同步监听器
         passwordField.textProperty().bindBidirectional(showPasswordField.textProperty());
+
+        // 初始化 AuthService
+        authService = new AuthService();
     }
 
     @FXML
@@ -102,26 +108,30 @@ public class LoginController {
             return;
         }
 
-        // 验证管理员账号 (硬编码)
-        if (selectedRole.equals("管理员")) {
-            if (username.equals("admin") && password.equals("123321")) {
-                showSuccess("管理员登录成功");
-                // 跳转到管理员主界面
-                try {
-                    openAdminMainWindow();
-                } catch (Exception e) {
-                    showError("打开管理员界面失败：" + e.getMessage());
-                }
-                return;
-            } else {
-                handleLoginFailure();
-                return;
-            }
-        }
+        AuthService.LoginResult result = authService.login(username, password);
 
-        // TODO: 学生和辅导员的数据库验证逻辑
-        // 假设数据库验证失败
-        handleLoginFailure();
+        if (result.isSuccess()) {
+            switch (result.getUserType()) {
+                case STUDENT:
+                    showSuccess("学生登录成功！欢迎，" + result.getUserName() + "！");
+                    // TODO: 跳转到学生主界面
+                    break;
+                case COUNSELOR:
+                    showSuccess("辅导员登录成功！欢迎，" + result.getUserName() + "！");
+                    // TODO: 跳转到辅导员主界面
+                    break;
+                case ADMIN:
+                    showSuccess("管理员登录成功！");
+                    try {
+                        openAdminMainWindow();
+                    } catch (Exception e) {
+                        showError("打开管理员界面失败：" + e.getMessage());
+                    }
+                    break;
+            }
+        } else {
+            handleLoginFailure();
+        }
     }
 
     private void handleLoginFailure() {
@@ -151,24 +161,24 @@ public class LoginController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    
+
     private void openAdminMainWindow() throws Exception {
         // 加载管理员主界面
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/admin_main.fxml"));
         Parent root = loader.load();
-        
+
         // 创建新窗口
         Stage adminStage = new Stage();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/ui/admin_main.css").toExternalForm());
-        
+
         adminStage.setTitle("管理员主界面 - 辅导员学生交流信息管理系统");
         adminStage.setScene(scene);
         adminStage.setWidth(1200);
         adminStage.setHeight(800);
         adminStage.setResizable(true);
         adminStage.show();
-        
+
         // 关闭登录窗口
         Stage loginStage = (Stage) loginButton.getScene().getWindow();
         loginStage.close();

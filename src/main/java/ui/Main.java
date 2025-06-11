@@ -28,9 +28,8 @@ public class Main extends Application {
                 title = "登录界面";
         }
 
-        // 加载CSS样式
+        // 创建场景（样式表已在FXML中引用）
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/ui/login.css").toExternalForm());
         scene.setFill(javafx.scene.paint.Color.WHITE);
 
         // 设置窗口标题和大小

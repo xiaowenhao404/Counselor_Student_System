@@ -80,14 +80,14 @@ CREATE TABLE `学生` (
 -- ----------------------------
 DROP TABLE IF EXISTS `咨询`;
 CREATE TABLE `咨询` (
-  `Q000编号` VARCHAR(10) NOT NULL,
+  `Q编号` VARCHAR(10) NOT NULL,
   `学生学号` VARCHAR(50) NOT NULL,
   `类别` ENUM('教学', '生活', '其他') NOT NULL,
   `状态` ENUM('未回复', '已解决', '仍需解决') NOT NULL DEFAULT '未回复',
   `提问内容` TEXT NOT NULL,
   `提问时间` DATETIME NOT NULL,
   `是否加精` BOOLEAN DEFAULT FALSE,
-  PRIMARY KEY (`Q000编号`)
+  PRIMARY KEY (`Q编号`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -95,9 +95,9 @@ CREATE TABLE `咨询` (
 -- ----------------------------
 DROP TABLE IF EXISTS `收藏`;
 CREATE TABLE `收藏` (
-  `Q000编号` VARCHAR(10) NOT NULL,
+  `Q编号` VARCHAR(10) NOT NULL,
   `学生学号` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`Q000编号`, `学生学号`)
+  PRIMARY KEY (`Q编号`, `学生学号`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -105,12 +105,11 @@ CREATE TABLE `收藏` (
 -- ----------------------------
 DROP TABLE IF EXISTS `回复`;
 CREATE TABLE `回复` (
-  `A000编号` VARCHAR(10) NOT NULL,
-  `Q000编号` VARCHAR(10) NOT NULL,
-  `辅导员工号` VARCHAR(50) NOT NULL,
+  `R编号` VARCHAR(10) NOT NULL,
+  `Q编号` VARCHAR(10) NOT NULL,
   `回复内容` TEXT NOT NULL,
   `回复时间` DATETIME NOT NULL,
-  PRIMARY KEY (`A000编号`)
+  PRIMARY KEY (`R编号`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -118,12 +117,11 @@ CREATE TABLE `回复` (
 -- ----------------------------
 DROP TABLE IF EXISTS `追问`;
 CREATE TABLE `追问` (
-  `F000编号` VARCHAR(10) NOT NULL,
-  `Q000编号` VARCHAR(10) NOT NULL,
-  `学生学号` VARCHAR(50) NOT NULL,
+  `F编号` VARCHAR(10) NOT NULL,
+  `Q编号` VARCHAR(10) NOT NULL,
   `追问内容` TEXT NOT NULL,
   `追问时间` DATETIME NOT NULL,
-  PRIMARY KEY (`F000编号`)
+  PRIMARY KEY (`F编号`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -166,25 +164,41 @@ LEFT JOIN 院系 d ON m.院系编号 = d.院系编号
 GROUP BY co.辅导员工号, d.院系名称;
 
 -- ----------------------------
+-- View structure for 班级视图
+-- ----------------------------
+DROP VIEW IF EXISTS `班级视图`;
+CREATE VIEW `班级视图` AS
+SELECT 
+  b.专业编号,
+  b.年级编号,
+  b.班级编号,
+  b.辅导员工号,
+  m.专业名称,
+  c.姓名 AS 辅导员姓名
+FROM 班级 b
+LEFT JOIN 专业 m ON b.专业编号 = m.专业编号
+LEFT JOIN 辅导员 c ON b.辅导员工号 = c.辅导员工号;
+
+-- ----------------------------
 -- View structure for 咨询汇总视图
 -- ----------------------------
 DROP VIEW IF EXISTS `咨询汇总视图`;
 CREATE VIEW `咨询汇总视图` AS
 SELECT 
-  c.Q000编号,
+  c.Q编号,
   c.学生学号,
   s.姓名 AS 学生姓名,
   c.类别,
   c.状态,
   c.提问时间,
-  COUNT(DISTINCT r.A000编号) AS 回复次数,
-  COUNT(DISTINCT f.F000编号) AS 追问次数,
+  COUNT(DISTINCT r.R编号) AS 回复次数,
+  COUNT(DISTINCT f.F编号) AS 追问次数,
   c.是否加精
 FROM 咨询 c
-LEFT JOIN 回复 r ON c.Q000编号 = r.Q000编号
-LEFT JOIN 追问 f ON c.Q000编号 = f.Q000编号
+LEFT JOIN 回复 r ON c.Q编号 = r.Q编号
+LEFT JOIN 追问 f ON c.Q编号 = f.Q编号
 JOIN 学生 s ON c.学生学号 = s.学生学号
-GROUP BY c.Q000编号;
+GROUP BY c.Q编号;
 
 -- ----------------------------
 -- Triggers
@@ -196,9 +210,9 @@ CREATE TRIGGER `删除咨询前`
 BEFORE DELETE ON `咨询`
 FOR EACH ROW
 BEGIN
-    DELETE FROM 回复 WHERE Q000编号 = OLD.Q000编号;
-    DELETE FROM 追问 WHERE Q000编号 = OLD.Q000编号;
-    DELETE FROM 收藏 WHERE Q000编号 = OLD.Q000编号;
+    DELETE FROM 回复 WHERE Q编号 = OLD.Q编号;
+    DELETE FROM 追问 WHERE Q编号 = OLD.Q编号;
+    DELETE FROM 收藏 WHERE Q编号 = OLD.Q编号;
 END;;
 DELIMITER ;
 

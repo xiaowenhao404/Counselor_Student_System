@@ -1,106 +1,120 @@
 package entity;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 import java.time.LocalDate;
 
 public class Student {
-    private final StringProperty studentId = new SimpleStringProperty();
-    private final StringProperty name = new SimpleStringProperty();
-    private final StringProperty gender = new SimpleStringProperty();
-    private LocalDate birthDate;
-    private final StringProperty phoneNumber = new SimpleStringProperty();
-    private final StringProperty majorName = new SimpleStringProperty();
-    private final StringProperty gradeNumber = new SimpleStringProperty();
-    private final StringProperty classNumber = new SimpleStringProperty();
-    private final StringProperty counselorName = new SimpleStringProperty();
-    private final StringProperty password = new SimpleStringProperty();
-    private final StringProperty majorId = new SimpleStringProperty();
+    private String studentId;
+    private String majorId;
+    private String gradeNumber;
+    private String classId;
+    private String name;
+    private String gender;
+    private LocalDate dateOfBirth;
+    private String phoneNumber;
+    private String password;
 
     // 构造函数
-    public Student() {}
-
-    public Student(String studentId, String name, String gender, LocalDate birthDate, 
-                   String phoneNumber, String majorName, String gradeNumber, 
-                   String classNumber, String counselorName) {
-        setStudentId(studentId);
-        setName(name);
-        setGender(gender);
-        setBirthDate(birthDate);
-        setPhoneNumber(phoneNumber);
-        setMajorName(majorName);
-        setGradeNumber(gradeNumber);
-        setClassNumber(classNumber);
-        setCounselorName(counselorName);
+    public Student() {
     }
 
-    // 学生学号
-    public String getStudentId() { return studentId.get(); }
-    public void setStudentId(String studentId) { this.studentId.set(studentId); }
-    public StringProperty studentIdProperty() { return studentId; }
+    public Student(String studentId, String majorId, String gradeNumber, String classId, String name, String gender,
+            LocalDate dateOfBirth, String phoneNumber, String password) {
+        this.studentId = studentId;
+        this.majorId = majorId;
+        this.gradeNumber = gradeNumber;
+        this.classId = classId;
+        this.name = name;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
 
-    // 姓名
-    public String getName() { return name.get(); }
-    public void setName(String name) { this.name.set(name); }
-    public StringProperty nameProperty() { return name; }
+    // Getter 和 Setter 方法
+    public String getStudentId() {
+        return studentId;
+    }
 
-    // 性别
-    public String getGender() { return gender.get(); }
-    public void setGender(String gender) { this.gender.set(gender); }
-    public StringProperty genderProperty() { return gender; }
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
 
-    // 出生日期
-    public LocalDate getBirthDate() { return birthDate; }
-    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+    public String getMajorId() {
+        return majorId;
+    }
 
-    // 手机号码
-    public String getPhoneNumber() { return phoneNumber.get(); }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber.set(phoneNumber); }
-    public StringProperty phoneNumberProperty() { return phoneNumber; }
+    public void setMajorId(String majorId) {
+        this.majorId = majorId;
+    }
 
-    // 专业名称
-    public String getMajorName() { return majorName.get(); }
-    public void setMajorName(String majorName) { this.majorName.set(majorName); }
-    public StringProperty majorNameProperty() { return majorName; }
+    public String getGradeNumber() {
+        return gradeNumber;
+    }
 
-    // 年级编号
-    public String getGradeNumber() { return gradeNumber.get(); }
-    public void setGradeNumber(String gradeNumber) { this.gradeNumber.set(gradeNumber); }
-    public StringProperty gradeNumberProperty() { return gradeNumber; }
+    public void setGradeNumber(String gradeNumber) {
+        this.gradeNumber = gradeNumber;
+    }
 
-    // 班级编号
-    public String getClassNumber() { return classNumber.get(); }
-    public void setClassNumber(String classNumber) { this.classNumber.set(classNumber); }
-    public StringProperty classNumberProperty() { return classNumber; }
+    public String getClassId() {
+        return classId;
+    }
 
-    // 辅导员姓名
-    public String getCounselorName() { return counselorName.get(); }
-    public void setCounselorName(String counselorName) { this.counselorName.set(counselorName); }
-    public StringProperty counselorNameProperty() { return counselorName; }
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
 
-    // 密码（用于添加/编辑时使用，不在表格中显示）
-    public String getPassword() { return password.get(); }
-    public void setPassword(String password) { this.password.set(password); }
-    public StringProperty passwordProperty() { return password; }
+    public String getName() {
+        return name;
+    }
 
-    // 专业编号（用于数据库操作，不在表格中显示）
-    public String getMajorId() { return majorId.get(); }
-    public void setMajorId(String majorId) { this.majorId.set(majorId); }
-    public StringProperty majorIdProperty() { return majorId; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public String toString() {
         return "Student{" +
-                "studentId='" + getStudentId() + '\'' +
-                ", name='" + getName() + '\'' +
-                ", gender='" + getGender() + '\'' +
-                ", birthDate=" + birthDate +
-                ", phoneNumber='" + getPhoneNumber() + '\'' +
-                ", majorName='" + getMajorName() + '\'' +
-                ", gradeNumber='" + getGradeNumber() + '\'' +
-                ", classNumber='" + getClassNumber() + '\'' +
-                ", counselorName='" + getCounselorName() + '\'' +
+                "studentId='" + studentId + '\'' +
+                ", majorId='" + majorId + '\'' +
+                ", gradeNumber='" + gradeNumber + '\'' +
+                ", classId='" + classId + '\'' +
+                ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
-} 
+}

@@ -1,100 +1,119 @@
 package entity;
 
-import javafx.beans.property.*;
 import java.time.LocalDateTime;
 
 public class Consultation {
-    private final StringProperty consultationId = new SimpleStringProperty();
-    private final StringProperty studentId = new SimpleStringProperty();
-    private final StringProperty studentName = new SimpleStringProperty();
-    private final StringProperty category = new SimpleStringProperty();
-    private final StringProperty status = new SimpleStringProperty();
-    private final ObjectProperty<LocalDateTime> questionTime = new SimpleObjectProperty<>();
-    private final IntegerProperty replyCount = new SimpleIntegerProperty();
-    private final IntegerProperty followUpCount = new SimpleIntegerProperty();
-    private final BooleanProperty isHighlighted = new SimpleBooleanProperty();
-    private final StringProperty questionContent = new SimpleStringProperty();
+    private String qNumber;
+    private String studentId;
+    private String studentName;
+    private String category;
+    private String status;
+    private LocalDateTime questionTime;
+    private int replyCount;
+    private int followupCount;
+    private boolean highlighted;
 
-    // 构造函数
-    public Consultation() {}
-
-    public Consultation(String consultationId, String studentId, String studentName, 
-                       String category, String status, LocalDateTime questionTime,
-                       int replyCount, int followUpCount, boolean isHighlighted, String questionContent) {
-        setConsultationId(consultationId);
-        setStudentId(studentId);
-        setStudentName(studentName);
-        setCategory(category);
-        setStatus(status);
-        setQuestionTime(questionTime);
-        setReplyCount(replyCount);
-        setFollowUpCount(followUpCount);
-        setIsHighlighted(isHighlighted);
-        setQuestionContent(questionContent);
+    public Consultation() {
     }
 
-    // 咨询编号
-    public String getConsultationId() { return consultationId.get(); }
-    public void setConsultationId(String consultationId) { this.consultationId.set(consultationId); }
-    public StringProperty consultationIdProperty() { return consultationId; }
+    public Consultation(String qNumber, String studentId, String studentName, String category,
+            String status, LocalDateTime questionTime, int replyCount, int followupCount,
+            boolean highlighted) {
+        this.qNumber = qNumber;
+        this.studentId = studentId;
+        this.studentName = studentName;
+        this.category = category;
+        this.status = status;
+        this.questionTime = questionTime;
+        this.replyCount = replyCount;
+        this.followupCount = followupCount;
+        this.highlighted = highlighted;
+    }
 
-    // 学生学号
-    public String getStudentId() { return studentId.get(); }
-    public void setStudentId(String studentId) { this.studentId.set(studentId); }
-    public StringProperty studentIdProperty() { return studentId; }
+    public String getQNumber() {
+        return qNumber;
+    }
 
-    // 学生姓名
-    public String getStudentName() { return studentName.get(); }
-    public void setStudentName(String studentName) { this.studentName.set(studentName); }
-    public StringProperty studentNameProperty() { return studentName; }
+    public void setQNumber(String qNumber) {
+        this.qNumber = qNumber;
+    }
 
-    // 类别
-    public String getCategory() { return category.get(); }
-    public void setCategory(String category) { this.category.set(category); }
-    public StringProperty categoryProperty() { return category; }
+    public String getStudentId() {
+        return studentId;
+    }
 
-    // 状态
-    public String getStatus() { return status.get(); }
-    public void setStatus(String status) { this.status.set(status); }
-    public StringProperty statusProperty() { return status; }
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
 
-    // 提问时间
-    public LocalDateTime getQuestionTime() { return questionTime.get(); }
-    public void setQuestionTime(LocalDateTime questionTime) { this.questionTime.set(questionTime); }
-    public ObjectProperty<LocalDateTime> questionTimeProperty() { return questionTime; }
+    public String getStudentName() {
+        return studentName;
+    }
 
-    // 回复次数
-    public int getReplyCount() { return replyCount.get(); }
-    public void setReplyCount(int replyCount) { this.replyCount.set(replyCount); }
-    public IntegerProperty replyCountProperty() { return replyCount; }
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 
-    // 追问次数
-    public int getFollowUpCount() { return followUpCount.get(); }
-    public void setFollowUpCount(int followUpCount) { this.followUpCount.set(followUpCount); }
-    public IntegerProperty followUpCountProperty() { return followUpCount; }
+    public String getCategory() {
+        return category;
+    }
 
-    // 是否加精
-    public boolean getIsHighlighted() { return isHighlighted.get(); }
-    public void setIsHighlighted(boolean isHighlighted) { this.isHighlighted.set(isHighlighted); }
-    public BooleanProperty isHighlightedProperty() { return isHighlighted; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    // 提问内容
-    public String getQuestionContent() { return questionContent.get(); }
-    public void setQuestionContent(String questionContent) { this.questionContent.set(questionContent); }
-    public StringProperty questionContentProperty() { return questionContent; }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getQuestionTime() {
+        return questionTime;
+    }
+
+    public void setQuestionTime(LocalDateTime questionTime) {
+        this.questionTime = questionTime;
+    }
+
+    public int getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(int replyCount) {
+        this.replyCount = replyCount;
+    }
+
+    public int getFollowupCount() {
+        return followupCount;
+    }
+
+    public void setFollowupCount(int followupCount) {
+        this.followupCount = followupCount;
+    }
+
+    public boolean isHighlighted() {
+        return highlighted;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
+    }
 
     @Override
     public String toString() {
         return "Consultation{" +
-                "consultationId='" + getConsultationId() + '\'' +
-                ", studentId='" + getStudentId() + '\'' +
-                ", studentName='" + getStudentName() + '\'' +
-                ", category='" + getCategory() + '\'' +
-                ", status='" + getStatus() + '\'' +
-                ", questionTime=" + getQuestionTime() +
-                ", replyCount=" + getReplyCount() +
-                ", followUpCount=" + getFollowUpCount() +
-                ", isHighlighted=" + getIsHighlighted() +
+                "qNumber='" + qNumber + '\'' +
+                ", studentId='" + studentId + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", category='" + category + '\'' +
+                ", status='" + status + '\'' +
+                ", questionTime=" + questionTime +
+                ", replyCount=" + replyCount +
+                ", followupCount=" + followupCount +
+                ", highlighted=" + highlighted +
                 '}';
     }
-} 
+}

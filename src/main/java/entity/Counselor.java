@@ -1,82 +1,107 @@
 package entity;
 
-import javafx.beans.property.*;
 import java.time.LocalDate;
 
 public class Counselor {
-    private final StringProperty counselorId = new SimpleStringProperty();
-    private final StringProperty name = new SimpleStringProperty();
-    private final StringProperty gender = new SimpleStringProperty();
-    private final ObjectProperty<LocalDate> birthDate = new SimpleObjectProperty<>();
-    private final StringProperty phoneNumber = new SimpleStringProperty();
-    private final StringProperty departmentName = new SimpleStringProperty();
-    private final StringProperty password = new SimpleStringProperty();
-    private final IntegerProperty departmentId = new SimpleIntegerProperty();
+    private String counselorId;
+    private String name;
+    private String gender;
+    private LocalDate dateOfBirth;
+    private String phoneNumber;
+    private String password;
+    private String departmentName;
+    private String classList; // 负责班级
 
     // 构造函数
-    public Counselor() {}
-
-    public Counselor(String counselorId, String name, String gender, LocalDate birthDate, 
-                    String phoneNumber, String departmentName, String password, int departmentId) {
-        setCounselorId(counselorId);
-        setName(name);
-        setGender(gender);
-        setBirthDate(birthDate);
-        setPhoneNumber(phoneNumber);
-        setDepartmentName(departmentName);
-        setPassword(password);
-        setDepartmentId(departmentId);
+    public Counselor() {
     }
 
-    // 辅导员工号
-    public String getCounselorId() { return counselorId.get(); }
-    public void setCounselorId(String counselorId) { this.counselorId.set(counselorId); }
-    public StringProperty counselorIdProperty() { return counselorId; }
+    public Counselor(String counselorId, String name, String gender, LocalDate dateOfBirth, String phoneNumber,
+            String password) {
+        this.counselorId = counselorId;
+        this.name = name;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
 
-    // 姓名
-    public String getName() { return name.get(); }
-    public void setName(String name) { this.name.set(name); }
-    public StringProperty nameProperty() { return name; }
+    // Getter 和 Setter 方法
+    public String getCounselorId() {
+        return counselorId;
+    }
 
-    // 性别
-    public String getGender() { return gender.get(); }
-    public void setGender(String gender) { this.gender.set(gender); }
-    public StringProperty genderProperty() { return gender; }
+    public void setCounselorId(String counselorId) {
+        this.counselorId = counselorId;
+    }
 
-    // 出生日期
-    public LocalDate getBirthDate() { return birthDate.get(); }
-    public void setBirthDate(LocalDate birthDate) { this.birthDate.set(birthDate); }
-    public ObjectProperty<LocalDate> birthDateProperty() { return birthDate; }
+    public String getName() {
+        return name;
+    }
 
-    // 手机号
-    public String getPhoneNumber() { return phoneNumber.get(); }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber.set(phoneNumber); }
-    public StringProperty phoneNumberProperty() { return phoneNumber; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    // 院系名称
-    public String getDepartmentName() { return departmentName.get(); }
-    public void setDepartmentName(String departmentName) { this.departmentName.set(departmentName); }
-    public StringProperty departmentNameProperty() { return departmentName; }
+    public String getGender() {
+        return gender;
+    }
 
-    // 密码
-    public String getPassword() { return password.get(); }
-    public void setPassword(String password) { this.password.set(password); }
-    public StringProperty passwordProperty() { return password; }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
-    // 院系ID
-    public int getDepartmentId() { return departmentId.get(); }
-    public void setDepartmentId(int departmentId) { this.departmentId.set(departmentId); }
-    public IntegerProperty departmentIdProperty() { return departmentId; }
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public String getClassList() {
+        return classList;
+    }
+
+    public void setClassList(String classList) {
+        this.classList = classList;
+    }
 
     @Override
     public String toString() {
         return "Counselor{" +
-                "counselorId='" + getCounselorId() + '\'' +
-                ", name='" + getName() + '\'' +
-                ", gender='" + getGender() + '\'' +
-                ", birthDate=" + getBirthDate() +
-                ", phoneNumber='" + getPhoneNumber() + '\'' +
-                ", departmentName='" + getDepartmentName() + '\'' +
+                "counselorId='" + counselorId + '\'' +
+                ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", password='" + password + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                ", classList='" + classList + '\'' +
                 '}';
     }
-} 
+}

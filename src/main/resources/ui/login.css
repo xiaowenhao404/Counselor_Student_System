@@ -1,13 +1,9 @@
 .root-container {
-    -fx-background-color: white; /* 将背景色改为白色以消除底部边框 */
+    -fx-background-color: white;
+    /* 将背景色改为白色以消除底部边框 */
     /* A light background */
-    -fx-font-family: "Poppins", sans-serif; /* 设置全局字体 */
-}
-
-/* 定义 Poppins 字体 */
-@font-face {
-    font-family: "Poppins";
-    src: url("/fonts/Poppins/poppins/Poppins-Regular.ttf"); /* 根据您提供的路径调整 */
+    -fx-font-family: "Microsoft YaHei", "SimHei", sans-serif;
+    /* 使用中文字体 */
 }
 
 .header-container {
@@ -33,7 +29,8 @@
 
 .login-container {
     -fx-background-color: white;
-    -fx-padding: 40px 40px 100px 40px; /* 设置明确的 padding，增加底部空间 */
+    -fx-padding: 40px 40px 100px 40px;
+    /* 设置明确的 padding，增加底部空间 */
     -fx-spacing: 20px;
     -fx-background-radius: 10px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0, 5);
@@ -103,7 +100,8 @@
 /* Style for selected role button - requires logic in controller */
 .role-button.selected {
     -fx-border-color: #667eea;
-    -fx-border-width: 1px; /* 调整为 1px，保持与默认边框宽度一致，防止布局变化 */
+    -fx-border-width: 1px;
+    /* 调整为 1px，保持与默认边框宽度一致，防止布局变化 */
     -fx-background-color: #eef2ff;
     /* Light blue background */
 }
@@ -143,8 +141,7 @@
     /* Reverse gradient on hover */
 }
 
-.login-button:pressed {
-}
+.login-button:pressed {}
 
 .combo-box,
 .text-field,
@@ -154,7 +151,8 @@
     -fx-background-radius: 5px;
     -fx-border-color: #cccccc;
     -fx-border-radius: 5px;
-    -fx-border-width: 1px; /* 确保默认边框宽度为 1px */
+    -fx-border-width: 1px;
+    /* 确保默认边框宽度为 1px */
 }
 
 .combo-box:hover,
@@ -166,9 +164,12 @@
 .text-field:focused,
 .password-field:focused,
 .combo-box:focused {
-    -fx-border-color: #667eea; /* 改变颜色 */
-    -fx-border-width: 1px; /* 保持不变 */
-    -fx-padding: 8px; /* 保持不变 */
+    -fx-border-color: #667eea;
+    /* 改变颜色 */
+    -fx-border-width: 1px;
+    /* 保持不变 */
+    -fx-padding: 8px;
+    /* 保持不变 */
 }
 
 .cursor-hand {

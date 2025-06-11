@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="TOP_CENTER" styleClass="root-container" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.LoginController">
+<VBox alignment="TOP_CENTER" styleClass="root-container" stylesheets="@login.css" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.LoginController">
 
     <!-- Header -->
     <StackPane styleClass="header-container" prefHeight="120.0">

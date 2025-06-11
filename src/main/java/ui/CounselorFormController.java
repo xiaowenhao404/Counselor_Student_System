@@ -17,18 +17,28 @@ import java.util.ResourceBundle;
 
 public class CounselorFormController implements Initializable {
 
-    @FXML private Text formTitle;
-    @FXML private TextField counselorIdField;
-    @FXML private TextField nameField;
-    @FXML private ComboBox<String> genderComboBox;
-    @FXML private DatePicker birthDatePicker;
-    @FXML private TextField phoneField;
-    @FXML private PasswordField passwordField;
-    @FXML private TextField showPasswordField;
-    @FXML private ImageView passwordVisibilityIcon;
-    @FXML private ComboBox<String> departmentComboBox;
-    @FXML private Button saveButton;
-    @FXML private Button cancelButton;
+    @FXML
+    private Text formTitle;
+    @FXML
+    private TextField counselorIdField;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private ComboBox<String> genderComboBox;
+    @FXML
+    private DatePicker birthDatePicker;
+    @FXML
+    private TextField phoneField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private TextField showPasswordField;
+    @FXML
+    private ImageView passwordVisibilityIcon;
+    @FXML
+    private Button saveButton;
+    @FXML
+    private Button cancelButton;
 
     private boolean isEditMode = false;
     private Counselor currentCounselor;
@@ -38,6 +48,7 @@ public class CounselorFormController implements Initializable {
     // 回调接口，用于通知父窗口操作结果
     public interface CounselorFormCallback {
         void onCounselorSaved(Counselor counselor, boolean isEdit);
+
         void onFormCancelled();
     }
 
@@ -51,18 +62,6 @@ public class CounselorFormController implements Initializable {
     private void initializeComboBoxes() {
         // 初始化性别选择
         genderComboBox.setItems(FXCollections.observableArrayList("男", "女"));
-        
-        // 初始化院系选择（模拟数据，实际应从数据库获取）
-        departmentComboBox.setItems(FXCollections.observableArrayList(
-            "计算机科学与工程学院",
-            "电子信息工程学院", 
-            "机械工程学院",
-            "土木工程学院",
-            "经济管理学院",
-            "外国语学院",
-            "数学与统计学院",
-            "物理科学与技术学院"
-        ));
     }
 
     private void setupFieldValidation() {
@@ -72,7 +71,7 @@ public class CounselorFormController implements Initializable {
                 counselorIdField.setText(oldValue);
             }
         });
-        
+
         // 手机号验证：只允许数字，限制长度
         phoneField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -84,7 +83,7 @@ public class CounselorFormController implements Initializable {
             }
         });
     }
-    
+
     private void setupPasswordFields() {
         // 设置双向绑定，确保两个密码框内容同步
         passwordField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -92,18 +91,18 @@ public class CounselorFormController implements Initializable {
                 showPasswordField.setText(newValue);
             }
         });
-        
+
         showPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (passwordVisible) {
                 passwordField.setText(newValue);
             }
         });
     }
-    
+
     @FXML
     private void togglePasswordVisibility(MouseEvent event) {
         passwordVisible = !passwordVisible;
-        
+
         if (passwordVisible) {
             // 显示密码
             showPasswordField.setText(passwordField.getText());
@@ -124,15 +123,14 @@ public class CounselorFormController implements Initializable {
             isEditMode = true;
             currentCounselor = counselor;
             formTitle.setText("编辑辅导员");
-            
+
             // 填充表单数据
             counselorIdField.setText(counselor.getCounselorId());
             nameField.setText(counselor.getName());
             genderComboBox.setValue(counselor.getGender());
-            birthDatePicker.setValue(counselor.getBirthDate());
+            birthDatePicker.setValue(counselor.getDateOfBirth());
             phoneField.setText(counselor.getPhoneNumber());
-            departmentComboBox.setValue(counselor.getDepartmentName());
-            
+
             // 编辑模式下工号不可修改
             counselorIdField.setDisable(true);
         }
@@ -146,22 +144,21 @@ public class CounselorFormController implements Initializable {
     private void handleSave() {
         if (validateForm()) {
             Counselor counselor = isEditMode ? currentCounselor : new Counselor();
-            
+
             // 设置辅导员信息
             counselor.setCounselorId(counselorIdField.getText().trim());
             counselor.setName(nameField.getText().trim());
             counselor.setGender(genderComboBox.getValue());
-            counselor.setBirthDate(birthDatePicker.getValue());
+            counselor.setDateOfBirth(birthDatePicker.getValue());
             counselor.setPhoneNumber(phoneField.getText().trim());
             String currentPassword = passwordVisible ? showPasswordField.getText() : passwordField.getText();
             counselor.setPassword(currentPassword);
-            counselor.setDepartmentName(departmentComboBox.getValue());
-            
+
             // 通知父窗口
             if (callback != null) {
                 callback.onCounselorSaved(counselor, isEditMode);
             }
-            
+
             // 关闭窗口
             closeWindow();
         }
@@ -177,7 +174,7 @@ public class CounselorFormController implements Initializable {
 
     private boolean validateForm() {
         StringBuilder errors = new StringBuilder();
-        
+
         // 验证必填字段
         if (counselorIdField.getText().trim().isEmpty()) {
             errors.append("• 辅导员工号不能为空\n");
@@ -185,41 +182,44 @@ public class CounselorFormController implements Initializable {
         } else {
             removeErrorStyle(counselorIdField);
         }
-        
+
         if (nameField.getText().trim().isEmpty()) {
             errors.append("• 姓名不能为空\n");
             addErrorStyle(nameField);
         } else {
             removeErrorStyle(nameField);
         }
-        
-        if (genderComboBox.getValue() == null) {
-            errors.append("• 请选择性别\n");
+
+        if (genderComboBox.getValue() == null || genderComboBox.getValue().isEmpty()) {
+            errors.append("• 性别不能为空\n");
             addErrorStyle(genderComboBox);
         } else {
             removeErrorStyle(genderComboBox);
         }
-        
-        String currentPassword = passwordVisible ? showPasswordField.getText().trim() : passwordField.getText().trim();
-        if (currentPassword.isEmpty()) {
+
+        if (birthDatePicker.getValue() == null) {
+            errors.append("• 出生日期不能为空\n");
+            addErrorStyle(birthDatePicker);
+        } else {
+            removeErrorStyle(birthDatePicker);
+        }
+
+        if (phoneField.getText().trim().isEmpty()) {
+            errors.append("• 手机号码不能为空\n");
+            addErrorStyle(phoneField);
+        } else {
+            removeErrorStyle(phoneField);
+        }
+
+        if (passwordField.getText().trim().isEmpty() && showPasswordField.getText().trim().isEmpty()) {
             errors.append("• 密码不能为空\n");
-            if (passwordVisible) {
-                addErrorStyle(showPasswordField);
-            } else {
-                addErrorStyle(passwordField);
-            }
+            addErrorStyle(passwordField);
+            addErrorStyle(showPasswordField);
         } else {
             removeErrorStyle(passwordField);
             removeErrorStyle(showPasswordField);
         }
-        
-        if (departmentComboBox.getValue() == null) {
-            errors.append("• 请选择院系\n");
-            addErrorStyle(departmentComboBox);
-        } else {
-            removeErrorStyle(departmentComboBox);
-        }
-        
+
         // 验证手机号格式
         String phone = phoneField.getText().trim();
         if (!phone.isEmpty() && !phone.matches("1[3-9]\\d{9}")) {
@@ -228,31 +228,41 @@ public class CounselorFormController implements Initializable {
         } else {
             removeErrorStyle(phoneField);
         }
-        
+
         if (errors.length() > 0) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("表单验证");
-            alert.setHeaderText("请修正以下错误：");
-            alert.setContentText(errors.toString());
-            alert.showAndWait();
+            showError(errors.toString());
             return false;
         }
-        
+
         return true;
     }
 
     private void addErrorStyle(Control control) {
-        if (!control.getStyleClass().contains("error")) {
-            control.getStyleClass().add("error");
-        }
+        control.getStyleClass().add("error-field");
     }
 
     private void removeErrorStyle(Control control) {
-        control.getStyleClass().remove("error");
+        control.getStyleClass().remove("error-field");
     }
 
     private void closeWindow() {
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
     }
-} 
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("错误");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("成功");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
