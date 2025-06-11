@@ -71,7 +71,7 @@
                         <graphic>
                             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="/images/block.png"/>
+                                    <Image url="/images/delete.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
@@ -120,7 +120,7 @@
                         <graphic>
                             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="/images/block.png"/>
+                                    <Image url="/images/delete.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
@@ -149,7 +149,7 @@
                         <graphic>
                             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="/images/settings.png"/>
+                                    <Image url="/images/class.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
@@ -169,7 +169,7 @@
                         <graphic>
                             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="/images/block.png"/>
+                                    <Image url="/images/delete.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
@@ -198,7 +198,7 @@
                         <graphic>
                             <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="/images/block.png"/>
+                                    <Image url="/images/delete.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
@@ -255,7 +255,7 @@
                     <VBox alignment="CENTER" spacing="5">
                         <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="/images/settings.png"/>
+                                <Image url="/images/class.png"/>
                             </image>
                         </ImageView>
                     </VBox>
@@ -267,7 +267,7 @@
                     <VBox alignment="CENTER" spacing="5">
                         <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="/images/all.png"/>
+                                <Image url="/images/consultation (1).png"/>
                             </image>
                         </ImageView>
                     </VBox>
