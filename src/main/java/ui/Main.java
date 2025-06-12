@@ -25,7 +25,9 @@ public class Main extends Application {
 
     public static void loadScene(String fxmlPath) {
         try {
-            Parent root = FXMLLoader.load(Main.class.getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource(fxmlPath));
+            Parent root = loader.load();
+            // StudentMainController controller = loader.getController(); // 如果需要访问控制器实例，可以在这里获取
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Main.class.getResource("/ui/student_main.css").toExternalForm()); // 确保CSS被加载
             primaryStage.setScene(scene);

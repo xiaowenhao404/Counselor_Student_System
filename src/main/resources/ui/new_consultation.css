@@ -1,0 +1,158 @@
+.main-container {
+    -fx-background-color: #f0f2f5;
+    -fx-font-family: "Microsoft YaHei UI";
+}
+
+.top-bar {
+    -fx-background-color: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+    -fx-padding: 10px 20px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.back-icon {
+    -fx-fill: white;
+}
+
+.back-label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.content-area {
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-margin: 20px;
+}
+
+.input-section {
+    -fx-spacing: 5px;
+}
+
+.input-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+.input-field, .textarea-field {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px 10px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.input-field:focused, .textarea-field:focused {
+    -fx-border-color: #6a11cb;
+    -fx-effect: dropshadow(gaussian, rgba(106, 17, 203, 0.2), 5, 0, 0, 0);
+}
+
+.textarea-field {
+    -fx-pref-height: 100px;
+    -fx-wrap-text: true;
+}
+
+.char-count-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+}
+
+.char-count-label.error {
+    -fx-text-fill: #ff4d4d; /* 红色 */
+    -fx-font-weight: bold;
+}
+
+.char-hint-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #ff4d4d; /* 红色 */
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 5px 0;
+}
+
+.tag-section {
+    -fx-spacing: 10px;
+}
+
+.tag-button {
+    -fx-pref-width: 80px;
+    -fx-pref-height: 30px;
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 15px;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1); /* 轻微阴影 */
+}
+
+.tag-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-transition-duration: 0.1s;
+}
+
+.tag-button.selected {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2); /* 蓝紫渐变 */
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(106, 17, 203, 0.3), 5, 0, 0, 0);
+}
+
+.action-buttons-container {
+    -fx-padding: 10px 0;
+}
+
+.action-button {
+    -fx-pref-width: 100px;
+    -fx-pref-height: 35px;
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.action-button:hover {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2); /* 蓝紫渐变 */
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(106, 17, 203, 0.3), 5, 0, 0, 0);
+}
+
+#publishButton {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2); /* 蓝紫渐变 */
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+#publishButton:hover {
+    -fx-opacity: 0.9; /* 悬停时稍微变暗 */
+}
+
+#cancelButton {
+    -fx-background-color: white;
+    -fx-text-fill: #333333;
+    -fx-border-color: #e0e0e0;
+}
+
+#cancelButton:hover {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2); /* 蓝紫渐变 */
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+} 

@@ -26,6 +26,11 @@ import java.util.stream.Collectors;
 import javafx.stage.Modality;
 import javafx.scene.control.Alert;
 import ui.ConsultationDetailController;
+import javafx.collections.FXCollections;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class StudentMainController {
 
@@ -47,7 +52,7 @@ public class StudentMainController {
         UNRESOLVED("仍需解决"),
         RESOLVED("已解决");
 
-        private final String displayName;
+        public final String displayName;
 
         ConsultationStatus(String displayName) {
             this.displayName = displayName;
@@ -77,67 +82,107 @@ public class StudentMainController {
         }
     }
 
+    // 历史记录条目数据模型
+    public static class HistoryEntry implements Comparable<HistoryEntry> {
+        public enum EntryType {
+            QUESTION, REPLY
+        }
+        private EntryType type;
+        private String content;
+        private String unit; // 回复单位 (仅回复类型有)
+        private String timestamp; // 存储为 String，但用于排序时会转换为 LocalDateTime
+
+        public HistoryEntry(EntryType type, String content, String unit, String timestamp) {
+            this.type = type;
+            this.content = content;
+            this.unit = unit;
+            this.timestamp = timestamp;
+        }
+
+        public EntryType getType() { return type; }
+        public String getContent() { return content; }
+        public String getUnit() { return unit; }
+        public String getTimestamp() { return timestamp; }
+
+        @Override
+        public int compareTo(HistoryEntry other) {
+            // 实现按时间倒序排序
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime thisTime = LocalDateTime.parse(this.timestamp, formatter);
+            LocalDateTime otherTime = LocalDateTime.parse(other.timestamp, formatter);
+            return otherTime.compareTo(thisTime); // 倒序
+        }
+    }
+
     // 咨询数据模型
     public static class Consultation {
-        private final String question;
-        private final String time;
-        private final String detailContent;
-        private final String reply;
-        private final ConsultationStatus status;
-        private final BooleanProperty isCollected;
-        private final BooleanProperty isFeatured;
-        private final Category category; // 新增字段：类别
+        private String id;
+        private String question;
+        private String time;
+        private String status;
+        private String category;
+        private boolean isFeatured;
+        private boolean isCollected;
+        private List<HistoryEntry> history; // 新增：存储对话历史
 
-        public Consultation(String question, String time, String detailContent, String reply, ConsultationStatus status, Category category) {
+        public Consultation(String id, String question, String initialDetailContent, String initialReply, String time, String status, String category, boolean isFeatured, boolean isCollected) {
+            this.id = id;
             this.question = question;
             this.time = time;
-            this.detailContent = detailContent;
-            this.reply = reply;
             this.status = status;
-            this.isCollected = new SimpleBooleanProperty(false);
-            this.isFeatured = new SimpleBooleanProperty(false);
-            this.category = category; // 初始化类别
+            this.category = category;
+            this.isFeatured = isFeatured;
+            this.isCollected = isCollected;
+            this.history = new ArrayList<>();
+
+            // 根据传入的初始详细内容和回复构建历史记录
+            if (initialDetailContent != null && !initialDetailContent.trim().isEmpty()) {
+                this.history.add(new HistoryEntry(HistoryEntry.EntryType.QUESTION, initialDetailContent, null, time));
+            } else {
+                // 如果没有详细内容，则将问题本身作为第一个提问记录
+                this.history.add(new HistoryEntry(HistoryEntry.EntryType.QUESTION, question, null, time));
+            }
+
+            if (initialReply != null && !initialReply.trim().isEmpty() && !initialReply.equals("暂无回复")) {
+                // 假设初始回复的单位是"辅导员A"
+                this.history.add(new HistoryEntry(HistoryEntry.EntryType.REPLY, initialReply, "辅导员A", time));
+            }
         }
 
-        public String getQuestion() {
-            return question;
-        }
-
-        public String getTime() {
-            return time;
-        }
-
+        // 现有的getter方法
+        public String getId() { return id; }
+        public String getQuestion() { return question; }
+        // 注意：getDetailContent() 和 getReply() 不再直接从 Consultation 获取，而是从 history 列表获取
+        // 为了兼容旧代码，暂时保留，但后续会移除或修改其实现
         public String getDetailContent() {
-            return detailContent;
+            // 从历史记录中查找第一个QUESTION类型的Entry作为详细内容
+            return history.stream()
+                          .filter(entry -> entry.getType() == HistoryEntry.EntryType.QUESTION)
+                          .map(HistoryEntry::getContent)
+                          .findFirst()
+                          .orElse(null);
         }
 
         public String getReply() {
-            return reply;
+            // 从历史记录中查找最后一个REPLY类型的Entry作为最新回复
+            return history.stream()
+                          .filter(entry -> entry.getType() == HistoryEntry.EntryType.REPLY)
+                          .map(HistoryEntry::getContent)
+                          .reduce((first, second) -> second) // Get the last one
+                          .orElse("暂无回复");
         }
 
-        public ConsultationStatus getStatus() {
-            return status;
-        }
+        public String getTime() { return time; } // 这个时间是首次提问时间，不是每次历史记录的时间
+        public String getStatus() { return status; }
+        public String getCategory() { return category; }
+        public boolean isFeatured() { return isFeatured; }
+        public boolean isCollected() { return isCollected; }
+        public List<HistoryEntry> getHistory() { return history; } // 新增 getter
 
-        public boolean isCollected() {
-            return isCollected.get();
-        }
-
-        public void setCollected(boolean collected) {
-            this.isCollected.set(collected);
-        }
-
-        public boolean isFeatured() {
-            return isFeatured.get();
-        }
-
-        public void setFeatured(boolean featured) {
-            this.isFeatured.set(featured);
-        }
-
-        public Category getCategory() { // 新增getter
-            return category;
-        }
+        // Setter for status (for updating after a new reply/follow-up)
+        public void setStatus(String status) { this.status = status; }
+        // Setter for collected status (for updating from detail page)
+        public void setCollected(boolean collected) { isCollected = collected; }
     }
 
     private ObservableList<Consultation> allConsultations; // 存储所有咨询数据
@@ -160,24 +205,33 @@ public class StudentMainController {
     @FXML
     private Button hallButton;
     @FXML
-    private Button myButton;
+    private Button myConsultationsButton;
+    @FXML
+    private Button allCategoriesButton;
+    @FXML
+    private Button studyButton;
+    @FXML
+    private Button lifeButton;
+    @FXML
+    private Button otherButton;
+    @FXML
+    private Button featuredButton;
+    @FXML
+    private Button collectedButton;
 
     @FXML
     public void initialize() {
         initializeConsultations();
-        loadConsultationCards();
-        updateConsultationCount();
 
         // 确保"大厅"按钮默认选中
         hallButton.getStyleClass().add("selected");
-        myButton.getStyleClass().remove("selected");
+        myConsultationsButton.getStyleClass().remove("selected");
 
         // 设置顶部导航栏的点击事件
         hallButton.setOnAction(event -> {
-            // 已经在当前页面，无需重新加载场景，只需刷新卡片（如果筛选等有变化）
             loadConsultationCards();
         });
-        myButton.setOnAction(event -> {
+        myConsultationsButton.setOnAction(event -> {
             Main.loadScene("/ui/my_consultations.fxml"); // 加载我的咨询界面
         });
 
@@ -203,7 +257,7 @@ public class StudentMainController {
                     String buttonText = categoryButton.getText();
                     switch (buttonText) {
                         case "全部":
-                            currentFilter = FilterType.ALL; // "全部"类别，对应 ALL 筛选器
+                            currentFilter = FilterType.ALL;
                             break;
                         case "学习":
                             currentFilter = FilterType.LEARNING;
@@ -250,6 +304,17 @@ public class StudentMainController {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             loadConsultationCards(); // 文本改变时重新加载卡片，loadConsultationCards会处理搜索过滤
         });
+
+        // 设置默认选中的类别按钮
+        if (allCategoriesButton != null) { // 添加 null 检查
+            allCategoriesButton.getStyleClass().add("selected");
+        }
+
+        // 更新咨询数量（现在可以安全调用）
+        updateConsultationCount();
+
+        // 在所有按钮都已初始化并设置事件监听器后，最后加载卡片
+        loadConsultationCards();
     }
 
     // 单独设置左侧导航按钮，因为它们需要额外逻辑
@@ -275,8 +340,7 @@ public class StudentMainController {
                     } else if ("收藏".equals(buttonText)) {
                         currentFilter = FilterType.COLLECTED;
                     }
-                    // 注意：这里不需要再调用 loadConsultationCards()，因为 searchField 的监听器会触发它
-                    // loadConsultationCards(); // 重新加载卡片以应用筛选
+                    loadConsultationCards(); // 重新加载卡片以应用筛选
                     System.out.println("左侧导航按钮 " + button.getText() + " 被选中，筛选类型: " + currentFilter);
                 });
             }
@@ -284,57 +348,57 @@ public class StudentMainController {
     }
 
     private void loadConsultationCards() {
-        cardsContainer.getChildren().clear(); // 清除现有卡片
-
-        List<Consultation> currentViewConsultations = allConsultations.stream()
-            // 先过滤掉所有"未答复"的咨询，因为大厅不显示此状态
-            .filter(c -> c.getStatus() != ConsultationStatus.UNANSWERED)
+        cardsContainer.getChildren().clear();
+        
+        // 获取搜索文本
+        String searchText = searchField.getText().toLowerCase();
+        
+        // 过滤咨询列表
+        List<Consultation> filteredConsultations = allConsultations.stream()
+            .filter(c -> c.getStatus().equals(ConsultationStatus.RESOLVED.displayName) ||
+                         c.getStatus().equals(ConsultationStatus.UNRESOLVED.displayName)) // 只显示已解决和未解决
+            .filter(c -> {
+                // 根据当前筛选器类型过滤
+                switch (currentFilter) {
+                    case ALL:
+                        return true;
+                    case FEATURED:
+                        return c.isFeatured();
+                    case COLLECTED:
+                        return c.isCollected();
+                    case LEARNING:
+                        return "学习".equals(c.getCategory());
+                    case LIFE:
+                        return "生活".equals(c.getCategory());
+                    case OTHER:
+                        return "其他".equals(c.getCategory());
+                    default:
+                        return true;
+                }
+            })
+            .filter(c -> searchText.isEmpty() ||
+                         c.getQuestion().toLowerCase().contains(searchText) ||
+                         (c.getReply() != null && c.getReply().toLowerCase().contains(searchText)) ||
+                         (c.getDetailContent() != null && c.getDetailContent().toLowerCase().contains(searchText)))
             .collect(Collectors.toList());
 
-        // 应用左侧导航栏的筛选
-        currentViewConsultations = currentViewConsultations.stream().filter(c -> {
-            if (currentFilter == FilterType.ALL) {
-                return true;
-            } else if (currentFilter == FilterType.COLLECTED) {
-                return c.isCollected();
-            } else if (currentFilter == FilterType.FEATURED) {
-                return c.isFeatured();
-            } else if (currentFilter == FilterType.LEARNING) { // 类别筛选
-                return c.getCategory() == Category.LEARNING;
-            } else if (currentFilter == FilterType.LIFE) { // 类别筛选
-                return c.getCategory() == Category.LIFE;
-            } else if (currentFilter == FilterType.OTHER) { // 类别筛选
-                return c.getCategory() == Category.OTHER;
-            }
-            return false; // 默认不显示
-        }).collect(Collectors.toList());
-
-        // 应用搜索框的过滤
-        String searchText = searchField.getText().toLowerCase();
-        if (searchText != null && !searchText.trim().isEmpty()) {
-            currentViewConsultations = currentViewConsultations.stream()
-                .filter(c -> c.getQuestion().toLowerCase().contains(searchText) ||
-                             c.getReply().toLowerCase().contains(searchText) ||
-                             (c.getDetailContent() != null && c.getDetailContent().toLowerCase().contains(searchText)))
-                .collect(Collectors.toList());
-        }
-
-        if (currentViewConsultations.isEmpty()) {
-            Label noResultsLabel = new Label("暂无相关咨询");
-            noResultsLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #888; -fx-padding: 20px;");
-            cardsContainer.getChildren().add(noResultsLabel);
-            return;
-        }
-
-        // 动态添加过滤后的咨询卡片
-        for (Consultation consultation : currentViewConsultations) {
+        // 动态添加咨询卡片
+        for (Consultation consultation : filteredConsultations) {
             cardsContainer.getChildren().add(createConsultationCard(consultation));
         }
     }
 
-    // 辅助方法：创建一个咨询卡片，现在接收Consultation对象
+    private String getConsultationStatusName(String displayName) {
+        for (ConsultationStatus status : ConsultationStatus.values()) {
+            if (status.displayName.equals(displayName)) {
+                return status.name();
+            }
+        }
+        return null; // 或者抛出异常，如果 displayName 无效
+    }
+
     private Node createConsultationCard(Consultation consultation) {
-        VBox card = new VBox(10);
+        VBox card = new VBox();
         card.getStyleClass().add("consultation-card");
         card.setPadding(new Insets(15));
 
@@ -348,20 +412,26 @@ public class StudentMainController {
         timeLabel.getStyleClass().add("card-time");
 
         // 回复内容
-        Label replyLabel = new Label(consultation.getReply());
+        Label replyLabel = new Label();
+        if (consultation.getReply() == null || consultation.getReply().trim().isEmpty() || consultation.getReply().equals("暂无回复")) {
+            replyLabel.setText("暂无回复");
+        } else {
+            replyLabel.setText(consultation.getReply());
+        }
         replyLabel.getStyleClass().add("card-reply");
         replyLabel.setWrapText(true);
 
         // 状态标签 - 大厅只显示"已解决"和"未解决"
         Label statusLabel = new Label();
         statusLabel.getStyleClass().add("card-status-label");
-        if (consultation.getStatus() == ConsultationStatus.RESOLVED) {
+        if (consultation.getStatus().equals(ConsultationStatus.RESOLVED.displayName)) {
             statusLabel.setText("已解决");
             statusLabel.getStyleClass().add("status-resolved");
-        } else { // 包括 UNANSWERED 和 UNRESOLVED，在大厅都显示为"未解决"
-            statusLabel.setText("未解决");
+        } else if (consultation.getStatus().equals(ConsultationStatus.UNRESOLVED.displayName)) { // 明确处理仍需解决为未解决
+            statusLabel.setText("仍需解决"); // 修改为 "仍需解决"
             statusLabel.getStyleClass().add("status-unresolved"); // 使用unresolved样式，表示未解决
         }
+        // 未答复状态的咨询已在 loadConsultationCards 中过滤，这里无需处理
 
         // 底部交互区域
         HBox interactionContainer = new HBox(15);
@@ -381,13 +451,13 @@ public class StudentMainController {
         collectIcon.getStyleClass().add("interaction-icon");
         collectIcon.setPickOnBounds(true);
         collectIcon.setOnMouseClicked(event -> {
-            boolean wasCollected = consultation.isCollected(); // 记录之前的状态
-            consultation.setCollected(!wasCollected);
-            updateCollectIcon(collectIcon, consultation.isCollected());
+            boolean wasCollected = consultation.isCollected;
+            consultation.isCollected = !wasCollected;
+            updateCollectIcon(collectIcon, consultation.isCollected);
             event.consume();
 
             // 如果当前筛选器是"收藏"，并且该咨询卡片被取消收藏，则从列表中移除
-            if (currentFilter == FilterType.COLLECTED && !consultation.isCollected()) {
+            if (currentFilter == FilterType.COLLECTED && !consultation.isCollected) {
                 loadConsultationCards(); // 重新加载卡片以移除取消收藏的卡片
             }
         });
@@ -414,29 +484,19 @@ public class StudentMainController {
     }
 
     private void openConsultationDetail(Consultation consultation) {
+        System.out.println("尝试打开咨询详情窗口：" + consultation.getId()); // 添加调试打印语句
+        System.out.println("StudentMainController - Passing consultation object with history size: " + consultation.getHistory().size());
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/consultation_detail.fxml"));
             Parent detailRoot = loader.load();
 
             ConsultationDetailController controller = loader.getController();
-            // 转换数据，因为 ConsultationDetailController.Consultation 可能有不同结构
-            ConsultationDetailController.Consultation detailConsultation = new ConsultationDetailController.Consultation(
-                consultation.getQuestion(),
-                consultation.getTime(), // StudentMainController.Consultation 的 time 已经是 String
-                consultation.getDetailContent(), // 详细内容
-                consultation.getReply(), // 回复内容
-                ConsultationDetailController.ConsultationStatus.valueOf(consultation.getStatus().name()),
-                consultation.isCollected(),
-                consultation.isFeatured() // 传递精选状态
-            );
-            controller.setConsultation(detailConsultation);
+            // 直接传递 Consultation 对象，因为它们现在共享同一个定义
+            controller.setConsultation(consultation);
 
-            // 设置当收藏状态改变时通知父窗口刷新的回调
-            controller.setOnCollectStatusChanged(() -> {
-                // 更新当前咨询的收藏状态（如果它被详情页修改了）
-                consultation.setCollected(detailConsultation.isCollected());
-                // 重新加载当前筛选下的卡片，以反映收藏状态的变化
-                loadConsultationCards();
+            // 设置当咨询状态或收藏状态改变时通知父窗口刷新的回调
+            controller.setOnConsultationUpdated(() -> {
+                loadConsultationCards(); // 重新加载卡片以反映变化
             });
 
             Stage detailStage = new Stage();
@@ -444,6 +504,8 @@ public class StudentMainController {
             detailStage.setScene(new Scene(detailRoot));
             detailStage.initModality(Modality.APPLICATION_MODAL);
             detailStage.initOwner(cardsContainer.getScene().getWindow());
+            detailStage.setWidth(800); // 固定宽度
+            detailStage.setHeight(700); // 固定高度
             detailStage.showAndWait();
 
             // 窗口关闭后，可以根据需要刷新当前界面
@@ -465,25 +527,21 @@ public class StudentMainController {
     }
 
     private void initializeConsultations() {
-        allConsultations = javafx.collections.FXCollections.observableArrayList(
-            new Consultation("请问暑假宿舍的话八月份几号会开放宿舍能回学校啊？", "2025-06-08 18:39", "我有一些关于宿舍开放时间的具体疑问，希望能得到详细的回复。我需要确认八月份具体的开放日期，以便安排返校行程。请问有任何相关的通知或链接可以提供吗？",
-                "同学你好，假期住宿安排尚未确定，请在学期结束前关注信息公告相关通知。", ConsultationStatus.RESOLVED, Category.LIFE),
-            new Consultation("关于奖学金申请的最新政策是什么？", "2025-06-07 10:30", "我需要了解本年度奖学金申请的最新细则，包括申请条件、所需材料和截止日期。",
-                "请查阅学校官网的最新通知，或者咨询学生资助中心。", ConsultationStatus.UNANSWERED, Category.LEARNING),
-            new Consultation("如何申请学籍异动？", "2025-06-06 14:00", "我需要办理学籍异动，请问具体的流程是什么？需要准备哪些材料？",
-                "请到教务处领取相关表格，并按照要求准备材料。", ConsultationStatus.RESOLVED, Category.LIFE),
-            new Consultation("图书馆的开放时间有调整吗？", "2025-06-05 09:15", null, 
-                "图书馆的开放时间目前没有调整，具体请关注图书馆公告。", ConsultationStatus.UNRESOLVED, Category.OTHER)
+        allConsultations = FXCollections.observableArrayList(
+            new Consultation("20250611001", "食堂几点关门？", "我有一些关于食堂开放时间的具体疑问，希望能得到详细的回复。我需要确认八月份具体的开放日期，以便安排返校行程。请问有任何相关的通知或链接可以提供吗？", "暂无回复", "2025-06-09 10:00", ConsultationStatus.UNANSWERED.displayName, Category.LIFE.displayName, false, false),
+            new Consultation("20250611002", "如何提高英语口语？", "希望了解一些提高英语口语的实用方法和资源，特别是针对大学生。", "多听多说，创造语言环境。", "2025-06-09 11:30", ConsultationStatus.UNRESOLVED.displayName, Category.LEARNING.displayName, false, false),
+            new Consultation("20250611003", "图书馆开放时间？", null, "每日早8点至晚10点。", "2025-06-09 14:00", ConsultationStatus.RESOLVED.displayName, Category.OTHER.displayName, true, true),
+            new Consultation("20250611004", "学校有心理咨询服务吗？", "想了解学校是否提供心理咨询服务，如何预约，以及费用等信息。", "暂无回复", "2025-06-09 16:45", ConsultationStatus.UNANSWERED.displayName, Category.LIFE.displayName, false, false),
+            new Consultation("20250611005", "选课有什么注意事项？", "第一次选课，希望能得到一些指导，比如如何避免选到不适合的课程，或者有哪些推荐的通识课。", "注意学分要求和课程冲突。", "2025-06-09 09:15", ConsultationStatus.UNRESOLVED.displayName, Category.LEARNING.displayName, false, true),
+            new Consultation("20250611006", "关于奖学金申请", "我有一些关于奖学金申请的疑问，想了解具体流程和所需材料。", "请参考学校官网奖学金申请指南。", "2025-06-10 09:00", ConsultationStatus.RESOLVED.displayName, Category.OTHER.displayName, false, false),
+            new Consultation("20250611007", "如何办理休学？", "因个人原因需要休学，想了解休学手续的办理流程和注意事项。", "请到教务处办理相关手续。", "2025-06-10 11:00", ConsultationStatus.UNRESOLVED.displayName, Category.LIFE.displayName, false, false),
+            new Consultation("20250611008", "C++编程学习", "初学C++，想知道有哪些好的学习资料和实践项目可以推荐。", "推荐《C++ Primer Plus》和在线编程平台。", "2025-06-10 14:30", ConsultationStatus.RESOLVED.displayName, Category.LEARNING.displayName, true, false),
+            new Consultation("20250611009", "学校周边兼职机会", "想在课余时间找一些兼职工作，学校周边有哪些推荐的平台或机会？", "请关注学校勤工助学中心发布的信息。", "2025-06-10 16:00", ConsultationStatus.UNRESOLVED.displayName, Category.LIFE.displayName, false, false),
+            new Consultation("20250611010", "毕业论文选题", "临近毕业，对论文选题感到困惑，希望能获得一些指导和建议。", "建议选择自己感兴趣且有一定研究基础的领域。", "2025-06-11 09:30", ConsultationStatus.UNRESOLVED.displayName, Category.LEARNING.displayName, false, false)
         );
-
-        // 设置一个示例精选咨询
-        allConsultations.get(0).setFeatured(true);
-        allConsultations.get(1).setFeatured(false); // 明确设置为未精选
-        allConsultations.get(2).setFeatured(true);
-        allConsultations.get(3).setFeatured(false); // 明确设置为未精选
     }
 
     private void updateConsultationCount() {
         // 实现更新咨询数量逻辑
     }
-} 
+}

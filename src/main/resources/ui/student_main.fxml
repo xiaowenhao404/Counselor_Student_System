@@ -25,8 +25,8 @@
         </Label>
         <Region HBox.hgrow="ALWAYS" />
         <HBox fx:id="navButtons" styleClass="nav-buttons">
-           <Button fx:id="hallButton" styleClass="nav-button,selected" text="大厅" />
-            <Button fx:id="myButton" styleClass="nav-button" text="我的" />
+            <Button fx:id="hallButton" styleClass="nav-button,selected" text="大厅" />
+            <Button fx:id="myConsultationsButton" styleClass="nav-button" text="我的" />
         </HBox>
         <Region HBox.hgrow="ALWAYS" />
         <TextField fx:id="searchField" promptText="搜索..." styleClass="search-field" />
@@ -37,9 +37,9 @@
         <!-- 左侧导航栏 -->
         <VBox styleClass="left-nav">
             <VBox fx:id="leftNavButtons" styleClass="nav-buttons-container">
-                <Button styleClass="left-nav-button,selected" text="全部" />
-                <Button styleClass="left-nav-button" text="精选" />
-                <Button styleClass="left-nav-button" text="收藏" />
+                <Button fx:id="allButton" styleClass="left-nav-button,selected" text="全部" />
+                <Button fx:id="featuredButton" styleClass="left-nav-button" text="精选" />
+                <Button fx:id="collectedButton" styleClass="left-nav-button" text="收藏" />
             </VBox>
             <Region VBox.vgrow="ALWAYS" />
             <Button fx:id="newConsultationButton" text="我要咨询" styleClass="new-consultation-button">
@@ -56,10 +56,10 @@
                 <padding>
                     <Insets top="5.0" right="0.0" bottom="5.0" left="0.0" />
                 </padding>
-                <Button text="全部" styleClass="category-button" />
-                <Button text="学习" styleClass="category-button" />
-                <Button text="生活" styleClass="category-button" />
-                <Button text="其他" styleClass="category-button" />
+                <Button fx:id="allCategoriesButton" text="全部" styleClass="category-button" />
+                <Button fx:id="studyButton" text="学习" styleClass="category-button" />
+                <Button fx:id="lifeButton" text="生活" styleClass="category-button" />
+                <Button fx:id="otherButton" text="其他" styleClass="category-button" />
             </HBox>
 
             <!-- 咨询卡片列表 -->

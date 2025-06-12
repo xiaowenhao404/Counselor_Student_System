@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Alert;
 import javafx.scene.Node;
@@ -29,6 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+// 导入共享的类
+import static ui.StudentMainController.Consultation;
+import static ui.StudentMainController.ConsultationStatus;
 
 public class MyConsultationsController {
 
@@ -51,44 +56,6 @@ public class MyConsultationsController {
 
     private List<Consultation> allConsultations;
     private List<Consultation> filteredConsultations;
-
-    // 咨询状态枚举
-    public enum ConsultationStatus {
-        UNANSWERED, // 未答复 (红色)
-        UNRESOLVED, // 仍需解决 (黄色)
-        RESOLVED    // 已解决 (绿色)
-    }
-
-    // 咨询数据模型
-    public static class Consultation {
-        private String id;
-        private String question;
-        private String detailContent;
-        private LocalDateTime time;
-        private String reply;
-        private ConsultationStatus status;
-        private boolean isCollected;
-
-        public Consultation(String id, String question, String detailContent, LocalDateTime time, String reply, ConsultationStatus status, boolean isCollected) {
-            this.id = id;
-            this.question = question;
-            this.detailContent = detailContent;
-            this.time = time;
-            this.reply = reply;
-            this.status = status;
-            this.isCollected = isCollected;
-        }
-
-        public String getId() { return id; }
-        public String getQuestion() { return question; }
-        public String getDetailContent() { return detailContent; }
-        public LocalDateTime getTime() { return time; }
-        public String getReply() { return reply; }
-        public ConsultationStatus getStatus() { return status; }
-        public void setStatus(ConsultationStatus status) { this.status = status; }
-        public boolean isCollected() { return isCollected; }
-        public void setCollected(boolean collected) { isCollected = collected; }
-    }
 
     @FXML
     public void initialize() {
@@ -117,9 +84,9 @@ public class MyConsultationsController {
                 // 在当前筛选的咨询中搜索
                 ConsultationStatus currentStatus = getCurrentStatus();
                 List<Consultation> filteredList = allConsultations.stream()
-                    .filter(c -> c.getStatus() == currentStatus)
+                    .filter(c -> c.getStatus().equals(currentStatus.displayName))
                     .filter(c -> c.getQuestion().toLowerCase().contains(newValue.toLowerCase()) ||
-                               c.getReply().toLowerCase().contains(newValue.toLowerCase()))
+                               (c.getReply() != null && c.getReply().toLowerCase().contains(newValue.toLowerCase())))
                     .collect(Collectors.toList());
                 loadConsultationCards(filteredList);
             }
@@ -163,11 +130,11 @@ public class MyConsultationsController {
     private void initializeConsultations() {
         // 初始化测试数据
         allConsultations = new ArrayList<>();
-        allConsultations.add(new Consultation("20250611001", "食堂几点关门？", "我有一些关于食堂开放时间的具体疑问，希望能得到详细的回复。我需要确认八月份具体的开放日期，以便安排返校行程。请问有任何相关的通知或链接可以提供吗？", LocalDateTime.of(2025, 6, 9, 10, 0), "暂无回复", ConsultationStatus.UNANSWERED, false));
-        allConsultations.add(new Consultation("20250611002", "如何提高英语口语？", "希望了解一些提高英语口语的实用方法和资源，特别是针对大学生。", LocalDateTime.of(2025, 6, 9, 11, 30), "多听多说，创造语言环境。", ConsultationStatus.UNRESOLVED, false));
-        allConsultations.add(new Consultation("20250611003", "图书馆开放时间？", null, LocalDateTime.of(2025, 6, 9, 14, 0), "每日早8点至晚10点。", ConsultationStatus.RESOLVED, true));
-        allConsultations.add(new Consultation("20250611004", "学校有心理咨询服务吗？", "想了解学校是否提供心理咨询服务，如何预约，以及费用等信息。", LocalDateTime.of(2025, 6, 9, 16, 45), "暂无回复", ConsultationStatus.UNANSWERED, false));
-        allConsultations.add(new Consultation("20250611005", "选课有什么注意事项？", "第一次选课，希望能得到一些指导，比如如何避免选到不适合的课程，或者有哪些推荐的通识课。", LocalDateTime.of(2025, 6, 9, 9, 15), "注意学分要求和课程冲突。", ConsultationStatus.UNRESOLVED, true));
+        allConsultations.add(new Consultation("20250611001", "食堂几点关门？", "我有一些关于食堂开放时间的具体疑问，希望能得到详细的回复。我需要确认八月份具体的开放日期，以便安排返校行程。请问有任何相关的通知或链接可以提供吗？", "暂无回复", "2025-06-09 10:00", ConsultationStatus.UNANSWERED.displayName, "生活", false, false));
+        allConsultations.add(new Consultation("20250611002", "如何提高英语口语？", "希望了解一些提高英语口语的实用方法和资源，特别是针对大学生。", "多听多说，创造语言环境。", "2025-06-09 11:30", ConsultationStatus.UNRESOLVED.displayName, "学习", false, false));
+        allConsultations.add(new Consultation("20250611003", "图书馆开放时间？", null, "每日早8点至晚10点。", "2025-06-09 14:00", ConsultationStatus.RESOLVED.displayName, "其他", true, false));
+        allConsultations.add(new Consultation("20250611004", "学校有心理咨询服务吗？", "想了解学校是否提供心理咨询服务，如何预约，以及费用等信息。", "暂无回复", "2025-06-09 16:45", ConsultationStatus.UNANSWERED.displayName, "生活", false, false));
+        allConsultations.add(new Consultation("20250611005", "选课有什么注意事项？", "第一次选课，希望能得到一些指导，比如如何避免选到不适合的课程，或者有哪些推荐的通识课。", "注意学分要求和课程冲突。", "2025-06-09 09:15", ConsultationStatus.UNRESOLVED.displayName, "学习", true, false));
     }
 
     private ConsultationStatus getCurrentStatus() {
@@ -187,7 +154,7 @@ public class MyConsultationsController {
         resolvedButton.getStyleClass().removeAll("selected");
 
         List<Consultation> filteredList = allConsultations.stream()
-                .filter(c -> c.getStatus() == status)
+                .filter(c -> c.getStatus().equals(status.displayName))
                 .collect(Collectors.toList());
         loadConsultationCards(filteredList);
 
@@ -240,72 +207,41 @@ public class MyConsultationsController {
         questionLine.getChildren().addAll(questionLabel, idLabel);
 
         // 提问时间行
-        Label timeLabel = new Label("提问时间: " + consultation.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        Label timeLabel = new Label("提问时间: " + consultation.getTime());
         timeLabel.getStyleClass().add("card-time");
 
         // 回复行
-        Label replyLabel = new Label("回复: " + consultation.getReply());
+        Label replyLabel = new Label();
+        if (consultation.getReply() == null || consultation.getReply().trim().isEmpty() || consultation.getReply().equals("暂无回复")) {
+            replyLabel.setText("暂无回复");
+        } else {
+            replyLabel.setText(consultation.getReply());
+        }
         replyLabel.getStyleClass().add("card-reply");
 
-        // 状态和勾选框行
-        HBox statusAndCheckboxLine = new HBox();
-        statusAndCheckboxLine.setSpacing(10);
-        statusAndCheckboxLine.setPrefHeight(20);
-
+        // 状态标签
         Label statusLabel = new Label();
         statusLabel.getStyleClass().add("card-status-label");
-        switch (consultation.getStatus()) {
-            case UNANSWERED:
-                statusLabel.setText("未答复");
-                statusLabel.getStyleClass().add("status-unanswered");
-                break;
-            case UNRESOLVED:
-                statusLabel.setText("仍需解决");
-                statusLabel.getStyleClass().add("status-unresolved");
-                break;
-            case RESOLVED:
-                statusLabel.setText("已解决");
-                statusLabel.getStyleClass().add("status-resolved");
-                break;
+        if (consultation.getStatus().equals(ConsultationStatus.RESOLVED.displayName)) {
+            statusLabel.setText("已解决");
+            statusLabel.getStyleClass().add("status-resolved");
+        } else if (consultation.getStatus().equals(ConsultationStatus.UNRESOLVED.displayName)) {
+            statusLabel.setText("仍需解决");
+            statusLabel.getStyleClass().add("status-unresolved");
+        } else if (consultation.getStatus().equals(ConsultationStatus.UNANSWERED.displayName)) {
+            statusLabel.setText("未答复");
+            statusLabel.getStyleClass().add("status-unanswered");
         }
-        statusLabel.setPadding(new Insets(2, 5, 2, 5));
 
-        // 是否解决勾选框
-        CheckBox solvedCheckbox = new CheckBox("是否解决?");
-        solvedCheckbox.getStyleClass().add("solved-checkbox");
-        // 根据咨询的当前状态设置勾选框的初始状态
-        solvedCheckbox.setSelected(consultation.getStatus() == ConsultationStatus.RESOLVED);
+        // 底部交互区域
+        HBox interactionContainer = new HBox(15);
+        interactionContainer.setAlignment(Pos.CENTER_LEFT);
 
-        // 监听勾选框状态变化
-        solvedCheckbox.setOnAction(event -> {
-            if (solvedCheckbox.isSelected()) {
-                // 如果勾选，且当前不是已解决状态，则设置为已解决
-                if (consultation.getStatus() != ConsultationStatus.RESOLVED) {
-                    consultation.setStatus(ConsultationStatus.RESOLVED);
-                    // 刷新当前筛选下的列表，以便该咨询从原类别消失
-                    refreshCurrentFilter();
-                }
-            } else {
-                // 如果取消勾选，且当前是已解决状态，则设置为仍需解决（假设已回复）
-                // 如果没有回复，则可能需要回到未答复状态，这里简化处理，假设取消勾选就回到仍需解决
-                if (consultation.getStatus() == ConsultationStatus.RESOLVED) {
-                    consultation.setStatus(ConsultationStatus.UNRESOLVED);
-                    refreshCurrentFilter();
-                }
-            }
-        });
-
-        statusAndCheckboxLine.getChildren().addAll(statusLabel, solvedCheckbox);
-        HBox.setHgrow(solvedCheckbox, Priority.ALWAYS);
-
-        // 留言、收藏图标行
-        HBox interactionContainer = new HBox();
-        interactionContainer.getStyleClass().add("interaction-container");
-        interactionContainer.setSpacing(5);
-        
-        ImageView messageIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/message.png"))));
-        messageIcon.setFitWidth(16);
-        messageIcon.setFitHeight(16);
+        // 留言图标
+        ImageView messageIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/message.png")));
+        messageIcon.setFitWidth(20);
+        messageIcon.setFitHeight(20);
+        messageIcon.getStyleClass().add("interaction-icon");
 
         // 收藏图标
         ImageView collectIcon = new ImageView(new Image(getClass().getResourceAsStream(
@@ -320,9 +256,19 @@ public class MyConsultationsController {
             event.consume();
         });
 
-        interactionContainer.getChildren().addAll(messageIcon, collectIcon);
+        // 精选图标（只显示，不可点击）
+        ImageView featuredIcon = new ImageView(new Image(getClass().getResourceAsStream(
+            consultation.isFeatured() ? "/images/choosen.png" : "/images/unchoosen.png")));
+        featuredIcon.setFitWidth(20);
+        featuredIcon.setFitHeight(20);
+        featuredIcon.getStyleClass().add("interaction-icon");
 
-        card.getChildren().addAll(questionLine, timeLabel, replyLabel, statusAndCheckboxLine, interactionContainer);
+        interactionContainer.getChildren().addAll(messageIcon, collectIcon, featuredIcon);
+
+        // 添加所有元素到卡片
+        card.getChildren().addAll(questionLine, timeLabel, replyLabel, statusLabel, interactionContainer);
+
+        // 添加点击事件
         card.setOnMouseClicked(event -> {
             openConsultationDetail(consultation);
         });
@@ -331,28 +277,16 @@ public class MyConsultationsController {
     }
 
     private void openConsultationDetail(Consultation consultation) {
+        System.out.println("尝试打开咨询详情：" + consultation.getId());
         try {
+            System.out.println("加载 FXML 文件：/ui/consultation_detail.fxml");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/consultation_detail.fxml"));
             Parent detailRoot = loader.load();
+            System.out.println("FXML 文件加载成功。");
 
             ConsultationDetailController controller = loader.getController();
-            // 转换数据，因为 ConsultationDetailController.Consultation 可能有不同结构
-            ConsultationDetailController.Consultation detailConsultation = new ConsultationDetailController.Consultation(
-                consultation.getQuestion(),
-                consultation.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                consultation.getDetailContent(),
-                consultation.getReply(),
-                ConsultationDetailController.ConsultationStatus.valueOf(consultation.getStatus().name()),
-                consultation.isCollected(),
-                false // 我的咨询界面不涉及精选，默认为false
-            );
-            controller.setConsultation(detailConsultation);
-
-            // 设置当收藏状态改变时通知父窗口刷新的回调
-            controller.setOnCollectStatusChanged(() -> {
-                // 更新当前咨询的收藏状态（如果它被详情页修改了）
-                consultation.setCollected(detailConsultation.isCollected());
-                // 重新加载当前筛选下的卡片，以反映收藏状态的变化
+            controller.setConsultation(consultation);
+            controller.setOnConsultationUpdated(() -> {
                 refreshCurrentFilter();
             });
 
@@ -361,12 +295,16 @@ public class MyConsultationsController {
             detailStage.setScene(new Scene(detailRoot));
             detailStage.initModality(Modality.APPLICATION_MODAL);
             detailStage.initOwner(cardsContainer.getScene().getWindow());
+            detailStage.setWidth(800); // 固定宽度
+            detailStage.setHeight(700); // 固定高度
             detailStage.showAndWait();
+            System.out.println("咨询详情窗口已关闭。");
 
             // 窗口关闭后，可以根据需要刷新当前界面
             refreshCurrentFilter();
 
         } catch (IOException e) {
+            System.err.println("加载咨询详情窗口时发生错误：" + e.getMessage());
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("错误");
@@ -377,32 +315,22 @@ public class MyConsultationsController {
     }
 
     private void updateCollectIcon(ImageView icon, boolean isCollected) {
-        String imagePath = isCollected ? "/images/collected.png" : "/images/uncollected.png";
-        icon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath))));
+        icon.setImage(new Image(getClass().getResourceAsStream(
+            isCollected ? "/images/collected.png" : "/images/uncollected.png")));
     }
 
     private Separator createSeparator() {
         Separator separator = new Separator();
-        separator.getStyleClass().add("card-separator");
+        separator.setPadding(new Insets(10, 0, 10, 0));
         return separator;
     }
 
     private void refreshCurrentFilter() {
-        // 获取当前选中的左侧导航按钮状态
         ConsultationStatus currentStatus = getCurrentStatus();
         filterConsultations(currentStatus);
     }
 
     private void loadStudentMainScene() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/student_main.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) hallButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("辅导员学生交流系统——学生端");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Main.loadScene("/ui/student_main.fxml");
     }
 }
