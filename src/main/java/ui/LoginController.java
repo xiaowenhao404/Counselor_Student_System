@@ -42,9 +42,7 @@ public class LoginController {
 
     private String selectedRole = null;
     private int loginAttempts = 3;
-
     private boolean passwordVisible = false;
-
     private AuthService authService;
 
     @FXML
@@ -99,7 +97,6 @@ public class LoginController {
     @FXML
     private void handleLogin() {
         String username = usernameField.getText();
-        // 获取当前可见的密码字段的值
         String password = passwordVisible ? showPasswordField.getText() : passwordField.getText();
 
         // 验证输入
@@ -108,17 +105,41 @@ public class LoginController {
             return;
         }
 
-        AuthService.LoginResult result = authService.login(username, password);
+        // 根据选择的角色进行验证
+        AuthService.LoginResult result = null;
+        switch (selectedRole) {
+            case "学生":
+                result = authService.login(username, password, AuthService.UserType.STUDENT);
+                break;
+            case "辅导员":
+                result = authService.login(username, password, AuthService.UserType.COUNSELOR);
+                break;
+            case "管理员":
+                result = authService.login(username, password, AuthService.UserType.ADMIN);
+                break;
+        }
 
-        if (result.isSuccess()) {
+        if (result != null && result.isSuccess()) {
             switch (result.getUserType()) {
                 case STUDENT:
+                    Main.setCurrentStudentId(username);
+                    Main.setCurrentCounselorId(null);
                     showSuccess("学生登录成功！欢迎，" + result.getUserName() + "！");
-                    // TODO: 跳转到学生主界面
+                    try {
+                        openStudentMainWindow();
+                    } catch (Exception e) {
+                        showError("打开学生界面失败：" + e.getMessage());
+                    }
                     break;
                 case COUNSELOR:
+                    Main.setCurrentCounselorId(username);
+                    Main.setCurrentStudentId(null);
                     showSuccess("辅导员登录成功！欢迎，" + result.getUserName() + "！");
-                    // TODO: 跳转到辅导员主界面
+                    try {
+                        openCounselorMainWindow();
+                    } catch (Exception e) {
+                        showError("打开辅导员界面失败：" + e.getMessage());
+                    }
                     break;
                 case ADMIN:
                     showSuccess("管理员登录成功！");
@@ -140,7 +161,6 @@ public class LoginController {
             showError("账号或密码错误，还剩 " + loginAttempts + " 次尝试机会");
         } else {
             showError("超过最大尝试次数，程序将关闭");
-            // 关闭程序
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.close();
         }
@@ -162,22 +182,57 @@ public class LoginController {
         alert.showAndWait();
     }
 
+    private void openStudentMainWindow() throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/student_main.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/ui/student_main.css").toExternalForm());
+
+        Stage stage = new Stage();
+        stage.setTitle("学生主界面 - 辅导员学生交流信息管理系统");
+        stage.setScene(scene);
+        stage.setWidth(1200);
+        stage.setHeight(800);
+        stage.setResizable(false);
+        stage.show();
+
+        // 关闭登录窗口
+        Stage loginStage = (Stage) loginButton.getScene().getWindow();
+        loginStage.close();
+    }
+
+    private void openCounselorMainWindow() throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/counselor_main.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/ui/counselor_main.css").toExternalForm());
+
+        Stage stage = new Stage();
+        stage.setTitle("辅导员主界面 - 辅导员学生交流信息管理系统");
+        stage.setScene(scene);
+        stage.setWidth(1200);
+        stage.setHeight(800);
+        stage.setResizable(false);
+        stage.show();
+
+        // 关闭登录窗口
+        Stage loginStage = (Stage) loginButton.getScene().getWindow();
+        loginStage.close();
+    }
+
     private void openAdminMainWindow() throws Exception {
-        // 加载管理员主界面
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/admin_main.fxml"));
         Parent root = loader.load();
-
-        // 创建新窗口
-        Stage adminStage = new Stage();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/ui/admin_main.css").toExternalForm());
 
-        adminStage.setTitle("管理员主界面 - 辅导员学生交流信息管理系统");
-        adminStage.setScene(scene);
-        adminStage.setWidth(1200);
-        adminStage.setHeight(800);
-        adminStage.setResizable(true);
-        adminStage.show();
+        Stage stage = new Stage();
+        stage.setTitle("管理员主界面 - 辅导员学生交流信息管理系统");
+        stage.setScene(scene);
+        stage.setWidth(1200);
+        stage.setHeight(800);
+        stage.setResizable(false);
+        stage.show();
 
         // 关闭登录窗口
         Stage loginStage = (Stage) loginButton.getScene().getWindow();

@@ -82,8 +82,9 @@ DROP TABLE IF EXISTS `咨询`;
 CREATE TABLE `咨询` (
   `Q编号` VARCHAR(10) NOT NULL,
   `学生学号` VARCHAR(50) NOT NULL,
-  `类别` ENUM('教学', '生活', '其他') NOT NULL,
+  `类别` ENUM('学习', '生活', '其他') NOT NULL,
   `状态` ENUM('未回复', '已解决', '仍需解决') NOT NULL DEFAULT '未回复',
+  `提问标题` VARCHAR(50) NOT NULL,
   `提问内容` TEXT NOT NULL,
   `提问时间` DATETIME NOT NULL,
   `是否加精` BOOLEAN DEFAULT FALSE,
@@ -169,15 +170,21 @@ GROUP BY co.辅导员工号, d.院系名称;
 DROP VIEW IF EXISTS `班级视图`;
 CREATE VIEW `班级视图` AS
 SELECT 
-  b.专业编号,
-  b.年级编号,
-  b.班级编号,
-  b.辅导员工号,
+  c.专业编号,
+  c.年级编号,
+  c.班级编号,
+  c.辅导员工号,
   m.专业名称,
-  c.姓名 AS 辅导员姓名
-FROM 班级 b
-LEFT JOIN 专业 m ON b.专业编号 = m.专业编号
-LEFT JOIN 辅导员 c ON b.辅导员工号 = c.辅导员工号;
+  coalesce(t.学生人数, 0) AS 学生人数,
+  co.姓名 AS 辅导员姓名
+FROM 班级 c
+LEFT JOIN 专业 m ON c.专业编号 = m.专业编号
+LEFT JOIN 辅导员 co ON c.辅导员工号 = co.辅导员工号
+LEFT JOIN (
+  SELECT 专业编号, 年级编号, 班级编号, COUNT(*) AS 学生人数
+  FROM 学生
+  GROUP BY 专业编号, 年级编号, 班级编号
+) t ON c.专业编号 = t.专业编号 AND c.年级编号 = t.年级编号 AND c.班级编号 = t.班级编号;
 
 -- ----------------------------
 -- View structure for 咨询汇总视图
@@ -187,18 +194,20 @@ CREATE VIEW `咨询汇总视图` AS
 SELECT 
   c.Q编号,
   c.学生学号,
-  s.姓名 AS 学生姓名,
-  c.类别,
-  c.状态,
-  c.提问时间,
+  MAX(s.姓名) AS 学生姓名,
+  MAX(c.类别) AS 类别,
+  MAX(c.状态) AS 状态,
+  MAX(c.提问标题) AS 提问标题,
+  MAX(c.提问内容) AS 提问内容,
+  MAX(c.提问时间) AS 提问时间,
   COUNT(DISTINCT r.R编号) AS 回复次数,
   COUNT(DISTINCT f.F编号) AS 追问次数,
-  c.是否加精
+  MAX(c.是否加精) AS 是否加精
 FROM 咨询 c
 LEFT JOIN 回复 r ON c.Q编号 = r.Q编号
 LEFT JOIN 追问 f ON c.Q编号 = f.Q编号
 JOIN 学生 s ON c.学生学号 = s.学生学号
-GROUP BY c.Q编号;
+GROUP BY c.Q编号, c.学生学号;
 
 -- ----------------------------
 -- Triggers

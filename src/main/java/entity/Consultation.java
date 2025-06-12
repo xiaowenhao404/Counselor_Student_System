@@ -1,6 +1,8 @@
 package entity;
 
 import java.time.LocalDateTime;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 public class Consultation {
     private String qNumber;
@@ -8,26 +10,30 @@ public class Consultation {
     private String studentName;
     private String category;
     private String status;
+    private String questionTitle;
     private LocalDateTime questionTime;
     private int replyCount;
     private int followupCount;
-    private boolean highlighted;
+    private BooleanProperty highlighted = new SimpleBooleanProperty(false);
+    private String questionContent;
+    private boolean collected = false;
 
     public Consultation() {
     }
 
     public Consultation(String qNumber, String studentId, String studentName, String category,
-            String status, LocalDateTime questionTime, int replyCount, int followupCount,
+            String status, String questionTitle, LocalDateTime questionTime, int replyCount, int followupCount,
             boolean highlighted) {
         this.qNumber = qNumber;
         this.studentId = studentId;
         this.studentName = studentName;
         this.category = category;
         this.status = status;
+        this.questionTitle = questionTitle;
         this.questionTime = questionTime;
         this.replyCount = replyCount;
         this.followupCount = followupCount;
-        this.highlighted = highlighted;
+        this.highlighted.set(highlighted);
     }
 
     public String getQNumber() {
@@ -70,6 +76,14 @@ public class Consultation {
         this.status = status;
     }
 
+    public String getQuestionTitle() {
+        return questionTitle;
+    }
+
+    public void setQuestionTitle(String questionTitle) {
+        this.questionTitle = questionTitle;
+    }
+
     public LocalDateTime getQuestionTime() {
         return questionTime;
     }
@@ -95,11 +109,31 @@ public class Consultation {
     }
 
     public boolean isHighlighted() {
-        return highlighted;
+        return highlighted.get();
     }
 
     public void setHighlighted(boolean highlighted) {
-        this.highlighted = highlighted;
+        this.highlighted.set(highlighted);
+    }
+
+    public BooleanProperty highlightedProperty() {
+        return highlighted;
+    }
+
+    public String getQuestionContent() {
+        return questionContent;
+    }
+
+    public void setQuestionContent(String questionContent) {
+        this.questionContent = questionContent;
+    }
+
+    public boolean isCollected() {
+        return collected;
+    }
+
+    public void setCollected(boolean collected) {
+        this.collected = collected;
     }
 
     @Override
@@ -110,10 +144,11 @@ public class Consultation {
                 ", studentName='" + studentName + '\'' +
                 ", category='" + category + '\'' +
                 ", status='" + status + '\'' +
+                ", questionTitle='" + questionTitle + '\'' +
                 ", questionTime=" + questionTime +
                 ", replyCount=" + replyCount +
                 ", followupCount=" + followupCount +
-                ", highlighted=" + highlighted +
+                ", highlighted=" + highlighted.get() +
                 '}';
     }
 }

@@ -92,7 +92,7 @@ public class StudentFormController implements Initializable {
         setupFieldValidation();
         setupDependentFields();
         setupPasswordFields();
-        
+
         // 默认隐藏辅导员选择下拉框，显示只读辅导员信息
         counselorComboBox.setVisible(false);
         counselorDisplayContainer.setVisible(true);
@@ -159,9 +159,10 @@ public class StudentFormController implements Initializable {
         // 当专业或年级改变时，更新班级选项
         majorComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateClassOptions());
         gradeField.textProperty().addListener((obs, oldVal, newVal) -> updateClassOptions());
-        
-        // 当班级改变时，自动更新辅导员信息
-        classComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateCounselorInfo());
+
+        // 当班级选择改变时，自动更新辅导员信息
+        classComboBox.getSelectionModel().selectedItemProperty()
+                .addListener((obs, oldVal, newVal) -> updateCounselorInfo());
     }
 
     private void setupPasswordFields() {
@@ -200,62 +201,73 @@ public class StudentFormController implements Initializable {
 
     private void updateClassOptions() {
         String selectedMajorName = majorComboBox.getValue();
-        // String gradeId = gradeField.getText(); // 年级现在不再是筛选班级的必要条件
+        String gradeNumber = gradeField.getText().trim();
 
-        if (selectedMajorName != null && !selectedMajorName.isEmpty()) {
+        if (selectedMajorName != null && !selectedMajorName.isEmpty() &&
+                gradeNumber != null && !gradeNumber.isEmpty()) {
             String majorId = majorNameToIdMap.get(selectedMajorName);
             if (majorId != null) {
                 try {
-                    // 根据专业编号获取班级列表
-                    List<Class> classes = classDao.getClassesByMajorId(majorId);
-                    // 将班级名称添加到下拉框
+                    // 根据专业编号获取所有班级列表
+                    List<Class> allClasses = classDao.getClassesByMajorId(majorId);
+                    // 筛选出符合年级的班级
                     List<String> classNames = FXCollections.observableArrayList();
-                    for (Class clazz : classes) {
-                        classNames.add(clazz.getClassName());
+                    for (Class clazz : allClasses) {
+                        if (gradeNumber.equals(clazz.getGradeNumber())) {
+                            classNames.add(clazz.getClassId()); // 使用班级编号作为显示名称
+                        }
                     }
                     classComboBox.setItems(FXCollections.observableArrayList(classNames));
+                    classComboBox.setVisibleRowCount(classNames.size() > 0 ? classNames.size() : 1);
                 } catch (SQLException e) {
                     showError("加载班级信息失败: " + e.getMessage());
                     e.printStackTrace();
                 }
             } else {
                 classComboBox.setItems(FXCollections.observableArrayList());
+                classComboBox.setVisibleRowCount(1);
             }
         } else {
             classComboBox.setItems(FXCollections.observableArrayList());
+            classComboBox.setVisibleRowCount(1);
         }
         classComboBox.setValue(null);
+        // 清空辅导员信息
+        counselorDisplayField.setText("");
     }
 
     private void updateCounselorInfo() {
-        String selectedClassName = classComboBox.getValue();
-        if (selectedClassName != null && !selectedClassName.isEmpty()) {
+        String selectedClassName = classComboBox.getSelectionModel().getSelectedItem();
+        String selectedMajorName = majorComboBox.getValue();
+        String gradeNumber = gradeField.getText().trim();
+
+        if (selectedClassName != null && !selectedClassName.isEmpty() &&
+                selectedMajorName != null && !selectedMajorName.isEmpty() &&
+                gradeNumber != null && !gradeNumber.isEmpty()) {
             try {
-                // 根据班级名称获取对应的辅导员信息
-                String selectedMajorId = majorNameToIdMap.get(majorComboBox.getValue());
+                String selectedMajorId = majorNameToIdMap.get(selectedMajorName);
                 if (selectedMajorId != null) {
-                    List<Class> classes = classDao.getClassesByMajorId(selectedMajorId);
-                    for (Class clazz : classes) {
-                        if (clazz.getClassName().equals(selectedClassName)) {
-                            String counselorId = clazz.getCounselorId();
-                            if (counselorId != null && !counselorId.isEmpty()) {
-                                // 从数据库直接查询辅导员信息
-                                try {
-                                    Counselor counselor = counselorDao.getCounselorById(counselorId);
-                                    if (counselor != null) {
-                                        counselorDisplayField.setText(counselor.getName());
-                                    } else {
-                                        counselorDisplayField.setText("暂无辅导员");
-                                    }
-                                } catch (SQLException ex) {
-                                    counselorDisplayField.setText("获取辅导员失败");
-                                    ex.printStackTrace();
+                    // 根据专业+年级+班级编号精确查找班级
+                    Class targetClass = classDao.getClassByFullKey(selectedMajorId, gradeNumber, selectedClassName);
+                    if (targetClass != null) {
+                        String counselorId = targetClass.getCounselorId();
+                        if (counselorId != null && !counselorId.isEmpty()) {
+                            try {
+                                Counselor counselor = counselorDao.getCounselorById(counselorId);
+                                if (counselor != null) {
+                                    counselorDisplayField.setText(counselor.getName());
+                                } else {
+                                    counselorDisplayField.setText("暂无辅导员");
                                 }
-                            } else {
-                                counselorDisplayField.setText("暂无辅导员");
+                            } catch (SQLException ex) {
+                                counselorDisplayField.setText("获取辅导员失败");
+                                ex.printStackTrace();
                             }
-                            break;
+                        } else {
+                            counselorDisplayField.setText("暂无辅导员");
                         }
+                    } else {
+                        counselorDisplayField.setText("班级信息不存在");
                     }
                 }
             } catch (SQLException e) {
@@ -287,26 +299,26 @@ public class StudentFormController implements Initializable {
 
             // 更新班级选项后设置班级值
             updateClassOptions();
-            // 在更新班级选项后，根据学生的班级ID找到对应的班级名称并设置
+            // 在更新班级选项后，根据学生的班级ID找到对应的班级编号并设置
             try {
-                Class studentClass = classDao.getClassById(student.getClassId());
+                Class studentClass = classDao.getClassByFullKey(student.getMajorId(), student.getGradeNumber(),
+                        student.getClassId());
                 if (studentClass != null) {
-                    classComboBox.setValue(studentClass.getClassName());
+                    // 设置选中的班级
+                    classComboBox.getSelectionModel().select(studentClass.getClassId());
                     // 在设置班级后，手动触发辅导员信息更新
                     updateCounselorInfo();
-                } else {
-                    classComboBox.setValue(null);
                 }
             } catch (SQLException e) {
                 showError("加载学生班级信息失败: " + e.getMessage());
                 e.printStackTrace();
-                classComboBox.setValue(null); // Fallback
+                classComboBox.getSelectionModel().clearSelection(); // Fallback
             }
 
             // 编辑模式下：隐藏辅导员下拉框，显示只读辅导员信息
             counselorComboBox.setVisible(false);
             counselorDisplayContainer.setVisible(true);
-            
+
             // 辅导员信息已经通过updateCounselorInfo()方法设置，无需重复处理
             studentIdField.setDisable(true); // 学号在编辑模式下不可修改
         }
@@ -335,26 +347,29 @@ public class StudentFormController implements Initializable {
             student.setGradeNumber(gradeField.getText().trim());
 
             // 获取班级名称对应的班级ID
-            String selectedClassName = classComboBox.getValue();
+            String selectedClassName = classComboBox.getSelectionModel().getSelectedItem();
             if (selectedClassName != null && !selectedClassName.isEmpty()) {
                 try {
-                    // 通过班级名称获取班级ID，这里需要从数据库查询班级信息
-                    // 考虑到性能，如果班级数量不多，可以考虑在初始化时构建班级名称到ID的映射
-                    // 目前直接查询数据库，确保精确匹配
-                    List<Class> classesInMajor = classDao
-                            .getClassesByMajorId(majorNameToIdMap.get(majorComboBox.getValue()));
-                    String classIdToSet = null;
-                    for (Class cls : classesInMajor) {
-                        if (cls.getClassName().equals(selectedClassName)) {
-                            classIdToSet = cls.getClassId();
-                            break;
+                    // 根据专业+年级+班级编号精确获取班级ID
+                    String majorId = majorNameToIdMap.get(majorComboBox.getValue());
+                    String gradeNumber = gradeField.getText().trim();
+
+                    if (majorId != null && gradeNumber != null && !gradeNumber.isEmpty()) {
+                        Class targetClass = classDao.getClassByFullKey(majorId, gradeNumber, selectedClassName);
+                        if (targetClass != null) {
+                            student.setClassId(targetClass.getClassId());
+                        } else {
+                            showError("选择的班级不存在，请重新选择。");
+                            return;
                         }
+                    } else {
+                        showError("专业或年级信息不完整，无法确定班级。");
+                        return;
                     }
-                    student.setClassId(classIdToSet);
                 } catch (SQLException e) {
                     showError("获取班级ID失败: " + e.getMessage());
                     e.printStackTrace();
-                    student.setClassId(null); // 设置为null或报错
+                    return;
                 }
             } else {
                 student.setClassId(null); // 如果未选择班级，则设置为null
@@ -443,7 +458,7 @@ public class StudentFormController implements Initializable {
             removeErrorStyle(gradeField);
         }
 
-        if (classComboBox.getValue() == null || classComboBox.getValue().isEmpty()) {
+        if (classComboBox.getSelectionModel().getSelectedItem() == null) {
             errors.append("• 班级不能为空\n");
             addErrorStyle(classComboBox);
         } else {

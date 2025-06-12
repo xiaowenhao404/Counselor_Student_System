@@ -12,6 +12,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import dao.ConsultationDaoImpl;
+import entity.Consultation;
 
 public class NewConsultationController {
 
@@ -39,6 +43,10 @@ public class NewConsultationController {
     private Button publishButton;
 
     private Button selectedTagButton = null;
+    private ConsultationDaoImpl consultationDao = new ConsultationDaoImpl();
+
+    // 这里需要获取当前登录学生的学号，实际项目中应通过Session或全局变量传递
+    private String currentStudentId = "202383290001"; // TODO: 替换为真实登录学生学号
 
     @FXML
     public void initialize() {
@@ -95,15 +103,15 @@ public class NewConsultationController {
 
     @FXML
     private void handlePublish() {
-        String question = questionField.getText();
+        String questionTitle = questionField.getText();
         String content = contentArea.getText();
 
         // 验证
-        if (question.isEmpty()) {
+        if (questionTitle.isEmpty()) {
             showAlert(AlertType.ERROR, "输入错误", "问题不能为空。");
             return;
         }
-        if (question.length() > 20) {
+        if (questionTitle.length() > 20) {
             showAlert(AlertType.ERROR, "输入错误", "问题长度不能超过20个字符。");
             return;
         }
@@ -116,18 +124,41 @@ public class NewConsultationController {
             return;
         }
 
-        // 模拟数据提交
         String selectedTag = selectedTagButton.getText();
-        // 实际应用中，这里会调用后端接口保存数据
-        System.out.println("新咨询发布：");
-        System.out.println("问题: " + question);
-        System.out.println("内容: " + content);
-        System.out.println("标签: " + selectedTag);
-        System.out.println("状态: 未回复"); // 默认状态
-        System.out.println("是否加精: 0"); // 默认不加精
+        String category = selectedTag; // "学习"、"生活"、"其他"
+        String status = "未回复";
+        boolean highlighted = false;
+        LocalDateTime now = LocalDateTime.now();
+        String qNumber = generateQNumber();
 
-        showAlert(AlertType.INFORMATION, "成功", "新咨询发起成功！");
-        closeWindow();
+        Consultation consultation = new Consultation();
+        consultation.setQNumber(qNumber);
+        consultation.setStudentId(currentStudentId);
+        consultation.setCategory(category);
+        consultation.setStatus(status);
+        consultation.setQuestionTitle(questionTitle);
+        consultation.setQuestionTime(now);
+        consultation.setHighlighted(highlighted);
+        consultation.setQuestionContent(content);
+        // 其余字段如学生姓名、回复数等可后续补充
+
+        try {
+            boolean success = consultationDao.addConsultation(consultation);
+            if (success) {
+                showAlert(AlertType.INFORMATION, "成功", "新咨询发起成功！");
+                closeWindow();
+            } else {
+                showAlert(AlertType.ERROR, "失败", "新咨询提交失败，请重试。");
+            }
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "异常", "数据库操作异常: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private String generateQNumber() {
+        // 简单生成Q编号，实际应根据数据库已有编号生成
+        return "Q" + System.currentTimeMillis();
     }
 
     private void showAlert(AlertType type, String title, String message) {
@@ -142,4 +173,4 @@ public class NewConsultationController {
         Stage stage = (Stage) questionField.getScene().getWindow();
         stage.close();
     }
-} 
+}

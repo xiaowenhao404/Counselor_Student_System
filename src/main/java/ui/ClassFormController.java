@@ -215,6 +215,13 @@ public class ClassFormController implements Initializable {
             counselorComboBox.getStyleClass().remove("error-field");
         }
 
+        String classId = classNumberField.getText().trim();
+        if (!classId.matches("^[1-9]\\d*$")) {
+            showError("班级编号只能为1、2、3等正整数，不能有前导0！");
+            classNumberField.getStyleClass().add("error-field");
+            isValid = false;
+        }
+
         return isValid;
     }
 

@@ -9,17 +9,42 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     private static Stage primaryStage;
+    private static String currentStudentId;
+    private static String currentCounselorId;
+
+    public static String getCurrentStudentId() {
+        return currentStudentId;
+    }
+
+    public static void setCurrentStudentId(String studentId) {
+        currentStudentId = studentId;
+    }
+
+    public static String getCurrentCounselorId() {
+        return currentCounselorId;
+    }
+
+    public static void setCurrentCounselorId(String counselorId) {
+        currentCounselorId = counselorId;
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
-        primaryStage.setWidth(1200);
-        primaryStage.setHeight(800);
+
+        // 加载登录界面
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/ui/login.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(Main.class.getResource("/ui/login.css").toExternalForm());
+
+        primaryStage.setTitle("辅导员学生交流系统——登录");
+        primaryStage.setScene(scene);
+
+        // 让窗口根据内容自适应
+        primaryStage.sizeToScene();
         primaryStage.setResizable(false);
 
-        // 默认加载学生端主界面
-        loadScene("/ui/student_main.fxml");
-        primaryStage.setTitle("辅导员学生交流系统——学生端");
         primaryStage.show();
     }
 
@@ -27,10 +52,21 @@ public class Main extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(fxmlPath));
             Parent root = loader.load();
-            // StudentMainController controller = loader.getController(); // 如果需要访问控制器实例，可以在这里获取
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Main.class.getResource("/ui/student_main.css").toExternalForm()); // 确保CSS被加载
+
+            // 根据不同的界面加载对应的CSS
+            if (fxmlPath.contains("login")) {
+                scene.getStylesheets().add(Main.class.getResource("/ui/login.css").toExternalForm());
+            } else if (fxmlPath.contains("student_main")) {
+                scene.getStylesheets().add(Main.class.getResource("/ui/student_main.css").toExternalForm());
+            } else if (fxmlPath.contains("counselor_main")) {
+                scene.getStylesheets().add(Main.class.getResource("/ui/counselor_main.css").toExternalForm());
+            } else if (fxmlPath.contains("admin_main")) {
+                scene.getStylesheets().add(Main.class.getResource("/ui/admin_main.css").toExternalForm());
+            }
+
             primaryStage.setScene(scene);
+            System.out.println("切换到: " + fxmlPath);
         } catch (Exception e) {
             e.printStackTrace();
         }

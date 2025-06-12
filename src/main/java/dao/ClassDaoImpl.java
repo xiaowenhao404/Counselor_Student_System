@@ -183,16 +183,35 @@ public class ClassDaoImpl implements ClassDao {
 
     @Override
     public boolean addClass(Class clazz) throws SQLException {
-        String sql = "INSERT INTO 班级 (专业编号, 年级编号, 班级编号, 辅导员工号) VALUES (?, ?, ?, ?)";
-        
+        // 校验班级编号只能为正整数，禁止前导0
+        if (!clazz.getClassId().matches("^[1-9]\\d*$")) {
+            return false;
+        }
+        // 先检查班级是否已存在
+        String checkSql = "SELECT COUNT(*) FROM 班级 WHERE 专业编号 = ? AND 年级编号 = ? AND 班级编号 = ?";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            
+                PreparedStatement ps = connection.prepareStatement(checkSql)) {
+
+            ps.setString(1, clazz.getMajorId());
+            ps.setString(2, clazz.getGradeNumber());
+            ps.setString(3, clazz.getClassId());
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return false; // 班级已存在
+            }
+        }
+
+        // 班级不存在，执行插入
+        String sql = "INSERT INTO 班级 (专业编号, 年级编号, 班级编号, 辅导员工号) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DatabaseConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setString(1, clazz.getMajorId());
             ps.setString(2, clazz.getGradeNumber());
             ps.setString(3, clazz.getClassId());
             ps.setString(4, clazz.getCounselorId());
-            
+
             int result = ps.executeUpdate();
             return result > 0;
         }
@@ -200,16 +219,20 @@ public class ClassDaoImpl implements ClassDao {
 
     @Override
     public boolean updateClass(Class clazz) throws SQLException {
+        // 校验班级编号只能为正整数，禁止前导0
+        if (!clazz.getClassId().matches("^[1-9]\\d*$")) {
+            return false;
+        }
         String sql = "UPDATE 班级 SET 辅导员工号 = ? WHERE 专业编号 = ? AND 年级编号 = ? AND 班级编号 = ?";
-        
+
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setString(1, clazz.getCounselorId());
             ps.setString(2, clazz.getMajorId());
             ps.setString(3, clazz.getGradeNumber());
             ps.setString(4, clazz.getClassId());
-            
+
             int result = ps.executeUpdate();
             return result > 0;
         }
@@ -218,31 +241,32 @@ public class ClassDaoImpl implements ClassDao {
     @Override
     public boolean deleteClass(String majorId, String gradeNumber, String classId) throws SQLException {
         String sql = "DELETE FROM 班级 WHERE 专业编号 = ? AND 年级编号 = ? AND 班级编号 = ?";
-        
+
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setString(1, majorId);
             ps.setString(2, gradeNumber);
             ps.setString(3, classId);
-            
+
             int result = ps.executeUpdate();
             return result > 0;
         }
     }
 
     @Override
-    public boolean updateClassCounselor(String majorId, String gradeNumber, String classId, String counselorId) throws SQLException {
+    public boolean updateClassCounselor(String majorId, String gradeNumber, String classId, String counselorId)
+            throws SQLException {
         String sql = "UPDATE 班级 SET 辅导员工号 = ? WHERE 专业编号 = ? AND 年级编号 = ? AND 班级编号 = ?";
-        
+
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setString(1, counselorId);
             ps.setString(2, majorId);
             ps.setString(3, gradeNumber);
             ps.setString(4, classId);
-            
+
             int result = ps.executeUpdate();
             return result > 0;
         }

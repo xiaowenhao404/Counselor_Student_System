@@ -29,32 +29,37 @@ public class AuthService {
         NONE
     }
 
-    public LoginResult login(String username, String password) {
-        // 尝试学生登录
-        try {
-            Student student = studentDao.getStudentByIdAndPassword(username, password);
-            if (student != null) {
-                return new LoginResult(UserType.STUDENT, student.getStudentId(), student.getName());
-            }
-        } catch (SQLException e) {
-            System.err.println("学生登录数据库错误: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public LoginResult login(String username, String password, UserType userType) {
+        switch (userType) {
+            case STUDENT:
+                try {
+                    Student student = studentDao.getStudentByIdAndPassword(username, password);
+                    if (student != null) {
+                        return new LoginResult(UserType.STUDENT, student.getStudentId(), student.getName());
+                    }
+                } catch (SQLException e) {
+                    System.err.println("学生登录数据库错误: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                break;
 
-        // 尝试辅导员登录
-        try {
-            Counselor counselor = counselorDao.getCounselorByIdAndPassword(username, password);
-            if (counselor != null) {
-                return new LoginResult(UserType.COUNSELOR, counselor.getCounselorId(), counselor.getName());
-            }
-        } catch (SQLException e) {
-            System.err.println("辅导员登录数据库错误: " + e.getMessage());
-            e.printStackTrace();
-        }
+            case COUNSELOR:
+                try {
+                    Counselor counselor = counselorDao.getCounselorByIdAndPassword(username, password);
+                    if (counselor != null) {
+                        return new LoginResult(UserType.COUNSELOR, counselor.getCounselorId(), counselor.getName());
+                    }
+                } catch (SQLException e) {
+                    System.err.println("辅导员登录数据库错误: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                break;
 
-        // 尝试管理员登录 (硬编码)
-        if (ADMIN_USERNAME.equals(username) && ADMIN_PASSWORD.equals(password)) {
-            return new LoginResult(UserType.ADMIN, ADMIN_USERNAME, "管理员");
+            case ADMIN:
+                if (ADMIN_USERNAME.equals(username) && ADMIN_PASSWORD.equals(password)) {
+                    return new LoginResult(UserType.ADMIN, ADMIN_USERNAME, "管理员");
+                }
+                break;
         }
 
         return new LoginResult(UserType.NONE, null, null);
