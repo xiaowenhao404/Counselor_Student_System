@@ -1,283 +1,344 @@
 .main-container {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #f0f2f5; /* 与管理员系统背景色保持一致 */
 }
 
-/* 顶部导航栏样式 */
 .top-bar {
-    -fx-background-color: #1e88e5;
-    -fx-padding: 10 20;
-    -fx-spacing: 20;
-    -fx-alignment: center-left;
+    -fx-background-color: linear-gradient(to right, #6a11cb 0%, #2575fc 100%); /* 与登录界面相同的渐变色 */
+    -fx-padding: 10px 20px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
 }
 
-.title-label {
+.top-bar .title-label {
     -fx-text-fill: white;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 0 10px; /* 标题左侧留一些空白 */
 }
 
 .nav-buttons {
-    -fx-spacing: 20;
+    -fx-alignment: center;
+    -fx-spacing: 20px;
 }
 
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 5 15;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
     -fx-cursor: hand;
 }
 
 .nav-button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: #e0e0e0;
 }
 
 .nav-button.selected {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
-    -fx-font-weight: bold;
+    -fx-border-color: white;
+    -fx-border-width: 0 0 2px 0;
+    -fx-padding: 5px 10px 3px 10px; /* 调整padding以适应底部边框 */
 }
 
 .search-field {
-    -fx-background-color: white;
-    -fx-pref-width: 200px;
-    -fx-padding: 5 10;
-    -fx-background-radius: 5;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 15px;
+    -fx-padding: 5px 15px;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #e0e0e0;
+    -fx-font-size: 14px;
+    -fx-pref-width: 180px; /* 缩短搜索框 */
+    -fx-max-width: 180px;
+}
+
+.search-field .text-input {
+    -fx-highlight-fill: #6a11cb;
+    -fx-highlight-text-fill: white;
+    -fx-background-color: transparent;
 }
 
 .admin-label {
     -fx-text-fill: white;
     -fx-font-size: 14px;
+    -fx-font-weight: bold;
 }
 
-/* 主体内容区域样式 */
 .content-area {
-    -fx-padding: 20;
-    -fx-spacing: 20;
-}
-
-/* 左侧导航栏样式 */
-.left-nav {
     -fx-background-color: white;
     -fx-padding: 20;
     -fx-spacing: 20;
-    -fx-pref-width: 200;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.left-nav {
+    -fx-pref-width: 200px;
+    -fx-background-color: transparent;
+    -fx-padding: 20 0;
+    -fx-spacing: 20;
+    -fx-alignment: TOP_CENTER;
 }
 
 .nav-buttons-container {
-    -fx-spacing: 10;
+    -fx-spacing: 15px;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 0 20px 0;
 }
 
-.nav-buttons-container .nav-button {
+.left-nav-button {
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
     -fx-background-color: white;
-    -fx-text-fill: #333;
-    -fx-font-size: 14px;
-    -fx-padding: 10 20;
-    -fx-background-radius: 20;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 0);
-    -fx-min-width: 160px;
+    -fx-background-radius: 20px; /* 圆润形状 */
+    -fx-border-radius: 20px;
+    -fx-text-fill: #5b3e94;
+    -fx-font-size: 15px;
+    -fx-font-weight: normal; /* 不加粗 */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5); /* 阴影 */
+    -fx-cursor: hand;
 }
 
-.nav-buttons-container .nav-button:hover {
-    -fx-background-color: #f0f0f0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 0);
+.left-nav-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-transition-duration: 0.2s;
 }
 
-.nav-buttons-container .nav-button.selected {
-    -fx-background-color: #1e88e5;
+.left-nav-button.selected {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2); /* 蓝紫渐变 */
     -fx-text-fill: white;
+    -fx-font-weight: normal;
 }
 
 .new-consultation-button {
-    -fx-background-color: #1e88e5;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2); /* 蓝紫渐变 */
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-padding: 10 20;
-    -fx-background-radius: 20;
-    -fx-min-width: 160px;
+    -fx-font-weight: normal; /* 不加粗 */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5); /* 阴影 */
     -fx-cursor: hand;
 }
 
 .new-consultation-button:hover {
-    -fx-background-color: #1976d2;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-transition-duration: 0.2s;
 }
 
-/* 咨询列表区域样式 */
 .consultation-list {
-    -fx-background-color: white;
-    -fx-padding: 20;
-    -fx-spacing: 20;
-    -fx-pref-width: 800;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-spacing: 15px;
+    -fx-padding: 15px;
+    -fx-background-color: #f0f2f5;
+    -fx-hgrow: ALWAYS;
 }
 
 .category-bar {
-    -fx-spacing: 20;
-    -fx-alignment: center-left;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 0;
+    -fx-padding: 0 10 0 10;
+    -fx-background-color: white; /* 确保背景是白色 */
+    -fx-border-color: #e0e0e0; /* 边框颜色 */
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2); /* 阴影 */
+    -fx-margin: 10px 0; /* 添加上下外边距 */
 }
 
 .category-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #666;
-    -fx-font-size: 14px;
-    -fx-padding: 5 15;
+    -fx-text-fill: #333333;
+    -fx-font-size: 16px;
+    -fx-padding: 10 15;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 0;
     -fx-cursor: hand;
 }
 
 .category-button:hover {
-    -fx-text-fill: #1e88e5;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-transition-duration: 0.1s;
 }
 
 .category-button.selected {
-    -fx-text-fill: #1e88e5;
+    -fx-border-color: #5b3e94;
+    -fx-border-width: 0 0 2px 0;
     -fx-font-weight: bold;
 }
 
 .scroll-pane {
     -fx-background-color: transparent;
-    -fx-background: transparent;
-    -fx-border-color: transparent;
+    -fx-fit-to-width: true;
+    -fx-hbar-policy: never; /* 禁用水平滚动条 */
 }
 
-.scroll-pane > .viewport {
+.scroll-pane .viewport {
     -fx-background-color: transparent;
 }
 
+.scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 8px; /* 调整滚动条宽度 */
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #cccccc;
+    -fx-background-radius: 4px;
+}
+
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-padding: 0;
+}
+
 .cards-container {
-    -fx-spacing: 15;
+    -fx-spacing: 15px; /* 卡片之间的间距 */
+    -fx-padding: 0;
+    -fx-alignment: TOP_CENTER;
 }
 
 .consultation-card {
     -fx-background-color: white;
-    -fx-padding: 15;
-    -fx-spacing: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 0);
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-spacing: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2); /* 更柔和的阴影 */
 }
 
 .card-header {
+    -fx-alignment: CENTER_LEFT;
     -fx-spacing: 10;
+    -fx-padding: 0 0 5 0;
 }
 
 .question-label {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.consultation-id-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
 }
 
 .time-label {
-    -fx-text-fill: #999;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #888888;
+    -fx-padding: 0 0 5 0;
 }
 
 .reply-label {
-    -fx-text-fill: #666;
     -fx-font-size: 14px;
-}
-
-.card-footer {
-    -fx-spacing: 10;
+    -fx-text-fill: #555555;
+    -fx-padding: 0 0 10 0;
 }
 
 .status-container {
-    -fx-spacing: 5;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 5 0 8 0;
 }
 
 .status-label {
-    -fx-padding: 3 10;
-    -fx-font-size: 12px;
     -fx-text-fill: white;
-    -fx-background-radius: 3;
+    -fx-font-size: 12px;
+    -fx-padding: 3 8;
+    -fx-background-radius: 3px;
+    -fx-alignment: CENTER;
+    -fx-pref-width: 60px; /* 增加长度 */
 }
 
 .status-label.solved {
-    -fx-background-color: #4caf50;
+    -fx-background-color: #4CAF50; /* 绿色 */
 }
 
 .status-label.unsolved {
-    -fx-background-color: #f44336;
+    -fx-background-color: #F44336; /* 红色 */
 }
 
-.interaction-container {
-    -fx-spacing: 10;
-    -fx-alignment: center-right;
+.status-unanswered {
+    -fx-background-color: #ff4d4d; /* 红色 */
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
 }
 
-.message-icon, .collect-icon {
-    -fx-cursor: hand;
+.status-unresolved {
+    -fx-background-color: #ff4d4d; /* 红色 */
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+}
+
+.status-resolved {
+    -fx-background-color: #4CAF50; /* 绿色 */
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+}
+
+.solved-checkbox .box {
+    -fx-background-color: transparent;
+    -fx-border-color: #888;
+    -fx-border-radius: 3px;
+    -fx-border-width: 1.5px;
+}
+
+.solved-checkbox:selected .box {
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #4CAF50;
+}
+
+.solved-checkbox:selected .box .mark {
+    -fx-background-color: white;
+}
+
+.solved-checkbox {
+    -fx-font-size: 13px;
+    -fx-text-fill: #555;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.card-status-label {
+    -fx-padding: 2 8;
+    -fx-background-radius: 4;
+    -fx-font-size: 12px;
 }
 
 .card-separator {
+    -fx-background-color: transparent; /* 设为透明 */
+    -fx-min-height: 0px;
+    -fx-pref-height: 0px;
+    -fx-max-height: 0px;
     -fx-padding: 0;
-    -fx-opacity: 0.5;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-border-color: transparent;
+    -fx-opacity: 0;
 }
 
-/* 我要咨询界面样式 */
-.new-consultation-form {
-    -fx-background-color: white;
-    -fx-padding: 30;
-    -fx-spacing: 20;
-    -fx-pref-width: 600;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+.interaction-container {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 5px;
+    -fx-padding: 5px 0 0 0;
 }
 
-.form-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333;
+.message-icon, .collect-icon {
+    -fx-fit-width: 20px; /* 确保图标大小可见 */
+    -fx-fit-height: 20px;
 }
 
-.form-label {
-    -fx-font-size: 14px;
-    -fx-text-fill: #666;
-}
-
-.question-area {
-    -fx-pref-height: 200;
-    -fx-background-color: #f5f5f5;
-    -fx-background-radius: 5;
-    -fx-padding: 10;
-}
-
-.category-radio {
-    -fx-font-size: 14px;
-    -fx-text-fill: #666;
-}
-
-.submit-button {
-    -fx-background-color: #1e88e5;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10 30;
-    -fx-background-radius: 20;
-    -fx-cursor: hand;
-}
-
-.submit-button:hover {
-    -fx-background-color: #1976d2;
-}
-
-/* 状态标签样式 */
-.status-label.unanswered {
-    -fx-background-color: #f44336;
-}
-
-.status-label.needs-solution {
-    -fx-background-color: #ff9800;
-}
-
-.status-label.solved {
-    -fx-background-color: #4caf50;
-}
-
-/* 复选框样式 */
-.solve-checkbox {
+.message-icon {
     -fx-padding: 0;
 }
 
-.solve-checkbox .box {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-.solve-checkbox:selected .box {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+.collect-icon {
+    -fx-padding: 0;
 } 

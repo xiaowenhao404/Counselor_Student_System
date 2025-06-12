@@ -1,116 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.CheckBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ui.MyConsultationsController"
-      stylesheets="@ui/student_main.css"
-      styleClass="main-container">
-    
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MyConsultationsController"
+      stylesheets="@student_main.css" styleClass="main-container">
+
     <!-- 顶部导航栏 -->
     <HBox styleClass="top-bar">
-        <Label text="辅导员学生交流系统——学生端" styleClass="title-label"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <HBox styleClass="nav-buttons">
-            <Button text="大厅" styleClass="nav-button"/>
-            <Button text="我的" styleClass="nav-button,selected"/>
+        <Label styleClass="title-label" text="辅导员学生交流系统——学生端">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <Region HBox.hgrow="ALWAYS" />
+        <HBox fx:id="navButtons" styleClass="nav-buttons">
+            <Button fx:id="hallButton" styleClass="nav-button" text="大厅" />
+            <Button fx:id="myButton" styleClass="nav-button,selected" text="我的" />
         </HBox>
-        <Region HBox.hgrow="ALWAYS"/>
-        <TextField promptText="搜索" styleClass="search-field"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Label text="admin" styleClass="admin-label"/>
+        <Region HBox.hgrow="ALWAYS" />
+        <TextField fx:id="searchField" promptText="搜索..." styleClass="search-field" />
     </HBox>
-    
+
     <!-- 主体内容区域 -->
-    <HBox styleClass="content-area">
+    <HBox styleClass="content-area" VBox.vgrow="ALWAYS">
         <!-- 左侧导航栏 -->
         <VBox styleClass="left-nav">
-            <VBox styleClass="nav-buttons-container">
-                <Button text="未答复" styleClass="nav-button,selected"/>
-                <Button text="仍需解决" styleClass="nav-button"/>
-                <Button text="已解决" styleClass="nav-button"/>
+            <VBox fx:id="leftNavButtons" styleClass="nav-buttons-container">
+                <Button fx:id="unansweredButton" styleClass="left-nav-button,selected" text="未答复" />
+                <Button fx:id="unresolvedButton" styleClass="left-nav-button" text="仍需解决" />
+                <Button fx:id="resolvedButton" styleClass="left-nav-button" text="已解决" />
             </VBox>
-            <Region VBox.vgrow="ALWAYS"/>
-            <Button text="我要咨询" styleClass="new-consultation-button"/>
+            <Region VBox.vgrow="ALWAYS" />
+            <Button fx:id="newConsultationButton" text="我要咨询" styleClass="new-consultation-button">
+                <font>
+                    <Font name="System Bold" size="14.0" fx:id="x1" />
+                </font>
+            </Button>
         </VBox>
-        
+
         <!-- 中间咨询列表区域 -->
-        <VBox styleClass="consultation-list">
-            <!-- 类别分栏 -->
-            <HBox styleClass="category-bar">
-                <Button text="全部" styleClass="category-button,selected"/>
-                <Button text="学习" styleClass="category-button"/>
-                <Button text="生活" styleClass="category-button"/>
-                <Button text="其他" styleClass="category-button"/>
+        <VBox styleClass="consultation-list" HBox.hgrow="ALWAYS">
+            <!-- 类别分栏 (在"我的咨询"界面中可能不需要，但为了布局一致性暂时保留，可以在控制器中隐藏或移除) -->
+            <HBox fx:id="categoryBar" styleClass="category-bar" visible="false" managed="false">
+                <Button styleClass="category-button,selected" text="全部" HBox.hgrow="ALWAYS" />
+                <Button styleClass="category-button" text="学习" HBox.hgrow="ALWAYS" />
+                <Button styleClass="category-button" text="生活" HBox.hgrow="ALWAYS" />
+                <Button styleClass="category-button" text="其他" HBox.hgrow="ALWAYS" />
             </HBox>
-            
+
             <!-- 咨询卡片列表 -->
-            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
                 <VBox fx:id="cardsContainer" styleClass="cards-container">
-                    <!-- 咨询卡片示例 -->
-                    <VBox styleClass="consultation-card">
-                        <HBox styleClass="card-header">
-                            <Label text="问题1" styleClass="question-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label text="2024-03-21" styleClass="time-label"/>
-                        </HBox>
-                        <Label text="回复1" styleClass="reply-label"/>
-                        <HBox styleClass="card-footer">
-                            <HBox styleClass="status-container">
-                                <Label text="未答复" styleClass="status-label,unanswered"/>
-                            </HBox>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <HBox styleClass="interaction-container">
-                                <ImageView fitWidth="16" fitHeight="16" styleClass="message-icon">
-                                    <Image url="@images/message.png"/>
-                                </ImageView>
-                                <CheckBox styleClass="solve-checkbox">
-                                    <graphic>
-                                        <ImageView fitWidth="16" fitHeight="16">
-                                            <Image url="@images/not_select.png"/>
-                                        </ImageView>
-                                    </graphic>
-                                </CheckBox>
-                            </HBox>
-                        </HBox>
-                    </VBox>
-                    
-                    <!-- 分割线 -->
-                    <Separator styleClass="card-separator"/>
-                    
-                    <!-- 更多咨询卡片 -->
-                    <VBox styleClass="consultation-card">
-                        <HBox styleClass="card-header">
-                            <Label text="问题2" styleClass="question-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label text="2024-03-20" styleClass="time-label"/>
-                        </HBox>
-                        <Label text="回复2" styleClass="reply-label"/>
-                        <HBox styleClass="card-footer">
-                            <HBox styleClass="status-container">
-                                <Label text="仍需解决" styleClass="status-label,needs-solution"/>
-                            </HBox>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <HBox styleClass="interaction-container">
-                                <ImageView fitWidth="16" fitHeight="16" styleClass="message-icon">
-                                    <Image url="@images/message.png"/>
-                                </ImageView>
-                                <CheckBox styleClass="solve-checkbox">
-                                    <graphic>
-                                        <ImageView fitWidth="16" fitHeight="16">
-                                            <Image url="@images/select.png"/>
-                                        </ImageView>
-                                    </graphic>
-                                </CheckBox>
-                            </HBox>
-                        </HBox>
-                    </VBox>
+                    <!-- 咨询卡片将由控制器动态添加 -->
                 </VBox>
             </ScrollPane>
         </VBox>

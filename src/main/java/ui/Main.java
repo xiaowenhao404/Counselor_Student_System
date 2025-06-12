@@ -8,23 +8,30 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private static Stage primaryStage;
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        // 直接加载咨询大厅界面
-        Parent root = FXMLLoader.load(getClass().getResource("/ui/student_main.fxml"));
-        String title = "辅导员学生交流系统";
-
-        // 创建场景（样式表已在FXML中引用）
-        Scene scene = new Scene(root);
-        scene.setFill(javafx.scene.paint.Color.WHITE);
-
-        // 设置窗口标题和大小
-        primaryStage.setTitle(title);
-        primaryStage.setScene(scene);
+    public void start(Stage stage) throws Exception {
+        primaryStage = stage;
         primaryStage.setWidth(1200);
         primaryStage.setHeight(800);
-        primaryStage.setResizable(true);
+        primaryStage.setResizable(false);
+
+        // 默认加载学生端主界面
+        loadScene("/ui/student_main.fxml");
+        primaryStage.setTitle("辅导员学生交流系统——学生端");
         primaryStage.show();
+    }
+
+    public static void loadScene(String fxmlPath) {
+        try {
+            Parent root = FXMLLoader.load(Main.class.getResource(fxmlPath));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Main.class.getResource("/ui/student_main.css").toExternalForm()); // 确保CSS被加载
+            primaryStage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

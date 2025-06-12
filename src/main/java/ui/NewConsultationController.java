@@ -1,74 +1,145 @@
 package ui;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.Region;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.fxml.FXMLLoader;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewConsultationController {
+
     @FXML
-    private HBox navButtons;
-    
+    private TextField questionField;
     @FXML
-    private TextField searchField;
-    
+    private Label questionCountLabel;
     @FXML
-    private TextArea questionArea;
-    
+    private TextArea contentArea;
+    @FXML
+    private Label contentHintLabel;
+    @FXML
+    private Label contentCountLabel;
+    @FXML
+    private HBox tagButtonsContainer;
+    @FXML
+    private Button tagStudyButton;
+    @FXML
+    private Button tagLifeButton;
+    @FXML
+    private Button tagOtherButton;
+    @FXML
+    private Button cancelButton;
+    @FXML
+    private Button publishButton;
+
+    private Button selectedTagButton = null;
+
     @FXML
     public void initialize() {
-        // 初始化导航按钮点击事件
-        navButtons.getChildren().forEach(node -> {
-            if (node instanceof Button) {
-                Button button = (Button) node;
-                button.setOnAction(event -> {
-                    try {
-                        String fxmlPath = button.getText().equals("大厅") ? 
-                            "/ui/student_main.fxml" : "/ui/my_consultations.fxml";
-                        Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxmlPath)));
-                        Stage stage = (Stage) button.getScene().getWindow();
-                        stage.setScene(scene);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+        // 问题输入框监听
+        questionField.textProperty().addListener((observable, oldValue, newValue) -> {
+            int len = newValue.length();
+            questionCountLabel.setText(len + "/20");
+            if (len > 20) {
+                questionCountLabel.getStyleClass().add("error");
+            } else {
+                questionCountLabel.getStyleClass().remove("error");
             }
         });
+
+        // 内容输入框监听
+        contentArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            int len = newValue.length();
+            contentCountLabel.setText(len + "/100");
+            if (len > 100 || len == 0) {
+                contentCountLabel.getStyleClass().add("error");
+                contentHintLabel.setVisible(true);
+            } else {
+                contentCountLabel.getStyleClass().remove("error");
+                contentHintLabel.setVisible(false);
+            }
+        });
+
+        // 标签按钮点击事件
+        List<Button> tagButtons = new ArrayList<>();
+        tagButtons.add(tagStudyButton);
+        tagButtons.add(tagLifeButton);
+        tagButtons.add(tagOtherButton);
+
+        for (Button button : tagButtons) {
+            button.setOnAction(event -> {
+                if (selectedTagButton != null) {
+                    selectedTagButton.getStyleClass().remove("selected");
+                }
+                selectedTagButton = button;
+                selectedTagButton.getStyleClass().add("selected");
+            });
+        }
     }
-    
+
     @FXML
-    private void handleSubmit() {
-        String question = questionArea.getText().trim();
+    private void handleBackToList() {
+        closeWindow();
+    }
+
+    @FXML
+    private void handleCancel() {
+        closeWindow();
+    }
+
+    @FXML
+    private void handlePublish() {
+        String question = questionField.getText();
+        String content = contentArea.getText();
+
+        // 验证
         if (question.isEmpty()) {
-            showAlert("提示", "请输入问题描述");
+            showAlert(AlertType.ERROR, "输入错误", "问题不能为空。");
             return;
         }
-        
-        // TODO: 获取选中的类别
-        String category = "学习"; // 默认类别
-        
-        // TODO: 保存咨询信息到数据库
-        
-        // 提交成功后返回我的咨询界面
-        try {
-            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/ui/my_consultations.fxml")));
-            Stage stage = (Stage) questionArea.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (question.length() > 20) {
+            showAlert(AlertType.ERROR, "输入错误", "问题长度不能超过20个字符。");
+            return;
         }
+        if (content.isEmpty() || content.length() > 100) {
+            showAlert(AlertType.ERROR, "输入错误", "详细提问内容不能为空，且长度不能超过100个字符。");
+            return;
+        }
+        if (selectedTagButton == null) {
+            showAlert(AlertType.ERROR, "输入错误", "请选择一个咨询标签。");
+            return;
+        }
+
+        // 模拟数据提交
+        String selectedTag = selectedTagButton.getText();
+        // 实际应用中，这里会调用后端接口保存数据
+        System.out.println("新咨询发布：");
+        System.out.println("问题: " + question);
+        System.out.println("内容: " + content);
+        System.out.println("标签: " + selectedTag);
+        System.out.println("状态: 未回复"); // 默认状态
+        System.out.println("是否加精: 0"); // 默认不加精
+
+        showAlert(AlertType.INFORMATION, "成功", "新咨询发起成功！");
+        closeWindow();
     }
-    
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+    private void showAlert(AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText(content);
+        alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) questionField.getScene().getWindow();
+        stage.close();
     }
 } 
