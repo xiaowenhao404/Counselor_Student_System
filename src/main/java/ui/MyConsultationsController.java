@@ -189,13 +189,8 @@ public class MyConsultationsController {
         Label timeLabel = new Label(timeStr);
         timeLabel.getStyleClass().add("card-time");
         // 回复内容
-        String replyContent = null;
-        try {
-            replyContent = consultationDao.getFirstReplyContent(consultation.getQNumber());
-        } catch (Exception e) {
-            replyContent = null;
-        }
-        Label replyLabel = new Label(replyContent != null ? replyContent : "暂无回复");
+        String replyContent = consultation.getQuestionContent();
+        Label replyLabel = new Label(replyContent != null && !replyContent.isEmpty() ? replyContent : "暂无回复");
         replyLabel.getStyleClass().add("card-reply");
         replyLabel.setWrapText(true);
         // 状态标签

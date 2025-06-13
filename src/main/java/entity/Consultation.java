@@ -136,6 +136,27 @@ public class Consultation {
         this.collected = collected;
     }
 
+    // 提供别名方法以兼容 CounselorMainController
+    public String getQId() {
+        return getQNumber();
+    }
+
+    public String getTitle() {
+        return getQuestionTitle();
+    }
+
+    public String getContent() {
+        return getQuestionContent();
+    }
+
+    public boolean isFeatured() {
+        return isHighlighted();
+    }
+
+    public void setFeatured(boolean featured) {
+        setHighlighted(featured);
+    }
+
     @Override
     public String toString() {
         return "Consultation{" +

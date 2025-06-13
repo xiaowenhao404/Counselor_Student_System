@@ -50,24 +50,59 @@ public class Main extends Application {
 
     public static void loadScene(String fxmlPath) {
         try {
+            System.out.println("正在加载场景: " + fxmlPath);
+            System.out.println("DEBUG: Stage Hash Code (before load): " + primaryStage.hashCode());
+            if (primaryStage.getScene() != null) {
+                System.out.println("DEBUG: Current Scene Hash Code (before load): " + primaryStage.getScene().hashCode());
+            } else {
+                System.out.println("DEBUG: Current Scene is null (before load).");
+            }
+            
+            // 检查FXML文件是否存在
+            if (Main.class.getResource(fxmlPath) == null) {
+                System.err.println("错误：无法找到FXML文件: " + fxmlPath);
+                return;
+            }
+            
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(fxmlPath));
             Parent root = loader.load();
             Scene scene = new Scene(root);
 
+            System.out.println("DEBUG: New Scene Hash Code (after creation): " + scene.hashCode());
+
             // 根据不同的界面加载对应的CSS
+            String cssPath = null;
             if (fxmlPath.contains("login")) {
-                scene.getStylesheets().add(Main.class.getResource("/ui/login.css").toExternalForm());
+                cssPath = "/ui/login.css";
             } else if (fxmlPath.contains("student_main")) {
-                scene.getStylesheets().add(Main.class.getResource("/ui/student_main.css").toExternalForm());
-            } else if (fxmlPath.contains("counselor_main")) {
-                scene.getStylesheets().add(Main.class.getResource("/ui/counselor_main.css").toExternalForm());
+                cssPath = "/ui/student_main.css";
+            } else if (fxmlPath.contains("counselor_main") || fxmlPath.contains("counselor_my_consultations")) {
+                cssPath = "/ui/counselor_main.css";
             } else if (fxmlPath.contains("admin_main")) {
-                scene.getStylesheets().add(Main.class.getResource("/ui/admin_main.css").toExternalForm());
+                cssPath = "/ui/admin_main.css";
+            }
+
+            if (cssPath != null) {
+                if (Main.class.getResource(cssPath) != null) {
+                    scene.getStylesheets().add(Main.class.getResource(cssPath).toExternalForm());
+                } else {
+                    System.err.println("警告：找不到CSS文件: " + cssPath);
+                }
             }
 
             primaryStage.setScene(scene);
-            System.out.println("切换到: " + fxmlPath);
+            System.out.println("成功加载场景: " + fxmlPath);
+            System.out.println("DEBUG: Stage Hash Code (after setScene): " + primaryStage.hashCode());
+            System.out.println("DEBUG: New Current Scene Hash Code (after setScene): " + primaryStage.getScene().hashCode());
+            if (primaryStage.getScene() != null && primaryStage.getScene().getRoot() != null) {
+                System.out.println("DEBUG: primaryStage 当前场景根节点ID: " + primaryStage.getScene().getRoot().getId());
+            } else {
+                System.out.println("DEBUG: primaryStage 当前场景根节点为 null 或其根节点为 null。");
+            }
+
         } catch (Exception e) {
+            System.err.println("加载场景时发生错误: " + fxmlPath);
+            System.err.println("错误详情: " + e.getMessage());
             e.printStackTrace();
         }
     }

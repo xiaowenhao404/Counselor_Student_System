@@ -11,6 +11,7 @@ public class Counselor {
     private String password;
     private String departmentName;
     private String classList; // 负责班级
+    private String majorId; // 新增字段，辅导员负责的专业ID
 
     // 构造函数
     public Counselor() {
@@ -91,6 +92,15 @@ public class Counselor {
         this.classList = classList;
     }
 
+    // 新增 getMajorId 和 setMajorId 方法
+    public String getMajorId() {
+        return majorId;
+    }
+
+    public void setMajorId(String majorId) {
+        this.majorId = majorId;
+    }
+
     @Override
     public String toString() {
         return "Counselor{" +
@@ -102,6 +112,7 @@ public class Counselor {
                 ", password='" + password + '\'' +
                 ", departmentName='" + departmentName + '\'' +
                 ", classList='" + classList + '\'' +
+                ", majorId='" + majorId + '\'' +
                 '}';
     }
 }

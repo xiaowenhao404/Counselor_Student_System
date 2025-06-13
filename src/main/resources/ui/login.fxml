@@ -12,7 +12,7 @@
     <!-- Header -->
     <StackPane styleClass="header-container" prefHeight="120.0">
         <VBox alignment="CENTER" spacing="15">
-            <Text styleClass="header-title" text="教务管理系统"/>
+            <Text styleClass="header-title" text="辅导员学生交流系统"/>
             <Text styleClass="header-subtitle" text="欢迎登录"/>
         </VBox>
     </StackPane>
@@ -73,7 +73,7 @@
                         </VBox>
                     </graphic>
                 </Button>
-                <Button fx:id="teacherRoleButton" styleClass="role-button" onAction="#handleRoleSelect">
+                <Button fx:id="counselorRoleButton" styleClass="role-button" onAction="#handleRoleSelect">
                     <graphic>
                         <VBox alignment="CENTER" spacing="5">
                             <ImageView fitHeight="30" fitWidth="30" pickOnBounds="true" preserveRatio="true">
@@ -81,7 +81,7 @@
                                     <Image url="/images/login_teacher.png"/>
                                 </image>
                             </ImageView>
-                            <Text text="教师" styleClass="role-text"/>
+                            <Text text="辅导员" styleClass="role-text"/>
                         </VBox>
                     </graphic>
                 </Button>

@@ -1,0 +1,343 @@
+.main-container {
+    -fx-background-color: #f0f2f5;
+}
+
+/* 顶部导航栏样式 */
+.top-bar {
+    -fx-background-color: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+    -fx-padding: 10px 20px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+}
+
+.top-bar .title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 0 10px;
+}
+
+.nav-buttons {
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-text-fill: #e0e0e0;
+}
+
+.nav-button.selected {
+    -fx-border-color: white;
+    -fx-border-width: 0 0 2px 0;
+    -fx-padding: 5px 10px 3px 10px;
+}
+
+.search-field {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 15px;
+    -fx-padding: 5px 15px;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #e0e0e0;
+    -fx-font-size: 14px;
+    -fx-pref-width: 180px;
+    -fx-max-width: 180px;
+}
+
+.search-field .text-input {
+    -fx-highlight-fill: #6a11cb;
+    -fx-highlight-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+/* 主体内容区域样式 */
+.content-area {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-spacing: 20;
+}
+
+/* 左侧导航栏样式 */
+.left-nav {
+    -fx-pref-width: 200px;
+    -fx-background-color: transparent;
+    -fx-padding: 20 0;
+    -fx-spacing: 20;
+    -fx-alignment: TOP_CENTER;
+}
+
+.nav-buttons-container {
+    -fx-spacing: 15px;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 0 20px 0;
+}
+
+.left-nav-button {
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-text-fill: #5b3e94;
+    -fx-font-size: 15px;
+    -fx-font-weight: normal;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+    -fx-cursor: hand;
+}
+
+.left-nav-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-transition-duration: 0.2s;
+}
+
+.left-nav-button.selected {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    -fx-text-fill: white;
+    -fx-font-weight: normal;
+}
+
+/* 咨询列表区域样式 */
+.consultation-list {
+    -fx-spacing: 15px;
+    -fx-padding: 15px;
+    -fx-background-color: #f0f2f5;
+    -fx-hgrow: ALWAYS;
+}
+
+.category-bar {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 0;
+    -fx-padding: 0 10 0 10;
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-margin: 10px 0;
+}
+
+.category-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-font-size: 16px;
+    -fx-padding: 10 15;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 0;
+    -fx-cursor: hand;
+}
+
+.category-button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-transition-duration: 0.1s;
+}
+
+.category-button.selected {
+    -fx-border-color: #5b3e94;
+    -fx-border-width: 0 0 2px 0;
+    -fx-font-weight: bold;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-fit-to-width: true;
+    -fx-hbar-policy: never;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 8px;
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #cccccc;
+    -fx-background-radius: 4px;
+}
+
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-padding: 0;
+}
+
+.cards-container {
+    -fx-spacing: 15px;
+    -fx-padding: 0;
+    -fx-alignment: TOP_CENTER;
+}
+
+/* 咨询卡片样式 */
+.consultation-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-spacing: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
+}
+
+.card-header {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+    -fx-padding: 0 0 5 0;
+}
+
+.question-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.consultation-id-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+.time-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #888888;
+    -fx-padding: 0 0 5 0;
+}
+
+.reply-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+    -fx-padding: 0 0 10 0;
+}
+
+.status-container {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 5 0 8 0;
+}
+
+.status-label {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 3 8;
+    -fx-background-radius: 3px;
+    -fx-alignment: CENTER;
+    -fx-pref-width: 60px;
+}
+
+.status-label.solved {
+    -fx-background-color: #4CAF50;
+}
+
+.status-label.unsolved {
+    -fx-background-color: #F44336;
+}
+
+.status-unanswered {
+    -fx-background-color: #ff4d4d;
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+}
+
+.status-unresolved {
+    -fx-background-color: #ff4d4d;
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+}
+
+.status-resolved {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+}
+
+.solved-checkbox .box {
+    -fx-background-color: transparent;
+    -fx-border-color: #888;
+    -fx-border-radius: 3px;
+    -fx-border-width: 1.5px;
+}
+
+.solved-checkbox:selected .box {
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #4CAF50;
+}
+
+.solved-checkbox:selected .box .mark {
+    -fx-background-color: white;
+}
+
+.solved-checkbox {
+    -fx-font-size: 13px;
+    -fx-text-fill: #555;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.card-status-label,
+.category-tag {
+    -fx-background-radius: 12px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 12 2 12;
+    -fx-alignment: center;
+}
+
+.card-separator {
+    -fx-background-color: transparent;
+    -fx-min-height: 0px;
+    -fx-pref-height: 0px;
+    -fx-max-height: 0px;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-border-color: transparent;
+    -fx-opacity: 0;
+}
+
+.interaction-container {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 5px;
+    -fx-padding: 5px 0 0 0;
+}
+
+.message-icon {
+    -fx-fit-width: 20px;
+    -fx-fit-height: 20px;
+    -fx-padding: 0;
+}
+
+.featured-icon {
+    -fx-fit-width: 20px;
+    -fx-fit-height: 20px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.featured-icon.selected {
+    -fx-fill: #FFD700; /* 选中时显示金色 */
+}
+
+.category-tag {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 12 2 12;
+    -fx-background-radius: 12px;
+    -fx-alignment: center;
+    -fx-label-padding: 0 0 0 0;
+    -fx-margin: 0 0 0 8px;
+} 

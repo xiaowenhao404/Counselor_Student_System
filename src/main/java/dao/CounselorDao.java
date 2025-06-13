@@ -13,6 +13,8 @@ public interface CounselorDao {
     List<Counselor> getAllCounselorsList() throws SQLException;
 
     Counselor getCounselorById(String counselorId) throws SQLException;
+
+    List<String> getStudentIdsByCounselorId(String counselorId) throws SQLException;
     
     // 增删改方法
     boolean addCounselor(Counselor counselor) throws SQLException;

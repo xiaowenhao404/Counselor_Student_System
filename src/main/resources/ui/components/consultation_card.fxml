@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
+
+<VBox styleClass="consultation-card" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <HBox styleClass="card-header">
+        <Label fx:id="questionLabel" styleClass="question-label" text="咨询标题示例" HBox.hgrow="ALWAYS"/>
+        <Label fx:id="consultationIdLabel" styleClass="consultation-id-label" text="ID: Q0001"/>
+    </HBox>
+    <Label fx:id="timeLabel" styleClass="time-label" text="2024-06-13 10:30"/>
+    <TextFlow fx:id="replyContentTextFlow" styleClass="reply-label">
+        <Label text="咨询内容示例：这是一个关于学习方面的咨询内容。"/>
+    </TextFlow>
+    <HBox styleClass="status-container">
+        <Label fx:id="statusLabel" styleClass="status-label" text="未回复"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="categoryTag" styleClass="category-tag" text="学习"/>
+    </HBox>
+    <HBox styleClass="interaction-container">
+        <ImageView fx:id="messageIcon" styleClass="message-icon">
+            <image>
+                <Image url="/images/message.png"/>
+            </image>
+        </ImageView>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ImageView fx:id="featuredIcon" styleClass="featured-icon">
+            <image>
+                <Image url="/images/unchoosen.png"/>
+            </image>
+        </ImageView>
+    </HBox>
+</VBox> 

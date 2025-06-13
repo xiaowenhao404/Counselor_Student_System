@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.CounselorMyConsultationsController"
+      stylesheets="@counselor_main.css" styleClass="main-container">
+
+    <!-- 顶部导航栏 -->
+    <HBox styleClass="top-bar">
+        <Label styleClass="title-label" text="辅导员学生交流系统——我的答疑">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <Region HBox.hgrow="ALWAYS" />
+        <HBox fx:id="navButtons" styleClass="nav-buttons">
+            <Button fx:id="hallButton" styleClass="nav-button" text="大厅" />
+            <Button fx:id="myConsultationsButton" styleClass="nav-button,selected" text="我的" />
+        </HBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <TextField fx:id="searchField" promptText="搜索..." styleClass="search-field" />
+    </HBox>
+
+    <!-- 主体内容区域 -->
+    <HBox styleClass="content-area" VBox.vgrow="ALWAYS">
+        <!-- 左侧导航栏 -->
+        <VBox styleClass="left-nav">
+            <VBox fx:id="leftNavButtons" styleClass="nav-buttons-container">
+                <Button fx:id="unansweredButton" styleClass="left-nav-button,selected" text="未回复" />
+                <Button fx:id="unresolvedButton" styleClass="left-nav-button" text="仍需解决" />
+                <Button fx:id="resolvedButton" styleClass="left-nav-button" text="已解决" />
+            </VBox>
+            <Region VBox.vgrow="ALWAYS" />
+            <!-- 辅导员端我的答疑页面不需要 "我要咨询" 按钮 -->
+        </VBox>
+
+        <!-- 中间咨询列表区域 -->
+        <VBox styleClass="consultation-list" HBox.hgrow="ALWAYS">
+            <!-- 类别分栏 (在"我的咨询"界面中可能不需要，但为了布局一致性暂时保留，可以在控制器中隐藏或移除) -->
+            <HBox fx:id="categoryBar" styleClass="category-bar" visible="false" managed="false">
+                <Button styleClass="category-button,selected" text="全部" HBox.hgrow="ALWAYS" />
+                <Button styleClass="category-button" text="学习" HBox.hgrow="ALWAYS" />
+                <Button styleClass="category-button" text="生活" HBox.hgrow="ALWAYS" />
+                <Button styleClass="category-button" text="其他" HBox.hgrow="ALWAYS" />
+            </HBox>
+
+            <!-- 咨询卡片列表 -->
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+                <VBox fx:id="cardsContainer" styleClass="cards-container">
+                    <!-- 咨询卡片将由控制器动态添加 -->
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </HBox>
+</VBox> 

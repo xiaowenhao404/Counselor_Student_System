@@ -32,7 +32,7 @@ public class LoginController {
     private Button studentRoleButton;
 
     @FXML
-    private Button teacherRoleButton;
+    private Button counselorRoleButton;
 
     @FXML
     private Button adminRoleButton;
@@ -61,7 +61,7 @@ public class LoginController {
     private void handleRoleSelect(ActionEvent event) {
         // 移除所有按钮的选中样式
         studentRoleButton.getStyleClass().remove("selected");
-        teacherRoleButton.getStyleClass().remove("selected");
+        counselorRoleButton.getStyleClass().remove("selected");
         adminRoleButton.getStyleClass().remove("selected");
 
         // 根据点击的按钮设置选中样式和更新图标
@@ -71,7 +71,7 @@ public class LoginController {
         if (clickedButton == studentRoleButton) {
             selectedRole = "学生";
             usernameIcon.setImage(new Image(getClass().getResourceAsStream("/images/login_student.png")));
-        } else if (clickedButton == teacherRoleButton) {
+        } else if (clickedButton == counselorRoleButton) {
             selectedRole = "辅导员";
             usernameIcon.setImage(new Image(getClass().getResourceAsStream("/images/login_teacher.png")));
         } else if (clickedButton == adminRoleButton) {

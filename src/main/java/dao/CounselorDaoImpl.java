@@ -122,7 +122,8 @@ public class CounselorDaoImpl implements CounselorDao {
 
     @Override
     public Counselor getCounselorById(String counselorId) throws SQLException {
-        String sql = "SELECT 辅导员工号, 姓名, 性别, 手机号码, 密码 FROM 辅导员 WHERE 辅导员工号 = ?";
+        String sql = "SELECT f.辅导员工号, f.姓名, f.性别, f.手机号码, f.密码, b.专业编号 " +
+                     "FROM 辅导员 f LEFT JOIN 班级 b ON f.辅导员工号 = b.辅导员工号 WHERE f.辅导员工号 = ? LIMIT 1";
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -141,6 +142,7 @@ public class CounselorDaoImpl implements CounselorDao {
                 counselor.setGender(rs.getString("性别"));
                 counselor.setPhoneNumber(rs.getString("手机号码"));
                 counselor.setPassword(rs.getString("密码"));
+                counselor.setMajorId(rs.getString("专业编号"));
             }
         } finally {
             DatabaseConnection.closeConnection(connection);
@@ -212,5 +214,44 @@ public class CounselorDaoImpl implements CounselorDao {
             int result = ps.executeUpdate();
             return result > 0;
         }
+    }
+
+    @Override
+    public List<String> getStudentIdsByCounselorId(String counselorId) throws SQLException {
+        List<String> studentIds = new ArrayList<>();
+        String sql = "SELECT s.学生学号 FROM 学生 s " +
+                     "JOIN 班级 b ON s.专业编号 = b.专业编号 AND s.年级编号 = b.年级编号 AND s.班级编号 = b.班级编号 " +
+                     "WHERE b.辅导员工号 = ?";
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = DatabaseConnection.getConnection();
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, counselorId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                studentIds.add(rs.getString("学生学号"));
+            }
+        } finally {
+            DatabaseConnection.closeConnection(connection);
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return studentIds;
     }
 }
