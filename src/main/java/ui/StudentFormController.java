@@ -153,6 +153,13 @@ public class StudentFormController implements Initializable {
                 }
             }
         });
+
+        // 姓名验证：不允许输入数字和标点符号
+        nameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.matches(".*[\\d,.?!，。！？、；：‘’（）【】《》——…￥].*")) {
+                nameField.setText(oldValue);
+            }
+        });
     }
 
     private void setupDependentFields() {
@@ -410,6 +417,9 @@ public class StudentFormController implements Initializable {
         if (nameField.getText().trim().isEmpty()) {
             errors.append("• 姓名不能为空\n");
             addErrorStyle(nameField);
+        } else if (nameField.getText().matches(".*[\\d,.?!，。！？、；：‘’（）【】《》——…￥].*")) {
+            errors.append("• 姓名不能包含数字或标点符号\n");
+            addErrorStyle(nameField);
         } else {
             removeErrorStyle(nameField);
         }
@@ -428,8 +438,13 @@ public class StudentFormController implements Initializable {
             removeErrorStyle(birthDatePicker);
         }
 
-        if (phoneField.getText().trim().isEmpty()) {
+        // 手机号格式校验
+        String phone = phoneField.getText().trim();
+        if (phone.isEmpty()) {
             errors.append("• 手机号码不能为空\n");
+            addErrorStyle(phoneField);
+        } else if (!phone.matches("1[3-9]\\d{9}")) {
+            errors.append("• 手机号格式不正确\n");
             addErrorStyle(phoneField);
         } else {
             removeErrorStyle(phoneField);

@@ -30,6 +30,15 @@
         </HBox>
         <Region HBox.hgrow="ALWAYS" />
         <TextField fx:id="searchField" promptText="搜索..." styleClass="search-field" />
+        <Button fx:id="logoutButton" text="退出登录" styleClass="logout-button">
+            <graphic>
+                <ImageView fitHeight="16" fitWidth="16" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="/images/settings.png"/>
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
     </HBox>
 
     <!-- 主体内容区域 -->

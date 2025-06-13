@@ -69,6 +69,12 @@ public class StudentMainController {
     private Button featuredButton;
     @FXML
     private Button collectedButton;
+    @FXML
+    private Button allButton;
+    @FXML
+    private Button logoutButton;
+
+    private boolean isMyMode = false;
 
     public StudentMainController() {
         System.out.println("StudentMainController 构造方法被调用");
@@ -80,14 +86,24 @@ public class StudentMainController {
         System.out.println("当前登录学生ID: " + currentStudentId);
         if (myConsultationsButton == null)
             throw new RuntimeException("myConsultationsButton 注入失败！");
-        initializeConsultations();
+        isMyMode = false;
         hallButton.getStyleClass().add("selected");
         myConsultationsButton.getStyleClass().remove("selected");
-        hallButton.setOnAction(event -> {
-            resetToInitialState();
-        });
         myConsultationsButton.setOnAction(event -> {
-            Main.loadScene("/ui/my_consultations.fxml");
+            isMyMode = true;
+            clearTopNavSelected();
+            myConsultationsButton.getStyleClass().add("selected");
+            switchToMyMode();
+            highlightMyDefault();
+            refreshConsultations();
+        });
+        hallButton.setOnAction(event -> {
+            isMyMode = false;
+            clearTopNavSelected();
+            hallButton.getStyleClass().add("selected");
+            switchToHallMode();
+            highlightHallDefault();
+            refreshConsultations();
         });
         setupLeftNavButtons();
         for (Node node : categoryBar.getChildren()) {
@@ -115,7 +131,7 @@ public class StudentMainController {
                             currentFilter = FilterType.OTHER;
                             break;
                     }
-                    loadConsultationCards();
+                    refreshConsultations();
                 });
             }
         }
@@ -129,8 +145,7 @@ public class StudentMainController {
                 newConsultationStage.initModality(Modality.APPLICATION_MODAL);
                 newConsultationStage.initOwner(((Node) event.getSource()).getScene().getWindow());
                 newConsultationStage.showAndWait();
-                initializeConsultations();
-                loadConsultationCards();
+                refreshConsultations();
             } catch (IOException e) {
                 e.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -140,11 +155,15 @@ public class StudentMainController {
                 alert.showAndWait();
             }
         });
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> loadConsultationCards());
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> refreshConsultations());
+        
+        // 设置退出登录按钮事件
+        logoutButton.setOnAction(event -> handleLogout());
+        
         if (allCategoriesButton != null)
             allCategoriesButton.getStyleClass().add("selected");
         updateConsultationCount();
-        loadConsultationCards();
+        refreshConsultations();
     }
 
     private void setupLeftNavButtons() {
@@ -152,29 +171,33 @@ public class StudentMainController {
             if (node instanceof Button) {
                 Button button = (Button) node;
                 button.setOnAction(event -> {
-                    for (Node otherNode : leftNavButtons.getChildren()) {
-                        if (otherNode instanceof Button) {
-                            otherNode.getStyleClass().remove("selected");
-                        }
-                    }
+                    clearLeftNavSelected();
                     button.getStyleClass().add("selected");
                     String buttonText = button.getText();
-                    if ("全部".equals(buttonText))
+                    if ("全部".equals(buttonText) || "已解决".equals(buttonText))
                         currentFilter = FilterType.ALL;
-                    else if ("精选".equals(buttonText))
+                    else if ("精选".equals(buttonText) || "仍需解决".equals(buttonText))
                         currentFilter = FilterType.FEATURED;
-                    else if ("收藏".equals(buttonText))
+                    else if ("收藏".equals(buttonText) || "未回复".equals(buttonText))
                         currentFilter = FilterType.COLLECTED;
-                    loadConsultationCards();
+                    refreshConsultations();
                 });
             }
+        }
+    }
+
+    private void refreshConsultations() {
+        if (isMyMode) {
+            loadMyConsultations();
+        } else {
+            loadAllConsultations();
         }
     }
 
     private void initializeConsultations() {
         try {
             List<Consultation> list = consultationDao.getAllConsultations();
-            // 查询每条咨询是否被当前学生收藏
+            // 查询每条咨询是否被当前学生收藏（每次都查数据库）
             for (Consultation c : list) {
                 c.setCollected(collectDao.isCollected(c.getQNumber(), currentStudentId));
             }
@@ -191,30 +214,45 @@ public class StudentMainController {
         List<Consultation> filteredConsultations = allConsultations.stream()
                 .filter(c -> c.getStatus().equals("已解决") || c.getStatus().equals("仍需解决") || c.getStatus().equals("未回复"))
                 .filter(c -> {
-                    switch (currentFilter) {
-                        case ALL:
-                            return true;
-                        case FEATURED:
-                            return c.isHighlighted();
-                        case COLLECTED:
-                            return c.isCollected();
-                        case LEARNING:
-                            return "学习".equals(c.getCategory());
-                        case LIFE:
-                            return "生活".equals(c.getCategory());
-                        case OTHER:
-                            return "其他".equals(c.getCategory());
-                        default:
-                            return true;
+                    // "我的"模式下按状态筛选
+                    if ("已解决".equals(allButton.getText())) {
+                        if (currentFilter == FilterType.ALL)
+                            return c.getStatus().equals("已解决");
+                        if (currentFilter == FilterType.FEATURED)
+                            return c.getStatus().equals("仍需解决");
+                        if (currentFilter == FilterType.COLLECTED)
+                            return c.getStatus().equals("未回复");
+                    } else {
+                        // 大厅模式
+                        switch (currentFilter) {
+                            case ALL:
+                                return true;
+                            case FEATURED:
+                                return c.isHighlighted();
+                            case COLLECTED:
+                                // 这里每次都查数据库，保证收藏状态准确
+                                try {
+                                    return collectDao.isCollected(c.getQNumber(), currentStudentId);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
+                            case LEARNING:
+                                return "学习".equals(c.getCategory());
+                            case LIFE:
+                                return "生活".equals(c.getCategory());
+                            case OTHER:
+                                return "其他".equals(c.getCategory());
+                        }
                     }
+                    return true;
                 })
-                .filter(c -> searchText.isEmpty() ||
-                        (c.getQuestionTitle() != null && c.getQuestionTitle().toLowerCase().contains(searchText)) ||
-                        (c.getStatus() != null && c.getStatus().toLowerCase().contains(searchText)))
+                .filter(c -> c.getQuestionTitle().toLowerCase().contains(searchText))
                 .collect(Collectors.toList());
         for (Consultation consultation : filteredConsultations) {
             cardsContainer.getChildren().add(createConsultationCard(consultation));
         }
+        updateConsultationCount();
     }
 
     private Node createConsultationCard(Consultation consultation) {
@@ -264,24 +302,28 @@ public class StudentMainController {
         messageIcon.setFitHeight(20);
         messageIcon.getStyleClass().add("interaction-icon");
         // 收藏图标
+        boolean isCollected = false;
+        try {
+            isCollected = collectDao.isCollected(consultation.getQNumber(), currentStudentId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ImageView collectIcon = new ImageView(new Image(getClass().getResourceAsStream(
-                consultation.isCollected() ? "/images/collected.png" : "/images/uncollected.png")));
+                isCollected ? "/images/collected.png" : "/images/uncollected.png")));
         collectIcon.setFitWidth(20);
         collectIcon.setFitHeight(20);
         collectIcon.getStyleClass().add("interaction-icon");
         // 收藏点击事件
         collectIcon.setOnMouseClicked(event -> {
-            event.consume(); // 阻止冒泡到卡片点击
+            event.consume();
             try {
-                if (consultation.isCollected()) {
+                boolean nowCollected = collectDao.isCollected(consultation.getQNumber(), currentStudentId);
+                if (nowCollected) {
                     collectDao.removeCollect(consultation.getQNumber(), currentStudentId);
-                    consultation.setCollected(false);
                 } else {
                     collectDao.addCollect(consultation.getQNumber(), currentStudentId);
-                    consultation.setCollected(true);
                 }
-                // 刷新卡片UI
-                loadConsultationCards();
+                refreshConsultations();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -307,8 +349,7 @@ public class StudentMainController {
             ConsultationDetailController controller = loader.getController();
             controller.setConsultation(consultation);
             controller.setOnConsultationUpdated(() -> {
-                initializeConsultations();
-                loadConsultationCards();
+                refreshConsultations();
             });
             Stage detailStage = new Stage();
             detailStage.setTitle("咨询详情");
@@ -318,7 +359,7 @@ public class StudentMainController {
             detailStage.setWidth(800);
             detailStage.setHeight(700);
             detailStage.showAndWait();
-            loadConsultationCards();
+            refreshConsultations();
         } catch (IOException e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -358,5 +399,114 @@ public class StudentMainController {
         currentFilter = FilterType.ALL;
         // 刷新卡片
         loadConsultationCards();
+    }
+
+    // 新增：只显示当前学生咨询的方法
+    private void loadMyConsultations() {
+        try {
+            List<Consultation> list = consultationDao.getAllConsultations();
+            List<Consultation> myList = list.stream()
+                    .filter(c -> c.getStudentId().equals(currentStudentId))
+                    .collect(java.util.stream.Collectors.toList());
+            allConsultations.setAll(myList);
+            loadConsultationCards();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 大厅显示全部咨询
+    private void loadAllConsultations() {
+        try {
+            List<Consultation> list = consultationDao.getAllConsultations();
+            allConsultations.setAll(list);
+            loadConsultationCards();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void switchToMyMode() {
+        allButton.setText("已解决");
+        featuredButton.setText("仍需解决");
+        collectedButton.setText("未回复");
+        clearLeftNavSelected();
+        allButton.getStyleClass().add("selected");
+        currentFilter = FilterType.ALL;
+        refreshConsultations();
+    }
+
+    private void switchToHallMode() {
+        allButton.setText("全部");
+        featuredButton.setText("精选");
+        collectedButton.setText("收藏");
+        clearLeftNavSelected();
+        allButton.getStyleClass().add("selected");
+        currentFilter = FilterType.ALL;
+        loadConsultationCards();
+    }
+
+    private void clearTopNavSelected() {
+        hallButton.getStyleClass().remove("selected");
+        myConsultationsButton.getStyleClass().remove("selected");
+    }
+
+    private void clearLeftNavSelected() {
+        for (Node node : leftNavButtons.getChildren()) {
+            if (node instanceof Button) {
+                node.getStyleClass().remove("selected");
+            }
+        }
+    }
+
+    // 大厅界面初始化高亮
+    private void highlightHallDefault() {
+        clearLeftNavSelected();
+        allButton.getStyleClass().add("selected");
+        for (Node node : categoryBar.getChildren()) {
+            if (node instanceof Button) {
+                Button btn = (Button) node;
+                if ("全部".equals(btn.getText())) {
+                    btn.getStyleClass().add("selected");
+                } else {
+                    btn.getStyleClass().remove("selected");
+                }
+            }
+        }
+    }
+
+    // 我的界面初始化高亮
+    private void highlightMyDefault() {
+        clearLeftNavSelected();
+        allButton.getStyleClass().add("selected");
+        for (Node node : categoryBar.getChildren()) {
+            if (node instanceof Button) {
+                Button btn = (Button) node;
+                if ("全部".equals(btn.getText())) {
+                    btn.getStyleClass().add("selected");
+                } else {
+                    btn.getStyleClass().remove("selected");
+                }
+            }
+        }
+    }
+
+    private void handleLogout() {
+        try {
+            // 关闭当前窗口
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.close();
+
+            // 打开登录界面
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/login.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("登录");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
+        } catch (IOException e) {
+            System.err.println("打开登录界面失败：" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

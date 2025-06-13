@@ -367,15 +367,7 @@ public class AdminMainController implements Initializable {
         counselorColumn.setCellValueFactory(new PropertyValueFactory<>("counselorName"));
 
         TableColumn<ClassView, Integer> studentCountColumn = new TableColumn<>("学生人数");
-        studentCountColumn.setCellValueFactory(cellData -> {
-            String classId = cellData.getValue().getClassId();
-            try {
-                int count = studentDao.getStudentCountByClassId(classId);
-                return new javafx.beans.property.SimpleIntegerProperty(count).asObject();
-            } catch (Exception e) {
-                return new javafx.beans.property.SimpleIntegerProperty(0).asObject();
-            }
-        });
+        studentCountColumn.setCellValueFactory(new PropertyValueFactory<>("studentCount"));
 
         classTable.getColumns().setAll(majorColumn, gradeColumn, idColumn, counselorColumn, studentCountColumn);
     }
