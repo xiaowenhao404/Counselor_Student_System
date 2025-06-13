@@ -71,6 +71,8 @@ public class StudentMainController {
     private Button collectedButton;
     @FXML
     private Button allButton;
+    @FXML
+    private Button logoutButton;
 
     private boolean isMyMode = false;
 
@@ -154,6 +156,10 @@ public class StudentMainController {
             }
         });
         searchField.textProperty().addListener((observable, oldValue, newValue) -> refreshConsultations());
+        
+        // 设置退出登录按钮事件
+        logoutButton.setOnAction(event -> handleLogout());
+        
         if (allCategoriesButton != null)
             allCategoriesButton.getStyleClass().add("selected");
         updateConsultationCount();
@@ -482,6 +488,25 @@ public class StudentMainController {
                     btn.getStyleClass().remove("selected");
                 }
             }
+        }
+    }
+
+    private void handleLogout() {
+        try {
+            // 关闭当前窗口
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.close();
+
+            // 打开登录界面
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/login.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("登录");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
+        } catch (IOException e) {
+            System.err.println("打开登录界面失败：" + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

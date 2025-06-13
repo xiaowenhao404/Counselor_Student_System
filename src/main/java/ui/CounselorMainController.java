@@ -49,6 +49,7 @@ public class CounselorMainController implements Initializable {
     @FXML private Button otherButton;
     @FXML private VBox cardsContainer;
     @FXML private HBox categoryBar;
+    @FXML private Button logoutButton;
 
     private ConsultationDao consultationDao;
     private CounselorDao counselorDao;
@@ -77,6 +78,9 @@ public class CounselorMainController implements Initializable {
         initializeLeftNavButtons();
         initializeCategoryButtons();
         initializeSearchField();
+        
+        // 设置退出登录按钮事件
+        logoutButton.setOnAction(event -> handleLogout());
         
         // 默认选中"大厅"按钮和"全部"按钮
         selectNavButton(hallButton);
@@ -366,5 +370,24 @@ public class CounselorMainController implements Initializable {
     private void toggleConsultationFeaturedStatus(Consultation consultation) throws SQLException {
         consultation.setFeatured(!consultation.isFeatured());
         consultationDao.updateConsultation(consultation);
+    }
+
+    private void handleLogout() {
+        try {
+            // 关闭当前窗口
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.close();
+
+            // 打开登录界面
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/login.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("登录");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
+        } catch (IOException e) {
+            System.err.println("打开登录界面失败：" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 } 

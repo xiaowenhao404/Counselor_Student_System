@@ -59,6 +59,25 @@
     -fx-background-color: transparent;
 }
 
+.logout-button {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 20px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-margin: 0 0 0 10px;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+.logout-button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* 主体内容区域样式 */
 .content-area {
     -fx-background-color: white;
