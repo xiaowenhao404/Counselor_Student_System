@@ -43,8 +43,6 @@ public class CounselorConsultationDetailController {
     @FXML
     private Label replyCharCountLabel; // 回复字数统计
     @FXML
-    private Label titleLabel;
-    @FXML
     private Label studentNameLabel;
     @FXML
     private Label studentIdLabel;
@@ -53,11 +51,7 @@ public class CounselorConsultationDetailController {
     @FXML
     private Label submitTimeLabel;
     @FXML
-    private TextArea contentTextArea;
-    @FXML
     private VBox replySection; // 添加新的 @FXML 变量
-    @FXML
-    private HBox replyButtonContainer; // 添加新的 @FXML 变量
 
     private Consultation consultation;
     private Runnable onConsultationUpdated; // 用于通知父级列表刷新
@@ -70,6 +64,11 @@ public class CounselorConsultationDetailController {
     private static final DateTimeFormatter DISPLAY_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private Stage stage;
+
+    private boolean fromHall = false;
+    public void setFromHall(boolean fromHall) {
+        this.fromHall = fromHall;
+    }
 
     @FXML
     public void initialize() {
@@ -100,8 +99,6 @@ public class CounselorConsultationDetailController {
         // 根据参数控制回复区域的可见性
         replySection.setVisible(showReplySection);
         replySection.setManaged(showReplySection);
-        replyButtonContainer.setVisible(showReplySection);
-        replyButtonContainer.setManaged(showReplySection);
     }
 
     public void setOnConsultationUpdated(Runnable onConsultationUpdated) {
@@ -109,14 +106,12 @@ public class CounselorConsultationDetailController {
     }
 
     private void updateUI() {
-        titleLabel.setText("咨询详情");
         studentNameLabel.setText(consultation.getStudentName());
         studentIdLabel.setText(consultation.getStudentId());
         typeLabel.setText(consultation.getCategory());
         statusLabel.setText(consultation.getStatus());
         submitTimeLabel.setText(consultation.getQuestionTime().format(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        contentTextArea.setText(consultation.getQuestionContent());
         updateUIWithConsultationData();
     }
 
@@ -167,15 +162,20 @@ public class CounselorConsultationDetailController {
 
         try {
             Reply reply = new Reply();
+            reply.setRNumber("R" + (System.currentTimeMillis() % 100000000));
             reply.setQNumber(consultation.getQNumber());
             reply.setContent(content);
-            reply.setResponderName(currentCounselorId);
             reply.setTime(LocalDateTime.now());
 
-            replyDao.addReply(reply);
+            boolean success = replyDao.addReply(reply);
+            if (!success) {
+                showAlert(Alert.AlertType.ERROR, "提交失败", "数据库插入失败！");
+                return;
+            }
 
-            if ("仍需解决".equals(consultation.getStatus())) {
-                consultation.setStatus("未回复");
+            // 只在初始状态为"未回复"时，才更新为"仍需解决"；"仍需解决"保持不变
+            if ("未回复".equals(consultation.getStatus())) {
+                consultation.setStatus("仍需解决");
                 consultationDao.updateConsultation(consultation);
             }
 
@@ -221,33 +221,24 @@ public class CounselorConsultationDetailController {
     }
 
     private VBox renderHistoryItem(HistoryItem item) {
-        VBox itemBox = new VBox(5);
+        VBox itemBox = new VBox(3);
         itemBox.setPadding(new Insets(10, 10, 10, 10));
-        itemBox.getStyleClass().add("history-item"); // For styling
+        itemBox.getStyleClass().add("history-item");
 
-        Label headerLabel = new Label();
-        TextFlow contentTextFlow = new TextFlow();
+        // 第一行：类型标签
+        Label typeLabel = new Label(item.type);
+        typeLabel.getStyleClass().add("history-type-label");
+
+        // 第二行：内容
+        Label contentLabel = new Label(item.content);
+        contentLabel.getStyleClass().add("history-content-label");
+        contentLabel.setWrapText(true);
+
+        // 第三行：时间
         Label timeLabel = new Label(item.getTime().format(DISPLAY_TIME_FORMATTER));
-        timeLabel.getStyleClass().add("history-time");
+        timeLabel.getStyleClass().add("history-time-label");
 
-        if ("question".equals(item.itemType)) {
-            headerLabel.setText(item.responder + " 于 " + item.getTime().format(DISPLAY_TIME_FORMATTER) + " 发布咨询：");
-            headerLabel.getStyleClass().add("history-question-header");
-            contentTextFlow.getChildren().add(new Text(item.content));
-            contentTextFlow.getStyleClass().add("history-question-content");
-        } else if ("reply".equals(item.itemType)) {
-            headerLabel.setText(item.responder + " 于 " + item.getTime().format(DISPLAY_TIME_FORMATTER) + " 回复：");
-            headerLabel.getStyleClass().add("history-reply-header");
-            contentTextFlow.getChildren().add(new Text(item.content));
-            contentTextFlow.getStyleClass().add("history-reply-content");
-        } else if ("followup".equals(item.itemType)) {
-            headerLabel.setText(item.responder + " 于 " + item.getTime().format(DISPLAY_TIME_FORMATTER) + " 追问：");
-            headerLabel.getStyleClass().add("history-followup-header");
-            contentTextFlow.getChildren().add(new Text(item.content));
-            contentTextFlow.getStyleClass().add("history-followup-content");
-        }
-
-        itemBox.getChildren().addAll(headerLabel, contentTextFlow, timeLabel);
+        itemBox.getChildren().addAll(typeLabel, contentLabel, timeLabel);
         return itemBox;
     }
 

@@ -1,78 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.control.ListView?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ui.CounselorConsultationDetailController"
       styleClass="main-container"
-      prefWidth="650.0" maxWidth="650.0">
-    
-    <!-- 顶部标题栏 -->
-    <HBox styleClass="header">
-        <Label fx:id="titleLabel" styleClass="title"/>
-        <Region HBox.hgrow="ALWAYS"/>
+      stylesheets="@counselor_consultation_detail.css"
+      prefWidth="700.0" maxWidth="700.0">
+
+    <!-- 顶部蓝紫渐变栏 -->
+    <HBox styleClass="header-container" alignment="CENTER_LEFT" spacing="10">
+        <ImageView fx:id="backIcon" fitHeight="22" fitWidth="22" pickOnBounds="true" preserveRatio="true" styleClass="back-icon">
+            <image>
+                <Image url="@../images/back.png" />
+            </image>
+        </ImageView>
+        <Label text="咨询详情" styleClass="header-title" />
+        <Region HBox.hgrow="ALWAYS" />
     </HBox>
 
-    <!-- 咨询信息区域 -->
+    <!-- 个人信息白底区 -->
     <VBox styleClass="info-section">
-        <HBox styleClass="info-row">
-            <Label text="学生：" styleClass="info-label"/>
-            <Label fx:id="studentNameLabel" styleClass="info-value"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label text="学号：" styleClass="info-label"/>
-            <Label fx:id="studentIdLabel" styleClass="info-value"/>
+        <HBox spacing="20">
+            <Label text="学生：" styleClass="info-label" />
+            <Label fx:id="studentNameLabel" styleClass="info-value" />
+            <Label text="学号：" styleClass="info-label" />
+            <Label fx:id="studentIdLabel" styleClass="info-value" />
         </HBox>
-        <HBox styleClass="info-row">
-            <Label text="咨询类型：" styleClass="info-label"/>
-            <Label fx:id="typeLabel" styleClass="info-value"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label text="状态：" styleClass="info-label"/>
-            <Label fx:id="statusLabel" styleClass="info-value"/>
+        <HBox spacing="20">
+            <Label text="咨询类型：" styleClass="info-label" />
+            <Label fx:id="typeLabel" styleClass="info-value" />
+            <Label text="状态：" styleClass="info-label" />
+            <Label fx:id="statusLabel" styleClass="info-value" />
         </HBox>
-        <HBox styleClass="info-row">
-            <Label text="提交时间：" styleClass="info-label"/>
-            <Label fx:id="submitTimeLabel" styleClass="info-value"/>
+        <HBox spacing="20">
+            <Label text="提交时间：" styleClass="info-label" />
+            <Label fx:id="submitTimeLabel" styleClass="info-value" />
         </HBox>
-    </VBox>
-
-    <!-- 咨询内容区域 -->
-    <VBox styleClass="content-section">
-        <Label fx:id="questionLabel" text="咨询内容" styleClass="section-title"/>
-        <TextArea fx:id="contentTextArea" styleClass="content-text" editable="false" wrapText="true"/>
-    </VBox>
-
-    <!-- 回复区域 -->
-    <VBox fx:id="replySection" styleClass="reply-section">
-        <Label text="回复内容" styleClass="section-title"/>
-        <TextArea fx:id="replyTextArea" styleClass="reply-text" promptText="请输入回复内容..." wrapText="true"/>
-        <HBox fx:id="replyButtonContainer" styleClass="button-container">
-            <Label fx:id="replyCharCountLabel" text="0/200" styleClass="char-count-label"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="sendReplyButton" text="提交回复" onAction="#sendReply" styleClass="submit-button"/>
+        <HBox spacing="20">
+            <Label text="问题：" styleClass="info-label" />
+            <Label fx:id="questionLabel" styleClass="question-bold" wrapText="true" />
         </HBox>
     </VBox>
 
-    <!-- 历史回复列表 -->
+    <!-- 历史回复区 -->
     <VBox styleClass="history-section" VBox.vgrow="ALWAYS">
-        <Label text="历史回复" styleClass="section-title"/>
         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="history-scroll-pane">
-            <VBox fx:id="historyContainer" spacing="10" styleClass="history-content-container">
-                <!-- History items will be added here dynamically -->
+            <VBox fx:id="historyContainer" spacing="15" styleClass="history-container">
+                <!-- 历史记录卡片由Controller动态添加 -->
             </VBox>
         </ScrollPane>
+    </VBox>
+
+    <!-- 回复输入区，仅在fromHall=false时显示 -->
+    <VBox fx:id="replySection" styleClass="reply-section" visible="false" managed="false" spacing="8" alignment="CENTER">
+        <Label text="回复内容" styleClass="section-title" />
+        <TextArea fx:id="replyTextArea" styleClass="reply-text" promptText="请输入回复内容..." wrapText="true" maxWidth="700" prefWidth="700" prefHeight="90" />
+        <HBox styleClass="button-container" alignment="CENTER_RIGHT" maxWidth="700" prefWidth="700" prefHeight="32">
+            <Label fx:id="replyCharCountLabel" text="0/200" styleClass="char-count-label" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="sendReplyButton" text="发送回复" onAction="#sendReply" styleClass="submit-button" />
+        </HBox>
     </VBox>
 </VBox> 

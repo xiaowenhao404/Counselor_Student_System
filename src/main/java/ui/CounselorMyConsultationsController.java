@@ -208,9 +208,6 @@ public class CounselorMyConsultationsController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/components/consultation_card.fxml"));
         VBox card = loader.load();
 
-        // 为卡片添加点击事件
-        card.setOnMouseClicked(event -> openConsultationDetail(consultation));
-
         // 获取卡片内的组件
         Label questionLabel = (Label) card.lookup("#questionLabel");
         Label consultationIdLabel = (Label) card.lookup("#consultationIdLabel");
@@ -235,25 +232,31 @@ public class CounselorMyConsultationsController {
         } else {
             statusLabel.setText(statusText);
         }
-
-        // 根据状态设置样式
         String statusStyleClass = getStatusStyleClass(statusLabel.getText());
         if (statusStyleClass != null) {
             statusLabel.getStyleClass().add(statusStyleClass);
         }
-
         categoryTag.setText(consultation.getCategory());
 
         updateFeaturedIcon(featuredIcon, consultation.isFeatured());
 
-        // 为加精图标添加点击事件
+        // 精选图标点击事件（阻止冒泡）
         featuredIcon.setOnMouseClicked(event -> {
+            event.consume(); // 阻止事件冒泡到卡片
             try {
                 toggleConsultationFeaturedStatus(consultation);
+                updateFeaturedIcon(featuredIcon, consultation.isFeatured());
+                refreshConsultations();
             } catch (SQLException e) {
                 showAlert(Alert.AlertType.ERROR, "操作失败", "切换加精状态失败: " + e.getMessage());
                 e.printStackTrace();
             }
+        });
+
+        // 只有点击卡片非精选图标区域才弹出详情
+        card.setOnMouseClicked(event -> {
+            if (event.getTarget() == featuredIcon) return;
+            openConsultationDetail(consultation);
         });
 
         // 留言图标点击事件 (TODO: 实现跳转到咨询详情页)

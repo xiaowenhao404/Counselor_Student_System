@@ -44,7 +44,7 @@
         </VBox>
 
         <!-- 咨询卡片区域 -->
-        <VBox styleClass="consultation-list" HBox.hgrow="ALWAYS">
+        <VBox fx:id="consultationList" styleClass="consultation-list" HBox.hgrow="ALWAYS">
             <!-- 中间类别分栏 -->
             <HBox fx:id="categoryBar" alignment="CENTER_LEFT" spacing="10" styleClass="category-bar">
                 <padding>

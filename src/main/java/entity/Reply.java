@@ -3,18 +3,18 @@ package entity;
 import java.time.LocalDateTime;
 
 public class Reply {
-    private String rNumber;
+    private String RNumber;
     private String qNumber;
     private String content;
     private LocalDateTime time;
     private String responderName;
 
     public String getRNumber() {
-        return rNumber;
+        return RNumber;
     }
 
-    public void setRNumber(String rNumber) {
-        this.rNumber = rNumber;
+    public void setRNumber(String RNumber) {
+        this.RNumber = RNumber;
     }
 
     public String getQNumber() {

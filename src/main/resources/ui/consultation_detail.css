@@ -217,4 +217,22 @@
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
     -fx-wrap-text: true;
+}
+
+.history-type-label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2979ff;
+    -fx-padding-bottom: 2px;
+}
+
+.history-content-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #222;
+    -fx-padding-bottom: 2px;
+}
+
+.history-time-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #888;
 } 
