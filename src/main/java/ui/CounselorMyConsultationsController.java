@@ -35,10 +35,6 @@ import java.util.stream.Collectors;
 public class CounselorMyConsultationsController {
 
     @FXML
-    private Button hallButton;
-    @FXML
-    private Button myConsultationsButton;
-    @FXML
     private TextField searchField;
     @FXML
     private Button unansweredButton;
@@ -73,25 +69,6 @@ public class CounselorMyConsultationsController {
                 System.err.println("获取辅导员信息失败: " + e.getMessage());
             }
         }
-
-        // 初始化导航按钮
-        hallButton.setOnAction(event -> {
-            System.out.println("点击大厅按钮");
-            hallButton.getStyleClass().add("selected");
-            myConsultationsButton.getStyleClass().remove("selected");
-            Main.loadScene("/ui/counselor_main.fxml");
-        });
-        
-        myConsultationsButton.setOnAction(event -> {
-            System.out.println("点击我的答疑按钮");
-            myConsultationsButton.getStyleClass().add("selected");
-            hallButton.getStyleClass().remove("selected");
-            refreshConsultations();
-        });
-
-        // 默认选中"我的答疑"按钮
-        myConsultationsButton.getStyleClass().add("selected");
-        hallButton.getStyleClass().remove("selected");
 
         // 初始化搜索框
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -201,9 +178,38 @@ public class CounselorMyConsultationsController {
         System.out.println("已成功加载 " + cardsContainer.getChildren().size() + " 个UI元素到容器中。");
     }
 
+    private void openConsultationDetail(Consultation consultation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/counselor_consultation_detail.fxml"));
+            Parent detailRoot = loader.load();
+            CounselorConsultationDetailController controller = loader.getController();
+            controller.setConsultation(consultation, true);
+
+            Stage detailStage = new Stage();
+            detailStage.setTitle("咨询详情");
+            detailStage.setScene(new Scene(detailRoot));
+            detailStage.initModality(Modality.APPLICATION_MODAL);
+            detailStage.initOwner(cardsContainer.getScene().getWindow());
+            detailStage.setWidth(800);
+            detailStage.setHeight(700);
+            detailStage.setResizable(false); // 不允许用户调整大小
+            controller.setStage(detailStage); // 将Stage传递给控制器
+            detailStage.showAndWait();
+
+            refreshConsultations(); // 窗口关闭后刷新列表
+        } catch (IOException e) {
+            System.err.println("无法加载咨询详情窗口: " + e.getMessage());
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "错误", "无法加载咨询详情窗口。");
+        }
+    }
+
     private VBox createConsultationCard(Consultation consultation) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/components/consultation_card.fxml"));
         VBox card = loader.load();
+
+        // 为卡片添加点击事件
+        card.setOnMouseClicked(event -> openConsultationDetail(consultation));
 
         // 获取卡片内的组件
         Label questionLabel = (Label) card.lookup("#questionLabel");
@@ -221,22 +227,32 @@ public class CounselorMyConsultationsController {
         timeLabel.setText(consultation.getQuestionTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         replyContentTextFlow.getChildren().clear();
         replyContentTextFlow.getChildren().add(new Text(consultation.getContent()));
-        statusLabel.setText(consultation.getStatus());
-        statusLabel.getStyleClass().add(getStatusStyleClass(consultation.getStatus()));
+
+        // 修正状态文本显示
+        String statusText = consultation.getStatus();
+        if ("仍需...".equals(statusText)) {
+            statusLabel.setText("仍需解决");
+        } else {
+            statusLabel.setText(statusText);
+        }
+
+        // 根据状态设置样式
+        String statusStyleClass = getStatusStyleClass(statusLabel.getText());
+        if (statusStyleClass != null) {
+            statusLabel.getStyleClass().add(statusStyleClass);
+        }
+
         categoryTag.setText(consultation.getCategory());
 
-        // 设置精选图标状态
         updateFeaturedIcon(featuredIcon, consultation.isFeatured());
 
-        // 精选图标点击事件
+        // 为加精图标添加点击事件
         featuredIcon.setOnMouseClicked(event -> {
             try {
                 toggleConsultationFeaturedStatus(consultation);
-                updateFeaturedIcon(featuredIcon, consultation.isFeatured());
-                // 刷新当前列表以反映状态变化
-                refreshConsultations();
             } catch (SQLException e) {
-                System.err.println("切换精选状态失败: " + e.getMessage());
+                showAlert(Alert.AlertType.ERROR, "操作失败", "切换加精状态失败: " + e.getMessage());
+                e.printStackTrace();
             }
         });
 
@@ -269,12 +285,16 @@ public class CounselorMyConsultationsController {
     }
 
     private String getStatusStyleClass(String status) {
-        return switch (status) {
-            case "已解决" -> "status-resolved";
-            case "未回复" -> "status-unanswered";
-            case "仍需解决" -> "status-unresolved";
-            default -> "";
-        };
+        switch (status) {
+            case "未回复":
+                return "status-unanswered";
+            case "仍需解决":
+                return "status-unresolved";
+            case "已解决":
+                return "status-resolved";
+            default:
+                return null;
+        }
     }
 
     private void updateFeaturedIcon(ImageView icon, boolean isFeatured) {

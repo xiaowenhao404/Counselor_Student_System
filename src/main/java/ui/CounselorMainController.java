@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -114,6 +115,8 @@ public class CounselorMainController implements Initializable {
 
                 modalStage.showAndWait(); // 显示并等待关闭
                 System.out.println("我的答疑模态窗口已关闭。");
+                // 模态窗口关闭后，将顶部导航按钮的选中状态切换回"大厅"
+                selectNavButton(hallButton);
             } catch (IOException ex) {
                 System.err.println("打开我的答疑模态窗口失败: " + ex.getMessage());
                 ex.printStackTrace();
@@ -289,14 +292,28 @@ public class CounselorMainController implements Initializable {
         ImageView messageIcon = (ImageView) card.lookup("#messageIcon");
         ImageView featuredIcon = (ImageView) card.lookup("#featuredIcon");
 
+        // 为整个卡片添加点击事件
+        card.setOnMouseClicked(event -> openConsultationDetail(consultation));
+
         // 设置值
         questionLabel.setText(consultation.getTitle());
         consultationIdLabel.setText("ID: " + consultation.getQId());
         timeLabel.setText(consultation.getQuestionTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         replyContentTextFlow.getChildren().clear();
         replyContentTextFlow.getChildren().add(new Text(consultation.getContent()));
-        statusLabel.setText(consultation.getStatus());
-        statusLabel.getStyleClass().add(getStatusStyleClass(consultation.getStatus()));
+
+        // 调试：打印原始状态文本
+        System.out.println("咨询ID: " + consultation.getQId() + ", 原始状态: '" + consultation.getStatus() + "'");
+
+        // 修正状态文本显示
+        String statusText = consultation.getStatus();
+        if ("仍需...".equals(statusText)) {
+            statusLabel.setText("仍需解决");
+        } else {
+            statusLabel.setText(statusText);
+        }
+
+        statusLabel.getStyleClass().add(getStatusStyleClass(statusLabel.getText()));
         categoryTag.setText(consultation.getCategory());
 
         // 设置精选图标状态
@@ -315,33 +332,33 @@ public class CounselorMainController implements Initializable {
             }
         });
 
-        // 留言图标点击事件 (TODO: 实现跳转到咨询详情页)
-        messageIcon.setOnMouseClicked(event -> {
-            System.out.println("点击留言图标，咨询ID: " + consultation.getQId());
-            try {
-                FXMLLoader detailLoader = new FXMLLoader(getClass().getResource("/ui/consultation_detail.fxml"));
-                Parent detailRoot = detailLoader.load();
-                ConsultationDetailController controller = detailLoader.getController();
-                controller.setConsultation(consultation);
-                // 详情页更新后，刷新当前筛选状态下的列表
-                controller.setOnConsultationUpdated(this::loadFilteredConsultations);
-
-                Stage detailStage = new Stage();
-                detailStage.setTitle("咨询详情");
-                detailStage.setScene(new Scene(detailRoot));
-                detailStage.initModality(Modality.APPLICATION_MODAL);
-                detailStage.initOwner(cardsContainer.getScene().getWindow());
-                detailStage.setWidth(800);
-                detailStage.setHeight(700);
-                detailStage.showAndWait();
-                loadFilteredConsultations(); // 详情页关闭后刷新列表
-            } catch (IOException e) {
-                System.err.println("打开咨询详情页面失败: " + e.getMessage());
-                e.printStackTrace();
-            }
-        });
-
         return card;
+    }
+
+    private void openConsultationDetail(Consultation consultation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/counselor_consultation_detail.fxml"));
+            Parent detailRoot = loader.load();
+            CounselorConsultationDetailController controller = loader.getController();
+            controller.setConsultation(consultation, false);
+
+            Stage detailStage = new Stage();
+            detailStage.setTitle("咨询详情");
+            detailStage.setScene(new Scene(detailRoot));
+            detailStage.initModality(Modality.APPLICATION_MODAL);
+            detailStage.initOwner(cardsContainer.getScene().getWindow());
+            detailStage.setWidth(800);
+            detailStage.setHeight(700);
+            detailStage.setResizable(false);
+            controller.setStage(detailStage);
+            detailStage.showAndWait();
+
+            loadFilteredConsultations(); // 窗口关闭后刷新列表
+        } catch (IOException e) {
+            System.err.println("无法加载咨询详情窗口: " + e.getMessage());
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "错误", "无法加载咨询详情窗口。");
+        }
     }
 
     private String getStatusStyleClass(String status) {
@@ -366,5 +383,13 @@ public class CounselorMainController implements Initializable {
     private void toggleConsultationFeaturedStatus(Consultation consultation) throws SQLException {
         consultation.setFeatured(!consultation.isFeatured());
         consultationDao.updateConsultation(consultation);
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 } 

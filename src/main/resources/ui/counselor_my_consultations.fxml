@@ -21,10 +21,6 @@
             </font>
         </Label>
         <Region HBox.hgrow="ALWAYS" />
-        <HBox fx:id="navButtons" styleClass="nav-buttons">
-            <Button fx:id="hallButton" styleClass="nav-button" text="大厅" />
-            <Button fx:id="myConsultationsButton" styleClass="nav-button,selected" text="我的" />
-        </HBox>
         <Region HBox.hgrow="ALWAYS" />
         <TextField fx:id="searchField" promptText="搜索..." styleClass="search-field" />
     </HBox>

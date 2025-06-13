@@ -1,37 +1,33 @@
 .main-container {
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: #f0f2f5; /* 恢复正常背景色 */
     -fx-font-family: "Microsoft YaHei UI";
+    -fx-padding: 0;
 }
 
-.top-bar {
-    -fx-background-color: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-    -fx-padding: 10px 20px;
+.header {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2); /* 蓝紫渐变 */
+    -fx-padding: 15px 20px; /* 增加内边距 */
     -fx-alignment: CENTER_LEFT;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-background-radius: 5px; /* 添加圆角 */
+    -fx-margin-bottom: 0; /* 确保与下方紧密连接 */
 }
 
-.back-icon {
-    -fx-fill: white;
-}
-
-.back-label {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
+.title {
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-cursor: hand;
+    -fx-text-fill: white; /* 标题字体颜色改为白色 */
 }
 
 .info-section {
     -fx-background-color: white;
-    -fx-background-radius: 10px;
-    -fx-padding: 20px;
-    -fx-spacing: 10px;
+    -fx-background-radius: 0 0 10px 10px; /* 调整圆角，顶部不圆角 */
+    -fx-padding: 10px 20px; /* 调整内边距 */
+    -fx-spacing: 5px; /* 调整内部元素间距 */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1px;
-    -fx-border-radius: 10px;
-    -fx-padding: 20px;
-    -fx-margin: 20px;
+    -fx-border-color: #DCDCDC;
+    -fx-border-width: 0 1px 1px 1px; /* 顶部无边框 */
+    -fx-margin: 0 20px 0 20px; /* 调整 margin */
 }
 
 .label-bold {
@@ -74,179 +70,80 @@
     -fx-text-fill: white;
 }
 
-.collect-icon {
-    -fx-cursor: hand;
-    -fx-hgrow: ALWAYS; /* 允许横向增长 */
-    -fx-alignment: BOTTOM_RIGHT; /* 对齐到父容器的右下角 */
-}
-
-/* 追问与回复记录区域大框 */
-.history-card-container {
+/* 咨询内容区域 */
+.content-section {
     -fx-background-color: white;
     -fx-background-radius: 10px;
-    -fx-padding: 10px;
+    -fx-padding: 10px 20px; /* 调整内边距 */
+    -fx-spacing: 5px; /* 调整内部元素间距 */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
-    -fx-border-color: #e0e0e0;
+    -fx-border-color: #DCDCDC;
     -fx-border-width: 1px;
     -fx-border-radius: 10px;
-    -fx-margin: 0 20px 20px 20px; /* 与info-section对齐，底部留白 */
+    -fx-margin: 10px 20px 0 20px; /* 调整 margin，与上方区域的间距 */
 }
 
-.history-scroll-pane {
-    -fx-background-color: transparent;
-    -fx-fit-to-width: true;
-    -fx-hbar-policy: never; /* 禁用水平滚动条 */
-}
-
-.history-scroll-pane .viewport {
-    -fx-background-color: transparent;
-}
-
-.history-container {
-    -fx-background-color: transparent;
-    /* -fx-padding: 20px; 已经设置在fxml中 */
-}
-
-/* 历史记录条目方框 */
-.history-entry-box {
-    -fx-background-color: white; /* 浅蓝色方框背景改为白色 */
-    -fx-background-radius: 8px;
-    -fx-border-color: #e0e0e0; /* 边框改为浅灰色 */
-    -fx-border-width: 1px;
-    -fx-border-radius: 8px;
-    -fx-padding: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2); /* 调整阴影 */
-    -fx-transition: -fx-effect 0.2s, -fx-scale-x 0.2s, -fx-scale-y 0.2s; /* 添加动画 */
-}
-
-.history-entry-box:hover {
-    -fx-scale-x: 1.005; /* 悬浮时轻微放大 */
-    -fx-scale-y: 1.005;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4); /* 悬浮时阴影更深 */
-}
-
-.history-entry-box:pressed {
-    -fx-scale-x: 0.995; /* 点击时轻微缩小 */
-    -fx-scale-y: 0.995;
-}
-
-/* 历史记录内容框 */
-.history-content-box {
-    -fx-background-color: white; /* 内容框背景色改为白色 */
-    -fx-background-radius: 5px;
-    -fx-border-color: #e0e0e0; /* 边框颜色改为浅灰色 */
-    -fx-border-width: 1px; /* 添加边框 */
-    -fx-border-radius: 5px;
-    -fx-padding: 8px;
-    -fx-margin-top: 5px; /* 与标题的间距 */
-}
-
-.history-type-label {
-    -fx-font-size: 13px;
+.section-title {
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
-    -fx-text-fill: #3a5db6; /* 深蓝色字体 */
-    -fx-padding: 2px 5px;
-    -fx-background-color: #b3e0ff; /* 浅蓝色背景方块 */
-    -fx-background-radius: 3px;
-}
-
-.history-timestamp-label {
-    -fx-font-size: 12px;
-    -fx-text-fill: #888888;
-}
-
-.history-content-label {
-    -fx-font-size: 14px;
     -fx-text-fill: #333333;
-    -fx-wrap-text: true;
+    -fx-padding-bottom: 5px; /* 调整内边距 */
 }
 
-/* 我要追问按钮样式 */
-.ask-further-button {
-    -fx-background-color: white;
-    -fx-background-radius: 20px;
-    -fx-text-fill: #6a11cb;
-    -fx-font-size: 16px;
-    -fx-padding: 10px 25px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
-    -fx-transition: -fx-effect 0.2s, -fx-scale-x 0.2s, -fx-scale-y 0.2s;
-}
-
-.ask-further-button:hover {
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 7);
-}
-
-.ask-further-button:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
-}
-
-/* "仍需解决"按钮样式 */
-.mark-unresolved-button {
-    -fx-background-color: white;
-    -fx-background-radius: 20px;
-    -fx-text-fill: #dc3545; /* 红色，表示需要关注 */
-    -fx-font-size: 16px;
-    -fx-padding: 10px 25px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
-    -fx-transition: -fx-effect 0.2s, -fx-scale-x 0.2s, -fx-scale-y 0.2s;
-}
-
-.mark-unresolved-button:hover {
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 7);
-}
-
-.mark-unresolved-button:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
-}
-
-/* 追问区域样式 */
-.inquiry-section {
-    -fx-background-color: white;
-    -fx-background-radius: 10px;
-    -fx-padding: 20px;
-    -fx-spacing: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1px;
-    -fx-border-radius: 10px;
-    -fx-margin: 0 20px 20px 20px; /* 底部和左右边距 */
-}
-
-.inquiry-textarea {
+.content-text {
     -fx-background-color: #f8f8f8;
     -fx-border-color: #e0e0e0;
     -fx-border-radius: 5px;
     -fx-padding: 8px 10px;
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
-    -fx-pref-height: 80px;
+    -fx-pref-height: 60px; /* 进一步调整高度 */
+    -fx-max-width: 550px; /* 调整最大宽度 */
+    -fx-pref-width: 550px;
     -fx-wrap-text: true;
 }
 
-.inquiry-textarea:focused {
-    -fx-border-color: #6a11cb;
-    -fx-effect: dropshadow(gaussian, rgba(106, 17, 203, 0.2), 5, 0, 0, 0);
+/* 回复区域 */
+.reply-section {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px 20px; /* 调整内边距 */
+    -fx-spacing: 5px; /* 内部元素间距 */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
+    -fx-border-color: #DCDCDC;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-margin: 10px 20px 0 20px; /* 调整 margin */
 }
 
-.send-button {
-    -fx-pref-width: 80px;
-    -fx-pref-height: 30px;
+.reply-text {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px 10px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-pref-height: 40px; /* 进一步调整高度 */
+    -fx-max-width: 550px; /* 调整最大宽度 */
+    -fx-pref-width: 550px;
+    -fx-wrap-text: true;
+}
+
+.button-container {
+    -fx-spacing: 10px;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.submit-button {
     -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
-    -fx-background-radius: 15px;
     -fx-text-fill: white;
     -fx-font-size: 14px;
+    -fx-padding: 8px 20px;
+    -fx-background-radius: 5px;
     -fx-cursor: hand;
 }
 
-.send-button:hover {
+.submit-button:hover {
     -fx-opacity: 0.9;
 }
 
@@ -256,6 +153,68 @@
 }
 
 .char-count-label.error {
-    -fx-text-fill: #ff4d4d; /* 红色 */
+    -fx-text-fill: #dc3545;
     -fx-font-weight: bold;
+}
+
+/* 历史回复区域 */
+.history-section {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px 20px; /* 调整内边距 */
+    -fx-spacing: 5px; /* 调整内部元素间距 */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 2);
+    -fx-border-color: #DCDCDC;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-vgrow: ALWAYS; /* 确保历史部分垂直方向尽可能大 */
+    -fx-margin: 10px 20px 20px 20px; /* 调整 margin，底部留更多空间 */
+}
+
+.history-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-fit-to-width: true;
+    -fx-hbar-policy: never; /* 禁用水平滚动条 */
+    -fx-vgrow: ALWAYS; /* 确保ScrollPane也能垂直增长 */
+    -fx-min-height: 150px; /* 确保最小高度，以显示滚动条 */
+}
+
+.history-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.history-content-container {
+    -fx-background-color: transparent;
+}
+
+.history-item {
+    -fx-background-color: #f0f8ff; /* 历史项背景色 */
+    -fx-background-radius: 8px;
+    -fx-border-color: #cceeff;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+    -fx-margin-bottom: 10px; /* 增加历史条目之间的间距 */
+}
+
+.history-question-header,
+.history-reply-header,
+.history-followup-header {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3a5db6; /* 深蓝色字体 */
+}
+
+.history-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+}
+
+.history-question-content,
+.history-reply-content,
+.history-followup-content {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
 } 

@@ -227,15 +227,15 @@
 .status-container {
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 5 0 8 0;
+    /* -fx-background-color: lightgray; */ /* 移除临时背景色 */
 }
 
 .status-label {
     -fx-text-fill: white;
     -fx-font-size: 12px;
-    -fx-padding: 3 8;
+    -fx-padding: 3 10;
     -fx-background-radius: 3px;
     -fx-alignment: CENTER;
-    -fx-pref-width: 60px;
 }
 
 .status-label.solved {
@@ -253,7 +253,7 @@
 }
 
 .status-unresolved {
-    -fx-background-color: #ff4d4d;
+    -fx-background-color: #ff9900; /* 橙色 */
     -fx-text-fill: white;
     -fx-background-radius: 5px;
 }
@@ -331,13 +331,10 @@
 }
 
 .category-tag {
-    -fx-background-color: #3b82f6;
+    -fx-background-color: #007bff;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 2 12 2 12;
-    -fx-background-radius: 12px;
-    -fx-alignment: center;
-    -fx-label-padding: 0 0 0 0;
-    -fx-margin: 0 0 0 8px;
+    -fx-font-size: 12px;
+    -fx-padding: 3 8;
+    -fx-background-radius: 3px;
+    -fx-alignment: CENTER;
 } 
