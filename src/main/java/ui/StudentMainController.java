@@ -76,6 +76,10 @@ public class StudentMainController {
 
     private boolean isMyMode = false;
 
+    // 新增：我的界面状态和类别筛选变量
+    private String myStatusFilter = "已解决";
+    private String myCategoryFilter = "全部";
+
     public StudentMainController() {
         System.out.println("StudentMainController 构造方法被调用");
     }
@@ -95,6 +99,8 @@ public class StudentMainController {
             myConsultationsButton.getStyleClass().add("selected");
             switchToMyMode();
             highlightMyDefault();
+            myStatusFilter = "已解决";
+            myCategoryFilter = "全部";
             refreshConsultations();
         });
         hallButton.setOnAction(event -> {
@@ -106,35 +112,7 @@ public class StudentMainController {
             refreshConsultations();
         });
         setupLeftNavButtons();
-        for (Node node : categoryBar.getChildren()) {
-            if (node instanceof Button) {
-                Button categoryButton = (Button) node;
-                categoryButton.setOnAction(event -> {
-                    for (Node otherNode : categoryBar.getChildren()) {
-                        if (otherNode instanceof Button) {
-                            otherNode.getStyleClass().remove("selected");
-                        }
-                    }
-                    categoryButton.getStyleClass().add("selected");
-                    String buttonText = categoryButton.getText();
-                    switch (buttonText) {
-                        case "全部":
-                            currentFilter = FilterType.ALL;
-                            break;
-                        case "学习":
-                            currentFilter = FilterType.LEARNING;
-                            break;
-                        case "生活":
-                            currentFilter = FilterType.LIFE;
-                            break;
-                        case "其他":
-                            currentFilter = FilterType.OTHER;
-                            break;
-                    }
-                    refreshConsultations();
-                });
-            }
-        }
+        initializeCategoryButtons();
         newConsultationButton.setOnAction(event -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/new_consultation.fxml"));
@@ -156,10 +134,10 @@ public class StudentMainController {
             }
         });
         searchField.textProperty().addListener((observable, oldValue, newValue) -> refreshConsultations());
-        
+
         // 设置退出登录按钮事件
         logoutButton.setOnAction(event -> handleLogout());
-        
+
         if (allCategoriesButton != null)
             allCategoriesButton.getStyleClass().add("selected");
         updateConsultationCount();
@@ -174,12 +152,51 @@ public class StudentMainController {
                     clearLeftNavSelected();
                     button.getStyleClass().add("selected");
                     String buttonText = button.getText();
-                    if ("全部".equals(buttonText) || "已解决".equals(buttonText))
-                        currentFilter = FilterType.ALL;
-                    else if ("精选".equals(buttonText) || "仍需解决".equals(buttonText))
-                        currentFilter = FilterType.FEATURED;
-                    else if ("收藏".equals(buttonText) || "未回复".equals(buttonText))
-                        currentFilter = FilterType.COLLECTED;
+                    if (isMyMode) {
+                        if ("已解决".equals(buttonText))
+                            myStatusFilter = "已解决";
+                        else if ("仍需解决".equals(buttonText))
+                            myStatusFilter = "仍需解决";
+                        else if ("未回复".equals(buttonText))
+                            myStatusFilter = "未回复";
+                    } else {
+                        if ("全部".equals(buttonText))
+                            currentFilter = FilterType.ALL;
+                        else if ("精选".equals(buttonText))
+                            currentFilter = FilterType.FEATURED;
+                        else if ("收藏".equals(buttonText))
+                            currentFilter = FilterType.COLLECTED;
+                    }
+                    refreshConsultations();
+                });
+            }
+        }
+    }
+
+    private void initializeCategoryButtons() {
+        for (Node node : categoryBar.getChildren()) {
+            if (node instanceof Button) {
+                Button categoryButton = (Button) node;
+                categoryButton.setOnAction(event -> {
+                    for (Node otherNode : categoryBar.getChildren()) {
+                        if (otherNode instanceof Button) {
+                            otherNode.getStyleClass().remove("selected");
+                        }
+                    }
+                    categoryButton.getStyleClass().add("selected");
+                    String categoryText = categoryButton.getText();
+                    if (!isMyMode) {
+                        if ("全部".equals(categoryText))
+                            currentFilter = FilterType.ALL;
+                        else if ("学习".equals(categoryText))
+                            currentFilter = FilterType.LEARNING;
+                        else if ("生活".equals(categoryText))
+                            currentFilter = FilterType.LIFE;
+                        else if ("其他".equals(categoryText))
+                            currentFilter = FilterType.OTHER;
+                    } else {
+                        myCategoryFilter = categoryText;
+                    }
                     refreshConsultations();
                 });
             }
@@ -211,26 +228,23 @@ public class StudentMainController {
     private void loadConsultationCards() {
         cardsContainer.getChildren().clear();
         String searchText = searchField.getText().toLowerCase();
-        List<Consultation> filteredConsultations = allConsultations.stream()
-                .filter(c -> c.getStatus().equals("已解决") || c.getStatus().equals("仍需解决") || c.getStatus().equals("未回复"))
-                .filter(c -> {
-                    // "我的"模式下按状态筛选
-                    if ("已解决".equals(allButton.getText())) {
-                        if (currentFilter == FilterType.ALL)
-                            return c.getStatus().equals("已解决");
-                        if (currentFilter == FilterType.FEATURED)
-                            return c.getStatus().equals("仍需解决");
-                        if (currentFilter == FilterType.COLLECTED)
-                            return c.getStatus().equals("未回复");
-                    } else {
-                        // 大厅模式
+        List<Consultation> filteredConsultations;
+        if (isMyMode) {
+            filteredConsultations = allConsultations.stream()
+                    .filter(c -> c.getStudentId().equals(currentStudentId))
+                    .filter(c -> ("全部".equals(myStatusFilter) || c.getStatus().equals(myStatusFilter)))
+                    .filter(c -> ("全部".equals(myCategoryFilter) || c.getCategory().equals(myCategoryFilter)))
+                    .filter(c -> c.getQuestionTitle().toLowerCase().contains(searchText))
+                    .collect(Collectors.toList());
+        } else {
+            filteredConsultations = allConsultations.stream()
+                    .filter(c -> {
                         switch (currentFilter) {
                             case ALL:
                                 return true;
                             case FEATURED:
                                 return c.isHighlighted();
                             case COLLECTED:
-                                // 这里每次都查数据库，保证收藏状态准确
                                 try {
                                     return collectDao.isCollected(c.getQNumber(), currentStudentId);
                                 } catch (Exception e) {
@@ -243,12 +257,13 @@ public class StudentMainController {
                                 return "生活".equals(c.getCategory());
                             case OTHER:
                                 return "其他".equals(c.getCategory());
+                            default:
+                                return true;
                         }
-                    }
-                    return true;
-                })
-                .filter(c -> c.getQuestionTitle().toLowerCase().contains(searchText))
-                .collect(Collectors.toList());
+                    })
+                    .filter(c -> c.getQuestionTitle().toLowerCase().contains(searchText))
+                    .collect(Collectors.toList());
+        }
         for (Consultation consultation : filteredConsultations) {
             cardsContainer.getChildren().add(createConsultationCard(consultation));
         }
@@ -263,17 +278,20 @@ public class StudentMainController {
         Label questionLabel = new Label(consultation.getQuestionTitle());
         questionLabel.getStyleClass().add("card-question");
         questionLabel.setWrapText(true);
+        questionLabel.setPadding(new Insets(0, 0, 6, 0));
         // 时间
         String timeStr = consultation.getQuestionTime() != null
                 ? consultation.getQuestionTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                 : "";
         Label timeLabel = new Label(timeStr);
         timeLabel.getStyleClass().add("card-time");
+        timeLabel.setPadding(new Insets(0, 0, 6, 0));
         // 回复内容
         String replyContent = consultation.getQuestionContent();
         Label replyLabel = new Label(replyContent != null && !replyContent.isEmpty() ? replyContent : "暂无回复");
         replyLabel.getStyleClass().add("card-reply");
         replyLabel.setWrapText(true);
+        replyLabel.setPadding(new Insets(0, 0, 8, 0));
         // 状态标签
         Label statusLabel = new Label();
         statusLabel.getStyleClass().add("card-status-label");
@@ -334,11 +352,89 @@ public class StudentMainController {
         featuredIcon.setFitWidth(20);
         featuredIcon.setFitHeight(20);
         featuredIcon.getStyleClass().add("interaction-icon");
+        // "是否解决"勾选图标和文字（仅我的界面显示，靠右）
+        final ImageView solvedIcon;
+        final HBox solvedBox;
+        if (isMyMode) {
+            boolean isSolved = "已解决".equals(consultation.getStatus());
+            solvedIcon = new ImageView(new Image(getClass().getResourceAsStream(
+                    isSolved ? "/images/select.png" : "/images/not_select.png")));
+            solvedIcon.setFitWidth(22);
+            solvedIcon.setFitHeight(22);
+            solvedIcon.getStyleClass().add("interaction-icon");
+            solvedIcon.setPickOnBounds(true);
+            solvedIcon.setMouseTransparent(false);
+            Label solvedLabel = new Label("是否解决");
+            solvedLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 13px;");
+            solvedBox = new HBox(5, solvedLabel, solvedIcon);
+            solvedBox.setAlignment(Pos.CENTER_RIGHT);
+            solvedBox.setMinWidth(120);
+            solvedBox.setMaxWidth(120);
+            HBox.setHgrow(solvedBox, javafx.scene.layout.Priority.ALWAYS);
+            solvedBox.setPickOnBounds(true);
+            solvedBox.setMouseTransparent(false);
+            solvedIcon.setOnMouseClicked(event -> {
+                event.consume();
+                try {
+                    String oldStatus = consultation.getStatus();
+                    String newStatus;
+                    if ("已解决".equals(oldStatus)) {
+                        if (consultation.getReplyCount() > 0) {
+                            newStatus = "仍需解决";
+                        } else {
+                            newStatus = "未回复";
+                        }
+                        solvedIcon.setImage(new Image(getClass().getResourceAsStream("/images/not_select.png")));
+                        if ("未回复".equals(newStatus)) {
+                            statusLabel.setText("未回复");
+                            statusLabel.getStyleClass().removeAll("status-resolved", "status-unresolved");
+                            statusLabel.getStyleClass().add("status-unanswered");
+                        } else {
+                            statusLabel.setText("仍需解决");
+                            statusLabel.getStyleClass().removeAll("status-resolved", "status-unanswered");
+                            statusLabel.getStyleClass().add("status-unresolved");
+                        }
+                    } else {
+                        newStatus = "已解决";
+                        solvedIcon.setImage(new Image(getClass().getResourceAsStream("/images/select.png")));
+                        statusLabel.setText("已解决");
+                        statusLabel.getStyleClass().removeAll("status-unresolved", "status-unanswered");
+                        statusLabel.getStyleClass().add("status-resolved");
+                    }
+                    consultation.setStatus(newStatus);
+                    consultationDao.updateConsultation(consultation);
+                    refreshConsultations(); // 立即刷新
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            solvedIcon = null;
+            solvedBox = null;
+        }
+        // 组装交互区
         interactionContainer.getChildren().addAll(messageIcon, collectIcon, featuredIcon);
+        // 主体内容和右侧"是否解决"分为两列
+        HBox mainRow = new HBox();
+        mainRow.setAlignment(Pos.CENTER_LEFT);
+        mainRow.setSpacing(10);
+        VBox leftContent = new VBox(questionLabel, timeLabel, replyLabel, statusCategoryBox, interactionContainer);
+        leftContent.setAlignment(Pos.CENTER_LEFT);
+        mainRow.getChildren().add(leftContent);
+        if (isMyMode && solvedBox != null) {
+            mainRow.getChildren().add(solvedBox);
+            HBox.setHgrow(leftContent, javafx.scene.layout.Priority.ALWAYS);
+        }
         // 添加所有元素到卡片
-        card.getChildren().addAll(questionLabel, timeLabel, replyLabel, statusCategoryBox, interactionContainer);
-        // 点击事件
-        card.setOnMouseClicked(event -> openConsultationDetail(consultation));
+        card.getChildren().add(mainRow);
+        // 只允许点击卡片非"是否解决"图标时弹出详情
+        card.setOnMouseClicked(event -> {
+            if (isMyMode && solvedIcon != null && (event.getTarget() == solvedIcon || event.getTarget() == solvedBox)) {
+                // 点击的是"是否解决"图标或其父容器，忽略
+                return;
+            }
+            openConsultationDetail(consultation);
+        });
         return card;
     }
 
@@ -407,7 +503,7 @@ public class StudentMainController {
             List<Consultation> list = consultationDao.getAllConsultations();
             List<Consultation> myList = list.stream()
                     .filter(c -> c.getStudentId().equals(currentStudentId))
-                    .collect(java.util.stream.Collectors.toList());
+                    .collect(Collectors.toList());
             allConsultations.setAll(myList);
             loadConsultationCards();
         } catch (Exception e) {
