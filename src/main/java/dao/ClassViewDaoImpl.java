@@ -15,7 +15,7 @@ public class ClassViewDaoImpl implements ClassViewDao {
     @Override
     public List<ClassView> getAllClassViews() throws SQLException {
         List<ClassView> classViews = new ArrayList<>();
-        String sql = "SELECT 专业编号, 年级编号, 班级编号, 辅导员工号, 专业名称, 辅导员姓名 FROM 班级视图";
+        String sql = "SELECT 专业编号, 年级编号, 班级编号, 辅导员工号, 专业名称, 辅导员姓名, 学生人数 FROM 班级视图";
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -34,6 +34,7 @@ public class ClassViewDaoImpl implements ClassViewDao {
                 classView.setClassName(rs.getString("班级编号")); // 使用班级编号作为班级名称
                 classView.setCounselorId(rs.getString("辅导员工号"));
                 classView.setCounselorName(rs.getString("辅导员姓名"));
+                classView.setStudentCount(rs.getInt("学生人数")); // 设置学生人数
                 classViews.add(classView);
             }
         } finally {
@@ -59,7 +60,7 @@ public class ClassViewDaoImpl implements ClassViewDao {
     @Override
     public List<ClassView> getClassViewsByCounselorId(String counselorId) throws SQLException {
         List<ClassView> classViews = new ArrayList<>();
-        String sql = "SELECT 专业编号, 年级编号, 班级编号, 辅导员工号, 专业名称, 辅导员姓名 FROM 班级视图 WHERE 辅导员工号 = ?";
+        String sql = "SELECT 专业编号, 年级编号, 班级编号, 辅导员工号, 专业名称, 辅导员姓名, 学生人数 FROM 班级视图 WHERE 辅导员工号 = ?";
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -79,6 +80,7 @@ public class ClassViewDaoImpl implements ClassViewDao {
                 classView.setClassName(rs.getString("班级编号")); // 使用班级编号作为班级名称
                 classView.setCounselorId(rs.getString("辅导员工号"));
                 classView.setCounselorName(rs.getString("辅导员姓名"));
+                classView.setStudentCount(rs.getInt("学生人数")); // 设置学生人数
                 classViews.add(classView);
             }
         } finally {

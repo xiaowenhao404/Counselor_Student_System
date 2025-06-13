@@ -8,13 +8,14 @@ public class ClassView {
     private String counselorId;
     private String counselorName;
     private String className;
+    private int studentCount;
 
     public ClassView() {
     }
 
     public ClassView(String majorId, String majorName, String gradeNumber, String classId, String className,
             String counselorId,
-            String counselorName) {
+            String counselorName, int studentCount) {
         this.majorId = majorId;
         this.majorName = majorName;
         this.gradeNumber = gradeNumber;
@@ -22,6 +23,7 @@ public class ClassView {
         this.className = className;
         this.counselorId = counselorId;
         this.counselorName = counselorName;
+        this.studentCount = studentCount;
     }
 
     // Getters and Setters
@@ -81,6 +83,14 @@ public class ClassView {
         this.className = className;
     }
 
+    public int getStudentCount() {
+        return studentCount;
+    }
+
+    public void setStudentCount(int studentCount) {
+        this.studentCount = studentCount;
+    }
+
     @Override
     public String toString() {
         return "ClassView{" +
@@ -91,6 +101,7 @@ public class ClassView {
                 ", className='" + className + '\'' +
                 ", counselorId='" + counselorId + '\'' +
                 ", counselorName='" + counselorName + '\'' +
+                ", studentCount=" + studentCount +
                 '}';
     }
 }
