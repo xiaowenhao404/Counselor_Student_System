@@ -315,9 +315,6 @@ public class AdminMainController implements Initializable {
         TableColumn<Counselor, String> phoneColumn = new TableColumn<>("手机号码");
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
-        TableColumn<Counselor, String> deptColumn = new TableColumn<>("院系");
-        deptColumn.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
-
         TableColumn<Counselor, String> classListColumn = new TableColumn<>("负责班级");
         classListColumn.setCellFactory(col -> new TableCell<>() {
             private final Label badge = new Label();
@@ -338,7 +335,7 @@ public class AdminMainController implements Initializable {
             }
         });
 
-        counselorTable.getColumns().setAll(idColumn, nameColumn, genderColumn, birthColumn, phoneColumn, deptColumn,
+        counselorTable.getColumns().setAll(idColumn, nameColumn, genderColumn, birthColumn, phoneColumn,
                 classListColumn);
     }
 
@@ -546,6 +543,12 @@ public class AdminMainController implements Initializable {
         if (selectedCounselor != null) {
             if (showConfirmationDialog("确认删除", "确定要删除辅导员 " + selectedCounselor.getName() + " 吗？")) {
                 try {
+                    // 删除前校验是否有班级引用
+                    List<Class> classList = classDao.getClassesByCounselorId(selectedCounselor.getCounselorId());
+                    if (classList != null && !classList.isEmpty()) {
+                        showError("该辅导员仍负责班级，不可删除！");
+                        return;
+                    }
                     counselorDao.deleteCounselor(selectedCounselor.getCounselorId());
                     loadCounselorData();
                 } catch (SQLException e) {
@@ -768,21 +771,12 @@ public class AdminMainController implements Initializable {
     }
 
     private void showCounselorClassListDialog(Counselor counselor) {
-        try {
-            List<ClassView> classes = classViewDao.getClassViewsByCounselorId(counselor.getCounselorId());
-            StringBuilder message = new StringBuilder("负责的班级：\n");
-            for (ClassView classView : classes) {
-                String gradeShort = classView.getGradeNumber();
-                if (gradeShort != null && gradeShort.length() >= 2) {
-                    gradeShort = gradeShort.substring(gradeShort.length() - 2);
-                }
-                String display = String.format("%s%s%s班", gradeShort, classView.getMajorName(), classView.getClassId());
-                message.append(display).append("\n");
-            }
-            showInfo("班级列表", message.toString());
-        } catch (SQLException e) {
-            showError("获取班级列表失败: " + e.getMessage());
-            e.printStackTrace();
-        }
+        String classList = counselor.getClassList();
+        String content = (classList == null || classList.trim().isEmpty()) ? "暂无" : classList;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("负责班级列表");
+        alert.setHeaderText("辅导员：" + counselor.getName());
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

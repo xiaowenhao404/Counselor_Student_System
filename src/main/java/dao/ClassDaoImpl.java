@@ -271,4 +271,25 @@ public class ClassDaoImpl implements ClassDao {
             return result > 0;
         }
     }
+
+    // 新增：根据辅导员工号查找所有班级
+    public List<Class> getClassesByCounselorId(String counselorId) throws SQLException {
+        List<Class> classes = new ArrayList<>();
+        String sql = "SELECT 专业编号, 年级编号, 班级编号, 辅导员工号 FROM 班级 WHERE 辅导员工号 = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, counselorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Class classObj = new Class();
+                    classObj.setMajorId(rs.getString("专业编号"));
+                    classObj.setGradeNumber(rs.getString("年级编号"));
+                    classObj.setClassId(rs.getString("班级编号"));
+                    classObj.setCounselorId(rs.getString("辅导员工号"));
+                    classes.add(classObj);
+                }
+            }
+        }
+        return classes;
+    }
 }

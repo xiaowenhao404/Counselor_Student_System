@@ -46,8 +46,6 @@ public class CounselorFormController implements Initializable {
     private Counselor currentCounselor;
     private CounselorFormCallback callback;
     private boolean passwordVisible = false;
-    
-
 
     // 回调接口，用于通知父窗口操作结果
     public interface CounselorFormCallback {
@@ -84,6 +82,13 @@ public class CounselorFormController implements Initializable {
                 } else if (newValue.length() > 11) {
                     phoneField.setText(newValue.substring(0, 11));
                 }
+            }
+        });
+
+        // 姓名验证：不允许输入数字和标点符号
+        nameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.matches(".*[\\d,.?!，。！？、；：‘'（）【】《》——…￥].*")) {
+                nameField.setText(oldValue);
             }
         });
     }
@@ -189,6 +194,9 @@ public class CounselorFormController implements Initializable {
 
         if (nameField.getText().trim().isEmpty()) {
             errors.append("• 姓名不能为空\n");
+            addErrorStyle(nameField);
+        } else if (nameField.getText().matches(".*[\\d,.?!，。！？、；：'（）【】《》——…￥].*")) {
+            errors.append("• 姓名不能包含数字或标点符号\n");
             addErrorStyle(nameField);
         } else {
             removeErrorStyle(nameField);
